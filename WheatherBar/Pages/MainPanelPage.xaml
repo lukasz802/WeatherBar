@@ -1,0 +1,692 @@
+﻿<Page x:Class="WeatherBar.Pages.MainPanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WeatherBar.Pages"
+      xmlns:c="clr-namespace:WeatherBar.Controls"
+      mc:Ignorable="d"
+      SnapsToDevicePixels="True"
+      FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
+      d:DesignHeight="450" d:DesignWidth="450">
+    <Page.Resources>
+        <Style x:Key="FunctionalButtonStyle" TargetType="Button">
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="0"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Stretch"
+                                Name="Panel">
+                            <ContentPresenter VerticalAlignment="Stretch"
+                                              HorizontalAlignment="Stretch"
+                                              Content="{TemplateBinding Content}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource MenuBackgroundColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+    <Grid Margin="0,0,0,34">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <c:SearchTextBox x:Name="SearchUserControl" Width="220"
+                             PreviewKeyDown="SearchUserControl_KeyDown"
+                             SearchClick="SearchUserControl_SearchClick"
+                             Command="{Binding SearchCommand}"
+                             CommandParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"/>
+        </Grid>
+        <Grid Grid.Row="1" Margin="12,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" FlowDirection="RightToLeft" Orientation="Horizontal"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,24,0">
+                    <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                ToolTip="Zachód słońca" Margin="0,0,20,0">
+                        <TextBlock Text="{Binding SunsetTime}" x:Name="SunsetTimeTextBlock"
+                                   FontSize="16" VerticalAlignment="Center" 
+                                   Foreground="White" Margin="0,0,6,0"/>
+                        <Viewbox Margin="0" Width="24">
+                            <Grid>
+                                <Path Fill="White" 
+                                            Data="m473.411 221.912h-59.926c-3.144-37.839-18.139-72.322-41.343-99.723l42.396-42.396-20.92-20.92-42.396 42.396c-27.4-23.204-61.883-38.199-99.722-41.343v-59.926h-29.588v59.926c-37.839 3.144-72.322 18.139-99.723 41.343l-42.396-42.396-20.92 20.92 42.396 42.396c-23.204 27.401-38.199 61.883-41.343 99.723h-59.926v29.588h60.493c1.345 15.368 4.056 30.349 9.04 44.382h31.772c-7.97-18.155-12.54-38.116-12.54-59.176 0-81.57 66.371-147.941 147.941-147.941s147.941 66.371 147.941 147.941c0 21.061-4.571 41.021-12.54 59.176h31.772c4.984-14.034 7.695-29.014 9.04-44.382h60.493z"/>
+                                <Path Fill="White"
+                                            Data="m251.5 416.778v-150.484h-29.588v150.484l-63.511-63.511-20.92 20.92 99.225 99.225 99.225-99.225-20.92-20.92z"/>
+                            </Grid>
+                        </Viewbox>
+                    </StackPanel>
+                    <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                ToolTip="Wschód słońca">
+                        <TextBlock Text="{Binding SunriseTime}" x:Name="SunriseTimeTextBlock"
+                               FontSize="16" VerticalAlignment="Center" 
+                               Foreground="White" Margin="0,0,6,0"/>
+                        <Viewbox Margin="0" Width="24">
+                            <Grid>
+                                <Path Fill="White" 
+                                      Data="m473.411 221.912h-59.926c-3.144-37.839-18.139-72.322-41.343-99.723l42.396-42.396-20.92-20.92-42.396 42.396c-27.4-23.204-61.883-38.199-99.722-41.343v-59.926h-29.588v59.926c-37.839 3.144-72.322 18.139-99.723 41.343l-42.396-42.396-20.92 20.92 42.396 42.396c-23.204 27.401-38.199 61.883-41.343 99.723h-59.926v29.588h60.493c1.345 15.368 4.056 30.349 9.04 44.382h31.772c-7.97-18.155-12.54-38.116-12.54-59.176 0-81.57 66.371-147.941 147.941-147.941s147.941 66.371 147.941 147.941c0 21.061-4.571 41.021-12.54 59.176h31.772c4.984-14.034 7.695-29.014 9.04-44.382h60.493z"/>
+                                <Path Fill="White"
+                                      Data="m236.706 266.294-99.225 99.225 20.92 20.92 63.511-63.511v150.484h29.588v-150.484l63.511 63.511 20.92-20.92z"/>
+                            </Grid>
+                        </Viewbox>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="0" FlowDirection="LeftToRight" Orientation="Horizontal"
+                            HorizontalAlignment="Left" Margin="0,35,0,-5">
+                    <TextBlock Text="{Binding AvgTemp}"
+                               FontSize="96" x:Name ="TempAvgTextBlock" 
+                               VerticalAlignment="Center" Foreground="White"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                    <TextBlock Text="°" Margin="0,12,0,0" FontSize="48"
+                               VerticalAlignment="Top" Foreground="White"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                    <TextBlock Text="C" Margin="0,12,0,0" FontSize="48"
+                               VerticalAlignment="Top" Foreground="White"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                </StackPanel>
+                <TabControl Grid.Row="0" Margin="0,65,80,0" Width="100" Height="100"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Grid.RowSpan="3" BorderThickness="0"
+                            x:Name="WeahterIconTabControl" Background="Transparent">
+                    <TabItem Visibility="Collapsed" x:Name="ClearSkyDayTabItem">
+                        <Viewbox x:Name="ClearSkyDayViewbox">
+                            <Grid Margin="10">
+                                <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                                <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="ClearSkyNightTabItem">
+                        <Viewbox>
+                            <Grid Margin="10">
+                                <Path Fill="#EFDA45" 
+                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
+	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
+	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
+	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
+                                <Path Fill="#EDC148"
+                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
+	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
+	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
+	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="FewCloudsDayTabItem">
+                        <Grid Margin="-7.5,-10,-2.5,0">
+                            <Viewbox Margin="20,0,-20,0">
+                                <Grid Margin="40">
+                                    <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                                    <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                                </Grid>
+                            </Viewbox>
+                            <Viewbox>
+                                <Grid Margin="40">
+                                    <Grid>
+                                        <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                                        <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                                    </Grid>
+                                    <Path Fill="White"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="FewCloudsNightTabItem">
+                        <Grid Margin="-15,-7.5,5,2.5">
+                            <Viewbox Margin="30,-5,-30,5">
+                                <Grid Margin="150">
+                                    <Path Fill="#EFDA45" 
+                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
+	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
+	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
+	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
+                                    <Path Fill="#EDC148"
+                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
+	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
+	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
+	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
+                                </Grid>
+                            </Viewbox>
+                            <Viewbox>
+                                <Grid Margin="60">
+                                    <Path Fill="{StaticResource MenuBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsDayTabItem">
+                        <Viewbox>
+                            <Grid Margin="10,-60,10,80">
+                                <Path Fill="White"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsNightTabItem">
+                        <Viewbox>
+                            <Grid Margin="10,-60,10,80">
+                                <Path Fill="{StaticResource MenuBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="BrokenCloudsDayTabItem">
+                        <Viewbox>
+                            <Grid Margin="10,-60,10,80">
+                                <Path Fill="#FFD8EDFF"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                                <Path Fill="White"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="BrokenCloudsNightTabItem">
+                        <Viewbox>
+                            <Grid Margin="10,-60,10,80">
+                                <Path Fill="{StaticResource EnabledUserControlBorderColorBrush}"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                                <Path Fill="{StaticResource MenuBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="ShowerRainTabItem">
+                        <Grid>
+                            <Viewbox>
+                                <Grid Margin="10,-140,10,160">
+                                    <Path Fill="{StaticResource MenuBorderColorBrush}"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                                    <Path Fill="{StaticResource BorderBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                                </Grid>
+                            </Viewbox>
+                            <Viewbox>
+                                <Grid Margin="-10,10,10,0">
+                                    <Path Fill="#5E9FF6"
+                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="RainDayTabItem">
+                        <Grid Margin="-7.5,-10,-2.5,0">
+                            <Grid Margin="0,-20,0,20">
+                                <Viewbox Margin="20,0,-20,0">
+                                    <Grid Margin="60">
+                                        <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                                        <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                                    </Grid>
+                                </Viewbox>
+                                <Viewbox>
+                                    <Grid Margin="60">
+                                        <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Grid>
+                            <Viewbox>
+                                <Grid Margin="-2.5,32,2.5,0">
+                                    <Path Fill="#5E9FF6"
+                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="RainNightTabItem">
+                        <Grid Margin="-15,-7.5,5,2.5">
+                            <Grid Margin="0,-11,0,11">
+                                <Viewbox Margin="30,-5,-30,5">
+                                    <Grid Margin="180">
+                                        <Path Fill="#EFDA45" 
+                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
+	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
+	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
+	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
+                                        <Path Fill="#EDC148"
+                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
+	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
+	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
+	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
+                                    </Grid>
+                                </Viewbox>
+                                <Viewbox>
+                                    <Grid Margin="75">
+                                        <Path Fill="{StaticResource EnabledUserControlBorderColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Grid>
+                            <Viewbox>
+                                <Grid Margin="-2.5,42,2.5,-4.5">
+                                    <Path Fill="#5E9FF6"
+                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                    <Path Fill="#5E9FF6"
+                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="ThunderstormTabItem">
+                        <Grid>
+                            <Viewbox>
+                                <Grid Margin="10,-140,10,160">
+                                    <Path Fill="{StaticResource MenuContainerForegroundColorBrush}"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                                    <Path Fill="{StaticResource MenuBorderColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                                </Grid>
+                            </Viewbox>
+                            <Viewbox>
+                                <Grid Margin="0,530,560,30">
+                                    <Path Fill="#ECBA16"
+                                          Data="M397.241,176.552H276.303L388.414,0H247.172L114.759,264.828h104.166L114.759,512L397.241,176.552z"/>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="SnowTabItem">
+                        <Viewbox>
+                            <Grid>
+                                <Path Fill="White"
+                                          Data="m35 33v-2.382l2.553 1.276.895-1.789-2.459-1.229 1.566-1.044-1.109-1.664-2.517 1.678-1.851-.926 3.438-2.063-1.029-1.715-4.529 2.717-1.879-.94 3.438-2.063c.298-.179.483-.505.483-.856s-.185-.677-.485-.857l-3.438-2.063 1.879-.94 4.529 2.717 1.029-1.715-3.438-2.063 1.851-.926 2.517 1.678 1.109-1.664-1.566-1.044 2.459-1.229-.895-1.789-2.551 1.277v-2.382h-2v3.382l-2 1v-4.382h-2v5.382l-2 1v-5.382c0-.369-.203-.708-.528-.882-.323-.174-.721-.154-1.026.05l-4.446 2.964v-2.663l5.641-4.701-1.281-1.536-4.36 3.633v-2.451l2.707-2.707-1.414-1.414-1.293 1.293v-1.586h-2v1.586l-1.293-1.293-1.414 1.414 2.707 2.707v2.451l-4.359-3.633-1.281 1.536 5.64 4.701v2.663l-4.445-2.964c-.307-.205-.702-.224-1.026-.05-.326.174-.529.513-.529.882v5.382l-2-1v-5.382h-2v4.382l-2-1v-3.382h-2v2.382l-2.553-1.276-.895 1.789 2.459 1.229-1.566 1.044 1.109 1.664 2.517-1.678 1.851.926-3.438 2.063 1.029 1.715 4.529-2.717 1.879.94-3.438 2.063c-.298.179-.483.505-.483.856s.185.677.485.857l3.438 2.063-1.879.94-4.529-2.717-1.029 1.715 3.438 2.063-1.851.926-2.517-1.678-1.109 1.664 1.566 1.044-2.459 1.229.895 1.789 2.551-1.277v2.382h2v-3.382l2-1v4.382h2v-5.382l2-1v5.382c0 .369.203.708.528.882.324.173.72.154 1.026-.05l4.446-2.964v2.663l-5.641 4.701 1.281 1.536 4.36-3.633v2.451l-2.707 2.707 1.414 1.414 1.293-1.293v1.586h2v-1.586l1.293 1.293 1.414-1.414-2.707-2.707v-2.451l4.359 3.633 1.281-1.536-5.64-4.701v-2.663l4.445 2.964c.167.112.361.168.555.168.162 0 .324-.039.472-.118.325-.174.528-.513.528-.882v-5.382l2 1v5.382h2v-4.382l2 1v3.382zm-5.943-11-3.1 1.86-3.721-1.86 3.72-1.86zm-4.057-8.131v4.513l-4 2v-3.847zm-10 0 4 2.667v3.847l-4-2zm-4.057 8.131 3.1-1.86 3.72 1.86-3.72 1.86zm4.057 8.131v-4.513l4-2v3.847zm10 0-4-2.667v-3.847l4 2z"/>
+                                <Path Fill="White"
+                                          Data="m61.555 49.832-1.109-1.664-2.81 1.874-2.413-1.034 2.226-1.113c.337-.17.551-.516.551-.895s-.214-.725-.553-.895l-2.226-1.113 2.413-1.034 2.81 1.874 1.109-1.664-1.725-1.15 2.564-1.099-.787-1.838-2.605 1.117v-2.198h-2v3.055l-3 1.286v-3.341c0-.332-.165-.642-.439-.828-.275-.187-.626-.224-.932-.101l-3.629 1.452v-2.905l3.447-1.724-.895-1.789-2.552 1.277v-3.382h-2v3.382l-2.553-1.276-.895 1.789 3.448 1.723v2.905l-3.629-1.452c-.305-.122-.655-.085-.932.101-.274.186-.439.496-.439.828v3.341l-3-1.286v-3.055h-2v2.198l-2.606-1.117-.787 1.838 2.564 1.099-1.725 1.15 1.109 1.664 2.81-1.874 2.413 1.034-2.226 1.113c-.338.17-.552.516-.552.895s.214.725.553.895l2.226 1.113-2.413 1.034-2.81-1.874-1.109 1.664 1.725 1.15-2.564 1.099.787 1.838 2.605-1.117v2.198h2v-3.055l3-1.286v3.341c0 .332.165.642.439.828.168.114.364.172.561.172.126 0 .252-.023.371-.071l3.629-1.452v2.905l-3.447 1.724.895 1.789 2.552-1.277v3.382h2v-3.382l2.553 1.276.895-1.789-3.448-1.723v-2.905l3.629 1.452c.119.048.245.071.371.071.197 0 .393-.058.561-.172.274-.186.439-.496.439-.828v-3.341l3 1.286v3.055h2v-2.198l2.606 1.117.787-1.838-2.564-1.099zm-6.791-2.832-1.95.975-2.276-.975 2.275-.975zm-2.764-5.523v2.721l-3 1.286v-2.807zm-8 0 3 1.2v2.807l-3-1.286zm-2.764 5.523 1.95-.975 2.276.975-2.275.975zm2.764 5.523v-2.721l3-1.286v2.807zm8 0-3-1.2v-2.807l3 1.286z"/>
+                                <Path Fill="White"
+                                          Data="m46.343 16.243 1.414 1.414 3.243-3.243v4.586h2v-4.586l3.243 3.243 1.414-1.414-3.243-3.243h4.586v-2h-4.586l3.243-3.243-1.414-1.414-3.243 3.243v-4.586h-2v4.586l-3.243-3.243-1.414 1.414 3.243 3.243h-4.586v2h4.586z"/>
+                                <Path Fill="White"
+                                          Data="m17.657 47.757-1.414-1.414-3.243 3.243v-4.586h-2v4.586l-3.243-3.243-1.414 1.414 3.243 3.243h-4.586v2h4.586l-3.243 3.243 1.414 1.414 3.243-3.243v4.586h2v-4.586l3.243 3.243 1.414-1.414-3.243-3.243h4.586v-2h-4.586z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabItem Visibility="Collapsed" x:Name="MistTabItem">
+                        <Viewbox>
+                            <Grid Margin="0,-20,0,20">
+                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M144.797,47.095c0-4.142-3.358-7.5-7.5-7.5H7.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h129.797
+		                                    C141.439,54.595,144.797,51.237,144.797,47.095z"/>
+                                <Path Fill="{StaticResource PageBorderColorBrush}"
+                                      Data="M209.93,70.405H58.632c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5H209.93c4.142,0,7.5-3.358,7.5-7.5
+		                                    S214.072,70.405,209.93,70.405z"/>
+                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M174.53,116.214c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5H22.446c-4.142,0-7.5,3.358-7.5,7.5
+		                                    c0,4.142,3.358,7.5,7.5,7.5H174.53z"/>
+                                <Path Fill="{StaticResource PageBorderColorBrush}"
+                                      Data="M199.441,132.024H47.619c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5h151.822c4.142,0,7.5-3.358,7.5-7.5
+		                                    S203.583,132.024,199.441,132.024z"/>
+                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M125.759,162.835H25.068c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h100.69c4.142,0,7.5-3.358,7.5-7.5
+		                                    C133.259,166.193,129.901,162.835,125.759,162.835z"/>
+                            </Grid>
+                        </Viewbox>
+                    </TabItem>
+                    <TabControl.Style>
+                        <Style TargetType="TabControl">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                    <Setter Property="SelectedIndex" Value="0"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                    <Setter Property="SelectedIndex" Value="1"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                    <Setter Property="SelectedIndex" Value="2"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                    <Setter Property="SelectedIndex" Value="3"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                    <Setter Property="SelectedIndex" Value="4"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                    <Setter Property="SelectedIndex" Value="5"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                    <Setter Property="SelectedIndex" Value="6"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                    <Setter Property="SelectedIndex" Value="7"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                    <Setter Property="SelectedIndex" Value="8"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                    <Setter Property="SelectedIndex" Value="8"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                    <Setter Property="SelectedIndex" Value="9"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                    <Setter Property="SelectedIndex" Value="10"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                    <Setter Property="SelectedIndex" Value="11"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                    <Setter Property="SelectedIndex" Value="11"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                    <Setter Property="SelectedIndex" Value="12"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                    <Setter Property="SelectedIndex" Value="12"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                    <Setter Property="SelectedIndex" Value="13"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                    <Setter Property="SelectedIndex" Value="13"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabControl.Style>
+                </TabControl>
+                <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal"
+                            HorizontalAlignment="Left">
+                    <TextBlock Text="Odczuwalna  "
+                               FontSize="16" VerticalAlignment="Center" 
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                    <TextBlock Text="{Binding FeelTemp}"
+                               FontSize="16" x:Name ="TempFeelTextBlock" 
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                    <TextBlock Text="°" Margin="0,2,0,0" FontSize="16"
+                               VerticalAlignment="Top" 
+                               Foreground="{StaticResource UpdateInfoColorBrush}"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                </StackPanel>
+                <TextBlock Text="{Binding Description}" Grid.Row="2"
+                           FontSize="20" HorizontalAlignment="Left"
+                           Foreground="White"/>
+            </Grid>
+            <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="0,0,0,70">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
+                           TextTrimming="CharacterEllipsis" MaxWidth="240"
+                           FontSize="32" x:Name ="CityTextBlock" 
+                           VerticalAlignment="Center" Foreground="White"
+                           SizeChanged="CityTextBlock_SizeChanged"
+                           FontFamily="/Fonts/RobotoCondensed-Regular.ttf #Roboto Light">
+                        <Run Text="{Binding CityName, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding Country, Mode=OneWay}"/>
+                </TextBlock>
+                <WrapPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"
+                           x:Name="ForecastDataWrapPanel">
+                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="Ciśninie atmosferyczne" Margin="10,0,10,6">
+                        <Viewbox Width="18" Margin="0,0,6,0">
+                            <Grid>
+                                <Path Fill="Transparent" 
+                                      Data="M 295.5 51.761719 C 160.886719 51.761719 51.757812 160.886719 51.757812 295.5 C 51.757812 430.113281 160.886719 539.242188 295.5 539.242188 C 430.113281 539.242188 539.238281 430.113281 539.238281 295.5 C 538.984375 160.988281 430.011719 52.015625 295.5 51.761719 Z M 295.5 51.761719 "/>
+                                <Path Fill="White"
+                                      Data="M 315.511719 330.179688 C 299.28125 345.171875 271.902344 334.679688 260.820312 315.511719 C 249.738281 296.347656 254.300781 267.402344 275.488281 260.820312 L 447.976562 207.496094 Z M 315.511719 330.179688 "/>
+                                <Path Fill="White"
+                                      Data="M 295.5 0 C 132.300781 0 0 132.300781 0 295.5 C 0 458.699219 132.300781 591 295.5 591 C 458.699219 591 591 458.699219 591 295.5 C 590.714844 132.417969 458.582031 0.285156 295.5 0 Z M 295.5 539.175781 C 164.835938 538.90625 57.527344 435.832031 52.019531 305.277344 L 78.097656 305.277344 C 83.492188 305.277344 87.875 300.898438 87.875 295.5 C 87.875 290.101562 83.496094 285.722656 78.097656 285.722656 L 52.019531 285.722656 C 53.441406 249.585938 62.957031 214.234375 79.855469 182.265625 L 102.671875 195.304688 C 107.351562 198.003906 113.335938 196.398438 116.035156 191.71875 C 118.734375 187.039062 117.132812 181.054688 112.449219 178.355469 L 89.765625 165.316406 C 109.046875 134.902344 134.769531 109.085938 165.125 89.699219 L 178.160156 112.382812 C 180.859375 117.0625 186.84375 118.667969 191.523438 115.96875 C 196.207031 113.269531 197.808594 107.285156 195.109375 102.605469 L 182.070312 79.921875 C 214.09375 62.972656 249.515625 53.433594 285.722656 52.019531 L 285.722656 78.097656 C 285.539062 83.492188 289.769531 88.015625 295.167969 88.195312 C 295.277344 88.199219 295.386719 88.199219 295.5 88.199219 C 300.894531 88.199219 305.277344 83.820312 305.277344 78.421875 L 305.277344 52.347656 C 341.410156 53.765625 376.761719 63.285156 408.730469 80.183594 L 395.695312 103 C 392.996094 107.679688 394.597656 113.664062 399.277344 116.363281 C 403.960938 119.0625 409.945312 117.457031 412.644531 112.777344 L 425.679688 90.089844 C 456.066406 109.277344 481.875 134.890625 501.300781 165.125 L 478.613281 178.160156 C 473.933594 180.859375 472.328125 186.84375 475.027344 191.523438 C 477.726562 196.207031 483.710938 197.808594 488.390625 195.109375 L 511.078125 182.074219 C 527.976562 214.039062 537.492188 249.394531 538.914062 285.527344 L 512.839844 285.527344 C 507.441406 285.527344 503.058594 289.90625 503.058594 295.304688 C 503.058594 300.703125 507.441406 305.085938 512.839844 305.085938 L 538.914062 305.085938 C 533.542969 435.707031 426.234375 538.933594 295.5 539.238281 C 295.5 539.238281 295.5 539.175781 295.5 539.175781 Z M 295.5 539.175781 "/>
+                                <Path Fill="White"
+                                      Data="M 316.359375 295.5 C 316.359375 307.019531 307.019531 316.359375 295.5 316.359375 C 283.980469 316.359375 274.640625 307.019531 274.640625 295.5 C 274.640625 283.980469 283.980469 274.640625 295.5 274.640625 C 307.019531 274.640625 316.359375 283.980469 316.359375 295.5 Z M 316.359375 295.5 "/>
+                            </Grid>
+                        </Viewbox>
+                        <TextBlock Text="{Binding Pressure}" 
+                                   FontSize="16" x:Name ="PressureTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <TextBlock Text="hPa" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                    </StackPanel>
+                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="Wilgotność" Margin="10,0,10,6">
+                        <Viewbox Width="16" Margin="0,1,6,0">
+                            <Grid>
+                                <Path Fill="White" 
+                                      Data="m180 314.768c-33.084 0-60 26.916-60 60 3.296 79.598 116.716 79.575 120 0 0-33.084-26.916-60-60-60zm0 90c-16.542 0-30-13.458-30-30 1.648-39.799 58.358-39.788 60 0 0 16.542-13.458 30-30 30z"/>
+                                <Path Fill="White"
+                                      Data="m240 253.808v-194.04c-3.305-79.618-116.724-79.556-120 0v194.04c-125.832 63.654-83.296 253.91 60.021 255.96 142.888-1.63 186.161-191.96 59.979-255.96zm-61.511 225.949c-113.805-3.603-143.367-158.311-37.86-202.354l9.371-3.793v-213.842c1.653-39.809 58.362-39.778 60 0v213.842l9.371 3.793c106.871 44.884 74.943 202.462-40.882 202.354z"/>
+                                <Path Fill="White"
+                                      Data="m45 209.768h45v30h-45z"/>
+                                <Path Fill="White"
+                                      Data="m15 149.768h75v30h-75z"/>
+                                <Path Fill="White"
+                                      Data="m45 89.768h45v30h-45z"/>
+                                <Path Fill="White"
+                                      Data="m15 29.768h75v30h-75z"/>
+                                <Path Fill="White"
+                                      Data="m450 194.768v-150c-2.479-59.713-87.544-59.667-90 0v150c-59.713 2.479-59.667 87.544 0 90v180c2.479 59.713 87.544 59.667 90 0v-180c59.713-2.479 59.667-87.544 0-90zm-60-150c.826-19.904 29.181-19.889 30 0v150h-30zm30 420c-.826 19.904-29.181 19.889-30 0v-180h30zm30-210h-90c-19.904-.826-19.889-29.181 0-30h90c19.904.826 19.889 29.181 0 30z"/>
+                            </Grid>
+                        </Viewbox>
+                        <TextBlock Text="{Binding Humidity}" 
+                                   FontSize="16" x:Name ="HumidityTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <TextBlock Text="%" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                    </StackPanel>
+                    <Grid VerticalAlignment="Top" ToolTip="Prędkość i kierunek wiatru" Margin="10,0,10,6">
+                        <Viewbox Width="18" Height="18" HorizontalAlignment="Left" Margin="0,0,0,0">
+                            <Grid Width="700" Height="700" Margin="-110">
+                                <Grid Width="490" Height="490">
+                                    <Path Fill="White" 
+                                      Data="M260.884,10.5c-2.6-6.4-8.9-10.5-15.8-10.5s-13.2,4.2-15.8,10.5l-190.2,455.8c-2.7,6.4-1.2,13.7,3.6,18.7
+				                            c4.9,4.9,12.2,6.4,18.6,3.9l183.8-74.2l183.7,74.1c2.1,0.8,4.3,1.2,6.4,1.2c4.5,0,8.9-1.8,12.2-5.1c4.9-4.9,6.3-12.3,3.6-18.7
+				                            L260.884,10.5z M251.484,380.3c-2.1-0.8-4.2-1.2-6.4-1.2s-4.4,0.4-6.4,1.2l-152.1,61.3l158.5-379.9l158.5,380L251.484,380.3z"/>
+                                    <Grid.LayoutTransform>
+                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
+                                    </Grid.LayoutTransform>
+                                </Grid>
+                            </Grid>
+                        </Viewbox>
+                        <Grid Margin="24,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
+                                       FontSize="16" x:Name ="WindSpeedTextBlock" 
+                                       VerticalAlignment="Top"
+                                       Foreground="White"/>
+                            <TextBlock Text="km/h" FontSize="16"
+                                       Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       Foreground="White"/>
+                        </Grid>
+                    </Grid>
+                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="Wielkość opadów śniegu w ciągu ostatniej godziny" Margin="10,0,10,6">
+                        <Viewbox Width="18" Margin="0,0,6,0">
+                            <Grid>
+                                <Path Fill="White" 
+                                      Data="M378.4,225.6L304,251.2L274,234v-27.6v-27.2l30-17.2l74.4,25.6c5.2,2,11.2-1.2,12.8-6.4c2-5.2-1.2-11.2-6.4-12.8
+			                                l-57.6-19.6l54-31.2c4.8-2.8,6.4-9.2,3.6-14c-2.8-4.8-9.2-6.4-14-3.6l-54,31.2l11.6-59.6c1.2-5.6-2.4-10.8-8-12
+			                                c-5.6-1.2-10.8,2.4-12,8l-15.2,77.2l-30,17.2l-22.8-13.2l-0.4-0.4l-23.2-13.6v-34.4L276,48.8c4.4-3.6,4.8-10,0.8-14.4
+			                                c-3.6-4.4-10-4.8-14.4-0.8l-45.6,40V10.4c0-5.6-4.4-10.4-10.4-10.4C200.8,0,196,4.4,196,10.4v62.4l-45.6-39.6
+			                                C146,29.6,139.6,30,136,34c-3.6,4.4-3.2,10.8,0.8,14.4L196,100v34.4L172.8,148l-23.2,13.6l-30-17.2l-15.2-77.2
+			                                c-1.2-5.6-6.4-9.2-12-8c-5.6,1.2-9.2,6.4-8,12L96,130.8L42,99.6c-4.8-2.8-11.2-1.2-14,3.6s-1.2,11.2,3.6,14l54,31.2L28,168
+			                                c-5.2,2-8.4,7.6-6.4,12.8s7.6,8.4,12.8,6.4l74.4-25.6l30,17.2v27.6v27.2h0.4l-30,17.2l-74.4-25.6c-5.2-2-11.2,1.2-12.8,6.4
+			                                c-2,5.2,1.2,11.2,6.4,12.8L86,264l-54,31.2c-4.8,2.8-6.4,9.2-3.6,14c2.8,4.8,9.2,6.4,14,3.6l54-31.2l-11.6,59.6
+			                                c-1.2,5.6,2.4,10.8,8,12c5.6,1.2,10.8-2.4,12-8L120,268l30-17.2l23.6,13.6l23.2,13.6v34.4L137.6,364c-4.4,3.6-4.8,10-0.8,14.4
+			                                c3.6,4.4,10,4.8,14.4,0.8l45.6-40v63.2c0,5.6,4.4,10.4,10.4,10.4c5.6,0,10.4-4.4,10.4-10.4V340l45.6,40c4.4,3.6,10.8,3.2,14.4-0.8
+			                                c3.6-4.4,3.2-10.8-0.8-14.4l-60-52v-34.4l23.2-13.6l23.2-13.6l30,17.2l15.2,77.2c1.2,5.6,6.4,9.2,12,8c5.6-1.2,9.2-6.4,8-12
+			                                L316.8,282l54,31.2c4.8,2.8,11.2,1.2,14-3.6c2.8-4.8,1.2-11.2-3.6-14l-54-31.2l57.6-19.6c5.2-2,8.4-7.6,6.4-12.8
+			                                C389.2,226.8,383.6,223.6,378.4,225.6z M252.4,206.4v27.2l-23.2,13.6l-22.8,13.2l-23.6-13.6l-23.2-13.6v-26.8v-27.2l23.2-13.6
+			                                L206,152l23.2,13.6l0.4,0.4l22.8,13.2V206.4z"/>
+                            </Grid>
+                        </Viewbox>
+                        <TextBlock Text="{Binding SnowFall}" 
+                                   FontSize="16" x:Name ="SnowFallTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <TextBlock Text="mm" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SnowFall}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="Wielkość opadów deszczu w ciągu ostatniej godziny" Margin="10,0,10,6">
+                        <Viewbox Width="18" Margin="0,0,6,0">
+                            <Grid>
+                                <Path Fill="White" 
+                                      Data="M349 738 c-17 -18 -53 -64 -81 -103 -155 -217 -175 -380 -60 -498 60
+                                            -62 105 -82 192 -82 85 0 122 15 183 74 122 115 108 278 -42 494 -68 97 -116
+                                            147 -141 147 -12 0 -35 -15 -51 -32z m136 -123 c106 -149 146 -259 124 -347
+                                            -22 -94 -114 -168 -209 -168 -95 0 -187 74 -209 168 -11 42 -10 61 4 114 18
+                                            74 77 181 149 272 l51 64 24 -21 c13 -12 42 -49 66 -82z"/>
+                            </Grid>
+                        </Viewbox>
+                        <TextBlock Text="{Binding RainFall}" 
+                                   FontSize="16" x:Name ="RainFallTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <TextBlock Text="mm" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RainFall}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                    </StackPanel>
+                </WrapPanel>
+                <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal">
+                    <Button Style="{StaticResource FunctionalButtonStyle}" Margin="0,0,6,0"
+                            Background="Transparent" ToolTip="Pokaż na mapie"
+                            Command="{Binding ShowMapCommand}">
+                        <Viewbox Margin="0" Width="12">
+                            <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
+                                  Data="m216.210938 0c-122.664063 0-222.460938 99.796875-222.460938 222.460938 0 154.175781 222.679688 417.539062 222.679688 417.539062s222.242187-270.945312 222.242187-417.539062c0-122.664063-99.792969-222.460938-222.460937-222.460938zm67.121093 287.597656c-18.507812 18.503906-42.8125 27.757813-67.121093 27.757813-24.304688 0-48.617188-9.253907-67.117188-27.757813-37.011719-37.007812-37.011719-97.226562 0-134.238281 17.921875-17.929687 41.761719-27.804687 67.117188-27.804687 25.355468 0 49.191406 9.878906 67.121093 27.804687 37.011719 37.011719 37.011719 97.230469 0 134.238281zm0 0"/>
+                        </Viewbox>
+                    </Button>
+                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                        <TextBlock Text="{Binding Latitude}" 
+                                   ToolTip="Szerokość geograficzna"
+                                   FontSize="16" x:Name ="LatitudeTextBlock" 
+                                   VerticalAlignment="Center"
+                                   Foreground="White"/>
+                        <TextBlock Text="  " Margin="0,2,0,0" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        <TextBlock Text="{Binding Longitude}" 
+                                   ToolTip="Długość geograficzna"
+                                   x:Name="LongitudeTextBlock"
+                                   FontSize="16" VerticalAlignment="Center" 
+                                   Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="2" FlowDirection="LeftToRight" Orientation="Horizontal">
+                    <TextBlock Text="Zaktualizowano o: "
+                               FontSize="13" VerticalAlignment="Center" 
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                    <TextBlock Text="{Binding UpdateTime}"
+                               FontSize="13" x:Name ="UpdateTimeTextBlock" 
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                </StackPanel>
+                <Grid Grid.Column="1" Background="{StaticResource UpdateInfoColorBrush}"
+                          Width="0.8" Grid.RowSpan="3" Margin="20,0,10,0" x:Name="SplitGrid"/>
+            </Grid>
+        </Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsReady}" Value="False">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+    </Grid>
+</Page>
