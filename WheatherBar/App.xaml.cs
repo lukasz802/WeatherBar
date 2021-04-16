@@ -11,7 +11,7 @@ namespace WeatherBar
     {
         #region Fields
 
-        private const string UniqueApiKey = "c5976f0996947c1488798209b0bc3f77";
+        private const string UniqueApiKey = "your_api_key";
 
         private static WeatherApi client;
 
