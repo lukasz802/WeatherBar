@@ -134,13 +134,16 @@
     <Compile Include="WebApi\Models\Enums\WeatherDataType.cs" />
     <Compile Include="WebApi\Models\Interfaces\IWeatherData.cs" />
     <Compile Include="WebApi\Models\Enums\Units.cs" />
-    <Compile Include="WebApi\Models\SharedStructs\Clouds.cs" />
-    <Compile Include="WebApi\Models\SharedStructs\Coord.cs" />
-    <Compile Include="WebApi\Models\SharedStructs\Rain.cs" />
-    <Compile Include="WebApi\Models\SharedStructs\Snow.cs" />
-    <Compile Include="WebApi\Models\SharedStructs\Weather.cs" />
-    <Compile Include="WebApi\Models\SharedStructs\Wind.cs" />
-    <Compile Include="WebApi\Models\WeatherForecastData.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\City.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\Coordinates.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\ForecastData.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\Internal.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\Main.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\Rain.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\Snow.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\WeatherData.cs" />
+    <Compile Include="WebApi\Models\TransferDataStructs\Wind.cs" />
+    <Compile Include="WebApi\Models\WeatherForecastTransferDataObject.cs" />
     <Compile Include="WebApi\WeatherApi.cs" />
     <Page Include="Controls\SearchTextBox.xaml">
       <SubType>Designer</SubType>
@@ -177,7 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WebApi\IWeatherApi.cs" />
-    <Compile Include="WebApi\Models\CurrentWeatherData.cs" />
+    <Compile Include="WebApi\Models\CurrentWeatherTransferDataObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
