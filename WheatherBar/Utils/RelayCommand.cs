@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace WeatherBar
+namespace WeatherBar.Utils
 {
     public class RelayCommand : ICommand
     {
         #region Fields
 
-        private readonly Action<object> _execute;
+        private readonly Action<object> executeAction;
 
-        private readonly Predicate<object> _canExecute;
+        private readonly Predicate<object> canExecuteFunc;
 
         #endregion
 
@@ -22,35 +22,40 @@ namespace WeatherBar
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
+            executeAction = execute ?? throw new ArgumentNullException(nameof(execute));
+            canExecuteFunc = canExecute;
         }
 
         #endregion
 
-        #region Methods
+        #region Public methods
 
-        [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute(parameter);
+            return canExecuteFunc == null ? true : canExecuteFunc(parameter);
         }
 
         public event EventHandler CanExecuteChanged
         {
             add
             {
-                if (_canExecute != null) { CommandManager.RequerySuggested += value; }
+                if (canExecuteFunc != null)
+                {
+                    CommandManager.RequerySuggested += value;
+                }
             }
             remove
             {
-                if (_canExecute != null) { CommandManager.RequerySuggested -= value; }
+                if (canExecuteFunc != null)
+                {
+                    CommandManager.RequerySuggested -= value;
+                }
             }
         }
 
         public void Execute(object parameter)
         {
-            _execute(parameter);
+            executeAction(parameter);
         }
 
         #endregion

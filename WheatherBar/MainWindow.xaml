@@ -52,50 +52,87 @@
             </Style.Triggers>
         </Style>
     </Window.Style>
-    <Window.Resources>
-        <Style x:Key="MenuBarControlButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="White"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border BorderThickness="0"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                Background="{TemplateBinding Background}"
-                                VerticalAlignment="Stretch" 
-                                HorizontalAlignment="Stretch"
-                                Name="Panel">
-                            <StackPanel Name="ContentStackPanel"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center">
-                                <ContentPresenter VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center"
-                                                  Content="{TemplateBinding Content}"/>
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{StaticResource UpdateInfoColorBrush}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
     <Grid>
+        <Frame Panel.ZIndex="2" Source="Pages/LoadingPage.xaml"
+               x:Name="LoadingFrame">
+            <Frame.Style>
+                <Style TargetType="Frame">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsReady}" Value="False"/>
+                                <Condition Binding="{Binding IsStarted}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="1" To="0" Duration="0:0:0.15"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.25" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Frame.Style>
+        </Frame>
         <Frame Panel.ZIndex="1" Source="Pages/ConnectionFailedPage.xaml"
                x:Name="ConnectionFailedFrame">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsReady}" Value="True">
+                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
                             <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Frame.Style>
+        </Frame>
+        <Frame Panel.ZIndex="1" Source="Pages/ForecastPage.xaml"
+               x:Name="ForecastFrame" Opacity="0">
+            <Frame.Style>
+                <Style TargetType="Frame">
+                    <Style.Triggers>
+                        <Trigger Property="Opacity" Value="0">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="0" To="1"
+                                                         Duration="0:0:0.1" BeginTime="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="1" To="0"
+                                                         Duration="0:0:0.1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -106,99 +143,103 @@
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsReady}" Value="True">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsConneted}" Value="True"/>
+                                <Condition Binding="{Binding IsReady}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </Frame.Style>
         </Frame>
-        <Grid Panel.ZIndex="1">
-            <Grid Height="30" VerticalAlignment="Top">
-                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Right">
-                    <Button x:Name="CloseButton"
+        <Grid Height="30" VerticalAlignment="Top"
+              Panel.ZIndex="2">
+            <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" HorizontalAlignment="Right">
+                <Button x:Name="CloseButton"
                         Click="MenuBarButton_Click"
                         Width="45" ToolTip="Zamknij">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource MenuBarControlButtonStyle}" TargetType="Button">
-                                <Setter Property="Margin" Value="0"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FFCE2E2E"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="#FFCE2E2E"
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource MenuBarControlButtonStyle}" TargetType="Button">
+                            <Setter Property="Margin" Value="0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#FFCE2E2E"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="#FFCE2E2E"
                                                              Opacity="0.8"/>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <Image Width="10" Height="10" Margin="0">
-                            <Image.Source>
-                                <DrawingImage>
-                                    <DrawingImage.Drawing>
-                                        <GeometryDrawing>
-                                            <GeometryDrawing.Pen>
-                                                <Pen Brush="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}"
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <Image Width="10" Height="10" Margin="0">
+                        <Image.Source>
+                            <DrawingImage>
+                                <DrawingImage.Drawing>
+                                    <GeometryDrawing>
+                                        <GeometryDrawing.Pen>
+                                            <Pen Brush="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}"
                                                  Thickness="0.35"/>
-                                            </GeometryDrawing.Pen>
-                                            <GeometryDrawing.Geometry>
-                                                <PathGeometry>
-                                                    <PathFigure StartPoint="0,0">
-                                                        <LineSegment Point="5,5"/>
-                                                    </PathFigure>
-                                                    <PathFigure StartPoint="5,0">
-                                                        <LineSegment Point="0,5"/>
-                                                    </PathFigure>
-                                                </PathGeometry>
-                                            </GeometryDrawing.Geometry>
-                                        </GeometryDrawing>
-                                    </DrawingImage.Drawing>
-                                </DrawingImage>
-                            </Image.Source>
-                        </Image>
-                    </Button>
-                    <Button x:Name="MinimizeButton"
+                                        </GeometryDrawing.Pen>
+                                        <GeometryDrawing.Geometry>
+                                            <PathGeometry>
+                                                <PathFigure StartPoint="0,0">
+                                                    <LineSegment Point="5,5"/>
+                                                </PathFigure>
+                                                <PathFigure StartPoint="5,0">
+                                                    <LineSegment Point="0,5"/>
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingImage.Drawing>
+                            </DrawingImage>
+                        </Image.Source>
+                    </Image>
+                </Button>
+                <Button x:Name="MinimizeButton"
                         Style="{StaticResource MenuBarControlButtonStyle}"
                         Click="MenuBarButton_Click"
                         Width="45" ToolTip="Minimalizuj">
-                        <Image Width="10" Height="10">
-                            <Image.Source>
-                                <DrawingImage>
-                                    <DrawingImage.Drawing>
-                                        <GeometryDrawing>
-                                            <GeometryDrawing.Pen>
-                                                <Pen Brush="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}"
+                    <Image Width="10" Height="10">
+                        <Image.Source>
+                            <DrawingImage>
+                                <DrawingImage.Drawing>
+                                    <GeometryDrawing>
+                                        <GeometryDrawing.Pen>
+                                            <Pen Brush="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}"
                                                  Thickness="0.35"/>
-                                            </GeometryDrawing.Pen>
-                                            <GeometryDrawing.Geometry>
-                                                <PathGeometry>
-                                                    <PathFigure StartPoint="0,0">
-                                                        <LineSegment Point="5,0"/>
-                                                    </PathFigure>
-                                                </PathGeometry>
-                                            </GeometryDrawing.Geometry>
-                                        </GeometryDrawing>
-                                    </DrawingImage.Drawing>
-                                </DrawingImage>
-                            </Image.Source>
-                        </Image>
-                    </Button>
-                </StackPanel>
-            </Grid>
-            <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Left"
-                    VerticalAlignment="Top">
-                <Button x:Name="OptionsButton" HorizontalAlignment="Left"
+                                        </GeometryDrawing.Pen>
+                                        <GeometryDrawing.Geometry>
+                                            <PathGeometry>
+                                                <PathFigure StartPoint="0,0">
+                                                    <LineSegment Point="5,0"/>
+                                                </PathFigure>
+                                            </PathGeometry>
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                </DrawingImage.Drawing>
+                            </DrawingImage>
+                        </Image.Source>
+                    </Image>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Left"
+                    VerticalAlignment="Top" Panel.ZIndex="1">
+            <Button x:Name="OptionsButton" HorizontalAlignment="Left"
                     WindowChrome.IsHitTestVisibleInChrome="True"
                     Style="{StaticResource MenuBarControlButtonStyle}"
                     Width="40" Height="40" ToolTip="Opcje">
-                    <Viewbox Width="19">
-                        <Grid>
-                            <Path Fill="White" 
+                <Viewbox Width="19">
+                    <Grid>
+                        <Path Fill="White" 
                                   Data="M344,144h-29.952c-2.512-8.2-5.8-16.12-9.792-23.664l21.16-21.16c4.528-4.528,7.024-10.56,7.024-16.984
 			                            c0-6.416-2.496-12.448-7.024-16.976l-22.64-22.64c-9.048-9.048-24.888-9.072-33.952,0l-21.16,21.16
 			                            c-7.536-3.992-15.464-7.272-23.664-9.792V24c0-13.232-10.768-24-24-24h-32c-13.232,0-24,10.768-24,24v29.952
@@ -223,52 +264,52 @@
 			                            c3.152,1.856,7.152,1.36,9.728-1.232l25.44-25.44c3.016-3.024,8.32-3.016,11.328,0l22.64,22.64
 			                            c1.504,1.504,2.336,3.52,2.336,5.664s-0.832,4.16-2.336,5.664l-25.44,25.44c-2.576,2.584-3.088,6.584-1.232,9.72
 			                            c5.688,9.632,10,20.048,12.832,30.976c0.904,3.528,4.088,6,7.736,6h36c4.416,0,8,3.592,8,8V200z"/>
-                            <Path Fill="White" 
+                        <Path Fill="White" 
                                   Data="M184,112c-39.696,0-72,32.304-72,72s32.304,72,72,72c39.704,0,72-32.304,72-72S223.704,112,184,112z M184,240
 			                            c-30.88,0-56-25.12-56-56s25.12-56,56-56c30.872,0,56,25.12,56,56S214.872,240,184,240z"/>
-                        </Grid>
-                    </Viewbox>
-                </Button>
-                <Button x:Name="RefreshButton" HorizontalAlignment="Left"
+                    </Grid>
+                </Viewbox>
+            </Button>
+            <Button x:Name="RefreshButton" HorizontalAlignment="Left"
                     Style="{StaticResource MenuBarControlButtonStyle}"
                     Command="{Binding RefreshCommand}"
                     CommandParameter="{Binding CityName}"
                     Width="40" Height="40" ToolTip="Odśwież">
-                    <Viewbox Width="16">
-                        <Grid>
-                            <Path Fill="White" 
+                <Viewbox Width="16">
+                    <Grid>
+                        <Path Fill="White" 
                                   Data="M436.866,436.871c48.312-48.311,74.921-112.546,74.921-180.871c0-141.039-114.744-255.785-255.783-255.786v49.507
 			                            c113.741,0.002,206.276,92.539,206.276,206.279c0,55.101-21.458,106.902-60.42,145.864l-7.571,7.571l-67.552-67.552l0.021,170.076
 			                            l170.096,0.041l-67.559-67.559L436.866,436.871z"/>
-                            <Path Fill="White" 
+                        <Path Fill="White" 
                                   Data="M49.724,256.001c0-55.101,21.458-106.902,60.42-145.864l7.571-7.571l67.552,67.552L185.245,0.041L15.148,0l67.559,67.559
 			                            l-7.571,7.57C26.824,123.439,0.215,187.674,0.215,255.999c0,141.039,114.744,255.785,255.783,255.786v-49.507
 			                            C142.258,462.278,49.724,369.742,49.724,256.001z"/>
-                        </Grid>
-                    </Viewbox>
-                </Button>
-            </StackPanel>
-            <Grid Margin="0,0,0,4" VerticalAlignment="Bottom">
-                <Button Command="{Binding OpenSiteCommand}"
+                    </Grid>
+                </Viewbox>
+            </Button>
+        </StackPanel>
+        <Grid Margin="0,0,0,4" VerticalAlignment="Bottom"
+              Panel.ZIndex="1">
+            <Button Command="{Binding OpenSiteCommand}"
                         ToolTip="Openweathermap.org" HorizontalAlignment="Center">
-                    <Button.Style>
-                        <Style BasedOn="{StaticResource MenuBarControlButtonStyle}" TargetType="Button">
-                            <Setter Property="Margin" Value="0"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Cursor" Value="Hand"/>
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Cursor" Value="Hand"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                    <Image Width="70" Source="Images/logo_white_cropped.png"/>
-                </Button>
-            </Grid>
+                <Button.Style>
+                    <Style BasedOn="{StaticResource MenuBarControlButtonStyle}" TargetType="Button">
+                        <Setter Property="Margin" Value="0"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Image Width="70" Source="Images/logo_white_cropped.png"/>
+            </Button>
         </Grid>
         <Image VerticalAlignment="Bottom" Source="{Binding BackgroundImage.Key}"
                Panel.ZIndex="-1" Opacity="0.75" x:Name="BackgroundImage">

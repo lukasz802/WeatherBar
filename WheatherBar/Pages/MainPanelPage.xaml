@@ -36,31 +36,518 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="ElementTypeComboBox" TargetType="ComboBox">
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid SnapsToDevicePixels="True">
+                            <ToggleButton Name="ToggleButton" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border Name="Border" BorderThickness="0"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            CornerRadius="2,0,0,2"
+                                                            Background="Transparent"
+                                                            VerticalAlignment="Stretch" 
+                                                            HorizontalAlignment="Stretch">
+                                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"
+                                                                    Margin="2,0,0,0">
+                                                            <Border Width="20" Height="20"
+                                                                    Margin="0,0,14,0"/>
+                                                            <Viewbox Width="8" Height="8" Margin="0,2,0,0">
+                                                                <Grid Width="652" Height="652" Margin="-100">
+                                                                    <Grid Width="452" Height="452" x:Name="ExpandArrow">
+                                                                        <Path Fill="{Binding ElementName=Border, Path=BorderBrush}"
+                                                                              Data="M225.923,354.706c-8.098,0-16.195-3.092-22.369-9.263L9.27,151.157c-12.359-12.359-12.359-32.397,0-44.751
+		                                                                            c12.354-12.354,32.388-12.354,44.748,0l171.905,171.915l171.906-171.909c12.359-12.354,32.391-12.354,44.744,0
+		                                                                            c12.365,12.354,12.365,32.392,0,44.751L248.292,345.449C242.115,351.621,234.018,354.706,225.923,354.706z"/>
+                                                                        <Grid.LayoutTransform>
+                                                                            <RotateTransform Angle="0" CenterX="0.5" CenterY="0.5"/>
+                                                                        </Grid.LayoutTransform>
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Viewbox>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                                                            <Setter Property="Cursor" Value="Hand"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow"  
+                                                                                         Storyboard.TargetProperty="(LayoutTransform).(RotateTransform.Angle)"   
+                                                                                         From="0" To="-180" Duration="0:0:0.2"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                            <Trigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow"  
+                                                                                         Storyboard.TargetProperty="(LayoutTransform).(RotateTransform.Angle)"   
+                                                                                         From="-180" To="0" Duration="0:0:0.1"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.ExitActions>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                            <Popup Name="Popup"
+                                   SnapsToDevicePixels="True"
+                                   Placement="Top"
+                                   VerticalOffset="0"
+                                   HorizontalOffset="0"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Name="DropDownBorder"
+                                            CornerRadius="5"
+                                            Background="White"
+                                            BorderThickness="0"/>
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Border" SnapsToDevicePixels="True"
+                                CornerRadius="5" Background="White">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              Margin="8,0,0,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF49d797"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ForecastButtonStyle" BasedOn="{StaticResource MenuBarControlButtonStyle}"
+               TargetType="Button">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="0"
+                                CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Stretch"
+                                Name="Panel">
+                            <StackPanel Name="ContentStackPanel"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                                <ContentPresenter VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource UpdateInfoColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Viewbox x:Key="CalendarWhiteViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="White" 
+                      Data="M426.667,51.2h-51.2V17.067C375.467,7.641,367.826,0,358.4,0s-17.067,7.641-17.067,17.067V51.2h-204.8V17.067
+			                C136.533,7.641,128.892,0,119.467,0S102.4,7.641,102.4,17.067V51.2H51.2C22.923,51.2,0,74.123,0,102.4v324.267
+			                c0,28.277,22.923,51.2,51.2,51.2h375.467c28.277,0,51.2-22.923,51.2-51.2V102.4C477.867,74.123,454.944,51.2,426.667,51.2z
+			                M443.733,426.667c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V204.8h409.6V426.667z
+			                M443.733,170.667h-409.6V102.4c0-9.426,7.641-17.067,17.067-17.067h51.2v34.133c0,9.426,7.641,17.067,17.067,17.067
+			                s17.067-7.641,17.067-17.067V85.333h204.8v34.133c0,9.426,7.641,17.067,17.067,17.067s17.067-7.641,17.067-17.067V85.333h51.2
+			                c9.426,0,17.067,7.641,17.067,17.067V170.667z"/>
+                <Path Fill="White"
+                      Data="M352.98,243.934c-6.614-6.388-17.099-6.388-23.712,0L204.8,368.401l-56.201-56.201c-6.78-6.548-17.584-6.36-24.132,0.419
+			                c-6.388,6.614-6.388,17.099,0,23.713l68.267,68.267c6.665,6.662,17.468,6.662,24.132,0l136.533-136.533
+			                C359.947,261.286,359.759,250.482,352.98,243.934z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="CalendarViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}" 
+                      Data="M426.667,51.2h-51.2V17.067C375.467,7.641,367.826,0,358.4,0s-17.067,7.641-17.067,17.067V51.2h-204.8V17.067
+			                C136.533,7.641,128.892,0,119.467,0S102.4,7.641,102.4,17.067V51.2H51.2C22.923,51.2,0,74.123,0,102.4v324.267
+			                c0,28.277,22.923,51.2,51.2,51.2h375.467c28.277,0,51.2-22.923,51.2-51.2V102.4C477.867,74.123,454.944,51.2,426.667,51.2z
+			                M443.733,426.667c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V204.8h409.6V426.667z
+			                M443.733,170.667h-409.6V102.4c0-9.426,7.641-17.067,17.067-17.067h51.2v34.133c0,9.426,7.641,17.067,17.067,17.067
+			                s17.067-7.641,17.067-17.067V85.333h204.8v34.133c0,9.426,7.641,17.067,17.067,17.067s17.067-7.641,17.067-17.067V85.333h51.2
+			                c9.426,0,17.067,7.641,17.067,17.067V170.667z"/>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}" 
+                      Data="M352.98,243.934c-6.614-6.388-17.099-6.388-23.712,0L204.8,368.401l-56.201-56.201c-6.78-6.548-17.584-6.36-24.132,0.419
+			                c-6.388,6.614-6.388,17.099,0,23.713l68.267,68.267c6.665,6.662,17.468,6.662,24.132,0l136.533-136.533
+			                C359.947,261.286,359.759,250.482,352.98,243.934z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ClockWhiteViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="White" 
+                      Data="M347.216,301.211l-71.387-53.54V138.609c0-10.966-8.864-19.83-19.83-19.83c-10.966,0-19.83,8.864-19.83,19.83v118.978
+			                c0,6.246,2.935,12.136,7.932,15.864l79.318,59.489c3.569,2.677,7.734,3.966,11.878,3.966c6.048,0,11.997-2.717,15.884-7.952
+			                C357.766,320.208,355.981,307.775,347.216,301.211z"/>
+                <Path Fill="White"
+                      Data="M256,0C114.833,0,0,114.833,0,256s114.833,256,256,256s256-114.833,256-256S397.167,0,256,0z M256,472.341
+			                c-119.275,0-216.341-97.066-216.341-216.341S136.725,39.659,256,39.659c119.295,0,216.341,97.066,216.341,216.341
+			                S375.275,472.341,256,472.341z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ClockViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}"
+                      Data="M347.216,301.211l-71.387-53.54V138.609c0-10.966-8.864-19.83-19.83-19.83c-10.966,0-19.83,8.864-19.83,19.83v118.978
+			                c0,6.246,2.935,12.136,7.932,15.864l79.318,59.489c3.569,2.677,7.734,3.966,11.878,3.966c6.048,0,11.997-2.717,15.884-7.952
+			                C357.766,320.208,355.981,307.775,347.216,301.211z"/>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}"
+                      Data="M256,0C114.833,0,0,114.833,0,256s114.833,256,256,256s256-114.833,256-256S397.167,0,256,0z M256,472.341
+			                c-119.275,0-216.341-97.066-216.341-216.341S136.725,39.659,256,39.659c119.295,0,216.341,97.066,216.341,216.341
+			                S375.275,472.341,256,472.341z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ClearSkyDayViewbox" x:Shared="False">
+            <Grid Margin="10">
+                <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ClearSkyNightViewbox" x:Shared="False">
+            <Grid Margin="10">
+                <Path Fill="#EFDA45" 
+                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
+	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
+	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
+	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
+                <Path Fill="#EDC148"
+                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
+	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
+	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
+	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="FewCloudsDayViewbox" x:Shared="False">
+            <Grid Margin="0,-35,0,35">
+                <Viewbox Margin="25,0,-25,0">
+                    <Grid Margin="50,30,10,30">
+                        <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                        <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                    </Grid>
+                </Viewbox>
+                <Viewbox>
+                    <Grid Margin="12">
+                        <Grid>
+                            <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                            <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                        </Grid>
+                        <Path Fill="White"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="FewCloudsNightViewbox" x:Shared="False">
+            <Grid>
+                <Viewbox Margin="180,-75,-180,75">
+                    <Grid Margin="138">
+                        <Path Fill="#EFDA45" 
+                                              Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
+	                                                C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
+	                                                c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
+	                                                C491.959,388.264,494.015,391.202,492.533,393.514z"/>
+                        <Path Fill="#EDC148"
+                                              Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
+	                                                C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
+	                                                C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
+	                                                C466.655,392.692,478.106,391.143,489.276,388.819z"/>
+                    </Grid>
+                </Viewbox>
+                <Viewbox Margin="-30,-40,125,40">
+                    <Grid Margin="4.5">
+                        <Path Fill="{StaticResource MenuBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ScatteredCloudsDayViewbox" x:Shared="False">
+            <Grid Margin="10,-60,10,80">
+                <Path Fill="White"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ScatteredCloudsNightViewbox" x:Shared="False">
+            <Grid Margin="10,-60,10,80">
+                <Path Fill="{StaticResource MenuBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="BrokenCloudsDayViewbox" x:Shared="False">
+            <Grid Margin="10,-60,10,80">
+                <Path Fill="#FFD8EDFF"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                <Path Fill="White"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="BrokenCloudsNightViewbox" x:Shared="False">
+            <Grid Margin="10,-60,10,80">
+                <Path Fill="{StaticResource EnabledUserControlBorderColorBrush}"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                <Path Fill="{StaticResource MenuBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ShowRainViewbox" x:Shared="False">
+            <Grid>
+                <Viewbox>
+                    <Grid Margin="10,-140,10,160">
+                        <Path Fill="{StaticResource MenuBorderColorBrush}"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                        <Path Fill="{StaticResource BorderBackgroundColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                    </Grid>
+                </Viewbox>
+                <Viewbox>
+                    <Grid Margin="-10,5,10,-7">
+                        <Path Fill="#5E9FF6"
+                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="RainDayViewbox" x:Shared="False">
+            <Grid>
+                <Viewbox Margin="40,-60,40,140">
+                    <Grid Margin="0,-35,0,35">
+                        <Viewbox Margin="25,0,-25,0">
+                            <Grid Margin="50,30,10,30">
+                                <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                                <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                            </Grid>
+                        </Viewbox>
+                        <Viewbox>
+                            <Grid Margin="12">
+                                <Grid>
+                                    <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
+                                    <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
+                                </Grid>
+                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+                </Viewbox>
+                <Viewbox Margin="-45,-65,-25,-5">
+                    <Grid Margin="-3.5,32,3.5,0">
+                        <Path Fill="#5E9FF6"
+                              Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                              Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                              Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                              Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                              Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="RainNightViewbox" x:Shared="False">
+            <Grid>
+                <Viewbox Margin="70,-120,70,130">
+                    <Grid>
+                        <Viewbox Margin="180,-100,-180,100">
+                            <Grid Margin="138">
+                                <Path Fill="#EFDA45" 
+                                              Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
+	                                                C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
+	                                                c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
+	                                                C491.959,388.264,494.015,391.202,492.533,393.514z"/>
+                                <Path Fill="#EDC148"
+                                              Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
+	                                                C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
+	                                                C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
+	                                                C466.655,392.692,478.106,391.143,489.276,388.819z"/>
+                            </Grid>
+                        </Viewbox>
+                        <Viewbox Margin="-30,-40,125,40">
+                            <Grid Margin="4.5">
+                                <Path Fill="{StaticResource EnabledUserControlBorderColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+                </Viewbox>
+                <Viewbox>
+                    <Grid Margin="-12.5,25,12.5,-6">
+                        <Path Fill="#5E9FF6"
+                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                        <Path Fill="#5E9FF6"
+                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ThunderstormViewbox" x:Shared="False">
+            <Grid Margin="-60">
+                <Viewbox>
+                    <Grid Margin="10,-140,10,160">
+                        <Path Fill="{StaticResource MenuContainerForegroundColorBrush}"
+                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
+                        <Path Fill="{StaticResource MenuBorderColorBrush}"
+                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
+	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
+	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
+                    </Grid>
+                </Viewbox>
+                <Viewbox>
+                    <Grid Margin="0,530,560,30">
+                        <Path Fill="#ECBA16"
+                                          Data="M397.241,176.552H276.303L388.414,0H247.172L114.759,264.828h104.166L114.759,512L397.241,176.552z"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="SnowViewbox" x:Shared="False">
+            <Grid>
+                <Path Fill="White"
+                          Data="m35 33v-2.382l2.553 1.276.895-1.789-2.459-1.229 1.566-1.044-1.109-1.664-2.517 1.678-1.851-.926 3.438-2.063-1.029-1.715-4.529 2.717-1.879-.94 3.438-2.063c.298-.179.483-.505.483-.856s-.185-.677-.485-.857l-3.438-2.063 1.879-.94 4.529 2.717 1.029-1.715-3.438-2.063 1.851-.926 2.517 1.678 1.109-1.664-1.566-1.044 2.459-1.229-.895-1.789-2.551 1.277v-2.382h-2v3.382l-2 1v-4.382h-2v5.382l-2 1v-5.382c0-.369-.203-.708-.528-.882-.323-.174-.721-.154-1.026.05l-4.446 2.964v-2.663l5.641-4.701-1.281-1.536-4.36 3.633v-2.451l2.707-2.707-1.414-1.414-1.293 1.293v-1.586h-2v1.586l-1.293-1.293-1.414 1.414 2.707 2.707v2.451l-4.359-3.633-1.281 1.536 5.64 4.701v2.663l-4.445-2.964c-.307-.205-.702-.224-1.026-.05-.326.174-.529.513-.529.882v5.382l-2-1v-5.382h-2v4.382l-2-1v-3.382h-2v2.382l-2.553-1.276-.895 1.789 2.459 1.229-1.566 1.044 1.109 1.664 2.517-1.678 1.851.926-3.438 2.063 1.029 1.715 4.529-2.717 1.879.94-3.438 2.063c-.298.179-.483.505-.483.856s.185.677.485.857l3.438 2.063-1.879.94-4.529-2.717-1.029 1.715 3.438 2.063-1.851.926-2.517-1.678-1.109 1.664 1.566 1.044-2.459 1.229.895 1.789 2.551-1.277v2.382h2v-3.382l2-1v4.382h2v-5.382l2-1v5.382c0 .369.203.708.528.882.324.173.72.154 1.026-.05l4.446-2.964v2.663l-5.641 4.701 1.281 1.536 4.36-3.633v2.451l-2.707 2.707 1.414 1.414 1.293-1.293v1.586h2v-1.586l1.293 1.293 1.414-1.414-2.707-2.707v-2.451l4.359 3.633 1.281-1.536-5.64-4.701v-2.663l4.445 2.964c.167.112.361.168.555.168.162 0 .324-.039.472-.118.325-.174.528-.513.528-.882v-5.382l2 1v5.382h2v-4.382l2 1v3.382zm-5.943-11-3.1 1.86-3.721-1.86 3.72-1.86zm-4.057-8.131v4.513l-4 2v-3.847zm-10 0 4 2.667v3.847l-4-2zm-4.057 8.131 3.1-1.86 3.72 1.86-3.72 1.86zm4.057 8.131v-4.513l4-2v3.847zm10 0-4-2.667v-3.847l4 2z"/>
+                <Path Fill="White"
+                          Data="m61.555 49.832-1.109-1.664-2.81 1.874-2.413-1.034 2.226-1.113c.337-.17.551-.516.551-.895s-.214-.725-.553-.895l-2.226-1.113 2.413-1.034 2.81 1.874 1.109-1.664-1.725-1.15 2.564-1.099-.787-1.838-2.605 1.117v-2.198h-2v3.055l-3 1.286v-3.341c0-.332-.165-.642-.439-.828-.275-.187-.626-.224-.932-.101l-3.629 1.452v-2.905l3.447-1.724-.895-1.789-2.552 1.277v-3.382h-2v3.382l-2.553-1.276-.895 1.789 3.448 1.723v2.905l-3.629-1.452c-.305-.122-.655-.085-.932.101-.274.186-.439.496-.439.828v3.341l-3-1.286v-3.055h-2v2.198l-2.606-1.117-.787 1.838 2.564 1.099-1.725 1.15 1.109 1.664 2.81-1.874 2.413 1.034-2.226 1.113c-.338.17-.552.516-.552.895s.214.725.553.895l2.226 1.113-2.413 1.034-2.81-1.874-1.109 1.664 1.725 1.15-2.564 1.099.787 1.838 2.605-1.117v2.198h2v-3.055l3-1.286v3.341c0 .332.165.642.439.828.168.114.364.172.561.172.126 0 .252-.023.371-.071l3.629-1.452v2.905l-3.447 1.724.895 1.789 2.552-1.277v3.382h2v-3.382l2.553 1.276.895-1.789-3.448-1.723v-2.905l3.629 1.452c.119.048.245.071.371.071.197 0 .393-.058.561-.172.274-.186.439-.496.439-.828v-3.341l3 1.286v3.055h2v-2.198l2.606 1.117.787-1.838-2.564-1.099zm-6.791-2.832-1.95.975-2.276-.975 2.275-.975zm-2.764-5.523v2.721l-3 1.286v-2.807zm-8 0 3 1.2v2.807l-3-1.286zm-2.764 5.523 1.95-.975 2.276.975-2.275.975zm2.764 5.523v-2.721l3-1.286v2.807zm8 0-3-1.2v-2.807l3 1.286z"/>
+                <Path Fill="White"
+                          Data="m46.343 16.243 1.414 1.414 3.243-3.243v4.586h2v-4.586l3.243 3.243 1.414-1.414-3.243-3.243h4.586v-2h-4.586l3.243-3.243-1.414-1.414-3.243 3.243v-4.586h-2v4.586l-3.243-3.243-1.414 1.414 3.243 3.243h-4.586v2h4.586z"/>
+                <Path Fill="White"
+                          Data="m17.657 47.757-1.414-1.414-3.243 3.243v-4.586h-2v4.586l-3.243-3.243-1.414 1.414 3.243 3.243h-4.586v2h4.586l-3.243 3.243 1.414 1.414 3.243-3.243v4.586h2v-4.586l3.243 3.243 1.414-1.414-3.243-3.243h4.586v-2h-4.586z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="MistViewbox" x:Shared="False">
+            <Grid Margin="0,-20,0,20">
+                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M144.797,47.095c0-4.142-3.358-7.5-7.5-7.5H7.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h129.797
+		                                    C141.439,54.595,144.797,51.237,144.797,47.095z"/>
+                <Path Fill="{StaticResource PageBorderColorBrush}"
+                                      Data="M209.93,70.405H58.632c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5H209.93c4.142,0,7.5-3.358,7.5-7.5
+		                                    S214.072,70.405,209.93,70.405z"/>
+                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M174.53,116.214c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5H22.446c-4.142,0-7.5,3.358-7.5,7.5
+		                                    c0,4.142,3.358,7.5,7.5,7.5H174.53z"/>
+                <Path Fill="{StaticResource PageBorderColorBrush}"
+                                      Data="M199.441,132.024H47.619c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5h151.822c4.142,0,7.5-3.358,7.5-7.5
+		                                    S203.583,132.024,199.441,132.024z"/>
+                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
+                                      Data="M125.759,162.835H25.068c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h100.69c4.142,0,7.5-3.358,7.5-7.5
+		                                    C133.259,166.193,129.901,162.835,125.759,162.835z"/>
+            </Grid>
+        </Viewbox>
     </Page.Resources>
-    <Grid Margin="0,0,0,34">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <c:SearchTextBox x:Name="SearchUserControl" Width="220"
+    <Grid>
+        <Grid Margin="0,0,0,34">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Panel.ZIndex="1">
+                <c:SearchTextBox x:Name="SearchUserControl" Width="220"
                              PreviewKeyDown="SearchUserControl_KeyDown"
                              SearchClick="SearchUserControl_SearchClick"
                              Command="{Binding SearchCommand}"
                              CommandParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"/>
-        </Grid>
-        <Grid Grid.Row="1" Margin="12,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" HorizontalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+            </Grid>
+            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
                 <StackPanel Grid.Row="0" FlowDirection="RightToLeft" Orientation="Horizontal"
                             HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,24,0">
                     <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal"
@@ -94,490 +581,271 @@
                         </Viewbox>
                     </StackPanel>
                 </StackPanel>
-                <StackPanel Grid.Row="0" FlowDirection="LeftToRight" Orientation="Horizontal"
-                            HorizontalAlignment="Left" Margin="0,35,0,-5">
-                    <TextBlock Text="{Binding AvgTemp}"
-                               FontSize="96" x:Name ="TempAvgTextBlock" 
-                               VerticalAlignment="Center" Foreground="White"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
-                    <TextBlock Text="°" Margin="0,12,0,0" FontSize="48"
-                               VerticalAlignment="Top" Foreground="White"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
-                    <TextBlock Text="C" Margin="0,12,0,0" FontSize="48"
-                               VerticalAlignment="Top" Foreground="White"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
-                </StackPanel>
-                <TabControl Grid.Row="0" Margin="0,65,80,0" Width="100" Height="100"
-                            HorizontalAlignment="Right" VerticalAlignment="Top"
-                            Grid.RowSpan="3" BorderThickness="0"
-                            x:Name="WeahterIconTabControl" Background="Transparent">
-                    <TabItem Visibility="Collapsed" x:Name="ClearSkyDayTabItem">
-                        <Viewbox x:Name="ClearSkyDayViewbox">
-                            <Grid Margin="10">
-                                <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
-                                <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="ClearSkyNightTabItem">
-                        <Viewbox>
-                            <Grid Margin="10">
-                                <Path Fill="#EFDA45" 
-                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
-	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
-	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
-	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
-                                <Path Fill="#EDC148"
-                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
-	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
-	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
-	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="FewCloudsDayTabItem">
-                        <Grid Margin="-7.5,-10,-2.5,0">
-                            <Viewbox Margin="20,0,-20,0">
-                                <Grid Margin="40">
-                                    <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
-                                    <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
-                                </Grid>
-                            </Viewbox>
-                            <Viewbox>
-                                <Grid Margin="40">
-                                    <Grid>
-                                        <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
-                                        <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
-                                    </Grid>
-                                    <Path Fill="White"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                                </Grid>
-                            </Viewbox>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="FewCloudsNightTabItem">
-                        <Grid Margin="-15,-7.5,5,2.5">
-                            <Viewbox Margin="30,-5,-30,5">
-                                <Grid Margin="150">
-                                    <Path Fill="#EFDA45" 
-                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
-	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
-	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
-	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
-                                    <Path Fill="#EDC148"
-                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
-	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
-	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
-	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
-                                </Grid>
-                            </Viewbox>
-                            <Viewbox>
-                                <Grid Margin="60">
-                                    <Path Fill="{StaticResource MenuBackgroundColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                                </Grid>
-                            </Viewbox>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsDayTabItem">
-                        <Viewbox>
-                            <Grid Margin="10,-60,10,80">
-                                <Path Fill="White"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsNightTabItem">
-                        <Viewbox>
-                            <Grid Margin="10,-60,10,80">
-                                <Path Fill="{StaticResource MenuBackgroundColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="BrokenCloudsDayTabItem">
-                        <Viewbox>
-                            <Grid Margin="10,-60,10,80">
-                                <Path Fill="#FFD8EDFF"
-                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
-                                <Path Fill="White"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="BrokenCloudsNightTabItem">
-                        <Viewbox>
-                            <Grid Margin="10,-60,10,80">
-                                <Path Fill="{StaticResource EnabledUserControlBorderColorBrush}"
-                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
-                                <Path Fill="{StaticResource MenuBackgroundColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="ShowerRainTabItem">
-                        <Grid>
-                            <Viewbox>
-                                <Grid Margin="10,-140,10,160">
-                                    <Path Fill="{StaticResource MenuBorderColorBrush}"
-                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
-                                    <Path Fill="{StaticResource BorderBackgroundColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                                </Grid>
-                            </Viewbox>
-                            <Viewbox>
-                                <Grid Margin="-10,10,10,0">
-                                    <Path Fill="#5E9FF6"
-                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                </Grid>
-                            </Viewbox>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="RainDayTabItem">
-                        <Grid Margin="-7.5,-10,-2.5,0">
-                            <Grid Margin="0,-20,0,20">
-                                <Viewbox Margin="20,0,-20,0">
-                                    <Grid Margin="60">
-                                        <Ellipse Width="111.7" Height="111.7" Fill="#FFFCDD66"/>
-                                        <Ellipse Width="92.3" Height="92.3" Fill="#FFFBD009"/>
-                                    </Grid>
-                                </Viewbox>
-                                <Viewbox>
-                                    <Grid Margin="60">
-                                        <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                                    </Grid>
-                                </Viewbox>
-                            </Grid>
-                            <Viewbox>
-                                <Grid Margin="-2.5,32,2.5,0">
-                                    <Path Fill="#5E9FF6"
-                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                </Grid>
-                            </Viewbox>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="RainNightTabItem">
-                        <Grid Margin="-15,-7.5,5,2.5">
-                            <Grid Margin="0,-11,0,11">
-                                <Viewbox Margin="30,-5,-30,5">
-                                    <Grid Margin="180">
-                                        <Path Fill="#EFDA45" 
-                            Data="M492.533,393.514c-45.591,71.117-125.26,118.288-215.959,118.484
-	                              C136.061,512.303,20.686,398.644,18.987,258.141C17.389,125.938,115.61,16.341,243.014,0.027c2.723-0.349,4.497,2.766,2.842,4.956
-	                              c-30.719,40.661-48.931,91.286-48.931,146.177c0,134.063,108.676,242.738,242.738,242.738c17.004,0,33.592-1.744,49.607-5.075
-	                              C491.959,388.264,494.015,391.202,492.533,393.514z"/>
-                                        <Path Fill="#EDC148"
-                            Data="M489.276,388.819c2.684-0.558,4.74,2.373,3.261,4.682C446.851,464.773,366.946,512,276.009,512
-	                              C134.044,512,18.972,396.917,18.972,254.963c0-56.808,18.424-109.306,49.635-151.86c-7.086,23.245-10.961,47.888-11.116,73.419
-	                              C56.624,319.554,171.5,435.157,314.535,435.151c51.831-0.002,100.076-15.342,140.436-41.74
-	                              C466.655,392.692,478.106,391.143,489.276,388.819z"/>
-                                    </Grid>
-                                </Viewbox>
-                                <Viewbox>
-                                    <Grid Margin="75">
-                                        <Path Fill="{StaticResource EnabledUserControlBorderColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                                    </Grid>
-                                </Viewbox>
-                            </Grid>
-                            <Viewbox>
-                                <Grid Margin="-2.5,42,2.5,-4.5">
-                                    <Path Fill="#5E9FF6"
-                                          Data="m15 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m36 47a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m57 43a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m25 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                    <Path Fill="#5E9FF6"
-                                          Data="m48 57a4 4 0 0 1 -8 0c0-2.209 4-7 4-7s4 4.791 4 7z"/>
-                                </Grid>
-                            </Viewbox>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="ThunderstormTabItem">
-                        <Grid>
-                            <Viewbox>
-                                <Grid Margin="10,-140,10,160">
-                                    <Path Fill="{StaticResource MenuContainerForegroundColorBrush}"
-                                      Data="M416.084,181.389L416.084,181.389c-29.46-70.69-110.648-104.114-181.339-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S469.104,181.389,416.084,181.389z"/>
-                                    <Path Fill="{StaticResource MenuBorderColorBrush}"
-                                      Data="M330.751,224.056L330.751,224.056c-29.46-70.69-110.648-104.114-181.338-74.654
-	                                        c-48.335,20.143-81.2,65.796-84.966,118.025c-40.848,5.649-69.383,43.343-63.734,84.192c5.112,36.962,36.725,64.475,74.038,64.438
-	                                        h256c53.019,0,96-42.981,96-96S383.77,224.056,330.751,224.056z"/>
-                                </Grid>
-                            </Viewbox>
-                            <Viewbox>
-                                <Grid Margin="0,530,560,30">
-                                    <Path Fill="#ECBA16"
-                                          Data="M397.241,176.552H276.303L388.414,0H247.172L114.759,264.828h104.166L114.759,512L397.241,176.552z"/>
-                                </Grid>
-                            </Viewbox>
-                        </Grid>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="SnowTabItem">
-                        <Viewbox>
-                            <Grid>
-                                <Path Fill="White"
-                                          Data="m35 33v-2.382l2.553 1.276.895-1.789-2.459-1.229 1.566-1.044-1.109-1.664-2.517 1.678-1.851-.926 3.438-2.063-1.029-1.715-4.529 2.717-1.879-.94 3.438-2.063c.298-.179.483-.505.483-.856s-.185-.677-.485-.857l-3.438-2.063 1.879-.94 4.529 2.717 1.029-1.715-3.438-2.063 1.851-.926 2.517 1.678 1.109-1.664-1.566-1.044 2.459-1.229-.895-1.789-2.551 1.277v-2.382h-2v3.382l-2 1v-4.382h-2v5.382l-2 1v-5.382c0-.369-.203-.708-.528-.882-.323-.174-.721-.154-1.026.05l-4.446 2.964v-2.663l5.641-4.701-1.281-1.536-4.36 3.633v-2.451l2.707-2.707-1.414-1.414-1.293 1.293v-1.586h-2v1.586l-1.293-1.293-1.414 1.414 2.707 2.707v2.451l-4.359-3.633-1.281 1.536 5.64 4.701v2.663l-4.445-2.964c-.307-.205-.702-.224-1.026-.05-.326.174-.529.513-.529.882v5.382l-2-1v-5.382h-2v4.382l-2-1v-3.382h-2v2.382l-2.553-1.276-.895 1.789 2.459 1.229-1.566 1.044 1.109 1.664 2.517-1.678 1.851.926-3.438 2.063 1.029 1.715 4.529-2.717 1.879.94-3.438 2.063c-.298.179-.483.505-.483.856s.185.677.485.857l3.438 2.063-1.879.94-4.529-2.717-1.029 1.715 3.438 2.063-1.851.926-2.517-1.678-1.109 1.664 1.566 1.044-2.459 1.229.895 1.789 2.551-1.277v2.382h2v-3.382l2-1v4.382h2v-5.382l2-1v5.382c0 .369.203.708.528.882.324.173.72.154 1.026-.05l4.446-2.964v2.663l-5.641 4.701 1.281 1.536 4.36-3.633v2.451l-2.707 2.707 1.414 1.414 1.293-1.293v1.586h2v-1.586l1.293 1.293 1.414-1.414-2.707-2.707v-2.451l4.359 3.633 1.281-1.536-5.64-4.701v-2.663l4.445 2.964c.167.112.361.168.555.168.162 0 .324-.039.472-.118.325-.174.528-.513.528-.882v-5.382l2 1v5.382h2v-4.382l2 1v3.382zm-5.943-11-3.1 1.86-3.721-1.86 3.72-1.86zm-4.057-8.131v4.513l-4 2v-3.847zm-10 0 4 2.667v3.847l-4-2zm-4.057 8.131 3.1-1.86 3.72 1.86-3.72 1.86zm4.057 8.131v-4.513l4-2v3.847zm10 0-4-2.667v-3.847l4 2z"/>
-                                <Path Fill="White"
-                                          Data="m61.555 49.832-1.109-1.664-2.81 1.874-2.413-1.034 2.226-1.113c.337-.17.551-.516.551-.895s-.214-.725-.553-.895l-2.226-1.113 2.413-1.034 2.81 1.874 1.109-1.664-1.725-1.15 2.564-1.099-.787-1.838-2.605 1.117v-2.198h-2v3.055l-3 1.286v-3.341c0-.332-.165-.642-.439-.828-.275-.187-.626-.224-.932-.101l-3.629 1.452v-2.905l3.447-1.724-.895-1.789-2.552 1.277v-3.382h-2v3.382l-2.553-1.276-.895 1.789 3.448 1.723v2.905l-3.629-1.452c-.305-.122-.655-.085-.932.101-.274.186-.439.496-.439.828v3.341l-3-1.286v-3.055h-2v2.198l-2.606-1.117-.787 1.838 2.564 1.099-1.725 1.15 1.109 1.664 2.81-1.874 2.413 1.034-2.226 1.113c-.338.17-.552.516-.552.895s.214.725.553.895l2.226 1.113-2.413 1.034-2.81-1.874-1.109 1.664 1.725 1.15-2.564 1.099.787 1.838 2.605-1.117v2.198h2v-3.055l3-1.286v3.341c0 .332.165.642.439.828.168.114.364.172.561.172.126 0 .252-.023.371-.071l3.629-1.452v2.905l-3.447 1.724.895 1.789 2.552-1.277v3.382h2v-3.382l2.553 1.276.895-1.789-3.448-1.723v-2.905l3.629 1.452c.119.048.245.071.371.071.197 0 .393-.058.561-.172.274-.186.439-.496.439-.828v-3.341l3 1.286v3.055h2v-2.198l2.606 1.117.787-1.838-2.564-1.099zm-6.791-2.832-1.95.975-2.276-.975 2.275-.975zm-2.764-5.523v2.721l-3 1.286v-2.807zm-8 0 3 1.2v2.807l-3-1.286zm-2.764 5.523 1.95-.975 2.276.975-2.275.975zm2.764 5.523v-2.721l3-1.286v2.807zm8 0-3-1.2v-2.807l3 1.286z"/>
-                                <Path Fill="White"
-                                          Data="m46.343 16.243 1.414 1.414 3.243-3.243v4.586h2v-4.586l3.243 3.243 1.414-1.414-3.243-3.243h4.586v-2h-4.586l3.243-3.243-1.414-1.414-3.243 3.243v-4.586h-2v4.586l-3.243-3.243-1.414 1.414 3.243 3.243h-4.586v2h4.586z"/>
-                                <Path Fill="White"
-                                          Data="m17.657 47.757-1.414-1.414-3.243 3.243v-4.586h-2v4.586l-3.243-3.243-1.414 1.414 3.243 3.243h-4.586v2h4.586l-3.243 3.243 1.414 1.414 3.243-3.243v4.586h2v-4.586l3.243 3.243 1.414-1.414-3.243-3.243h4.586v-2h-4.586z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabItem Visibility="Collapsed" x:Name="MistTabItem">
-                        <Viewbox>
-                            <Grid Margin="0,-20,0,20">
-                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
-                                      Data="M144.797,47.095c0-4.142-3.358-7.5-7.5-7.5H7.5c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h129.797
-		                                    C141.439,54.595,144.797,51.237,144.797,47.095z"/>
-                                <Path Fill="{StaticResource PageBorderColorBrush}"
-                                      Data="M209.93,70.405H58.632c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5H209.93c4.142,0,7.5-3.358,7.5-7.5
-		                                    S214.072,70.405,209.93,70.405z"/>
-                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
-                                      Data="M174.53,116.214c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5H22.446c-4.142,0-7.5,3.358-7.5,7.5
-		                                    c0,4.142,3.358,7.5,7.5,7.5H174.53z"/>
-                                <Path Fill="{StaticResource PageBorderColorBrush}"
-                                      Data="M199.441,132.024H47.619c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5h151.822c4.142,0,7.5-3.358,7.5-7.5
-		                                    S203.583,132.024,199.441,132.024z"/>
-                                <Path Fill="{StaticResource DisabledUserControlBorderColorBrush}"
-                                      Data="M125.759,162.835H25.068c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h100.69c4.142,0,7.5-3.358,7.5-7.5
-		                                    C133.259,166.193,129.901,162.835,125.759,162.835z"/>
-                            </Grid>
-                        </Viewbox>
-                    </TabItem>
-                    <TabControl.Style>
-                        <Style TargetType="TabControl">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Icon}" Value="01d">
-                                    <Setter Property="SelectedIndex" Value="0"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="01n">
-                                    <Setter Property="SelectedIndex" Value="1"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="02d">
-                                    <Setter Property="SelectedIndex" Value="2"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="02n">
-                                    <Setter Property="SelectedIndex" Value="3"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="03d">
-                                    <Setter Property="SelectedIndex" Value="4"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="03n">
-                                    <Setter Property="SelectedIndex" Value="5"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="04d">
-                                    <Setter Property="SelectedIndex" Value="6"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="04n">
-                                    <Setter Property="SelectedIndex" Value="7"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="09d">
-                                    <Setter Property="SelectedIndex" Value="8"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="09n">
-                                    <Setter Property="SelectedIndex" Value="8"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="10d">
-                                    <Setter Property="SelectedIndex" Value="9"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="10n">
-                                    <Setter Property="SelectedIndex" Value="10"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="11n">
-                                    <Setter Property="SelectedIndex" Value="11"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="11d">
-                                    <Setter Property="SelectedIndex" Value="11"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="13d">
-                                    <Setter Property="SelectedIndex" Value="12"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="13n">
-                                    <Setter Property="SelectedIndex" Value="12"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="50n">
-                                    <Setter Property="SelectedIndex" Value="13"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Icon}" Value="50d">
-                                    <Setter Property="SelectedIndex" Value="13"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TabControl.Style>
-                </TabControl>
-                <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal"
-                            HorizontalAlignment="Left">
-                    <TextBlock Text="Odczuwalna  "
-                               FontSize="16" VerticalAlignment="Center" 
-                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
-                    <TextBlock Text="{Binding FeelTemp}"
-                               FontSize="16" x:Name ="TempFeelTextBlock" 
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
-                    <TextBlock Text="°" Margin="0,2,0,0" FontSize="16"
-                               VerticalAlignment="Top" 
-                               Foreground="{StaticResource UpdateInfoColorBrush}"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
-                </StackPanel>
-                <TextBlock Text="{Binding Description}" Grid.Row="2"
-                           FontSize="20" HorizontalAlignment="Left"
-                           Foreground="White"/>
             </Grid>
-            <Grid Grid.Row="1" VerticalAlignment="Bottom" Margin="0,0,0,70">
+            <Grid Grid.Row="1" Margin="12,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
+                <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" FlowDirection="LeftToRight" Orientation="Horizontal"
+                            HorizontalAlignment="Left" Margin="0,28,0,-5">
+                        <TextBlock Text="{Binding AvgTemp}"
+                               FontSize="96" x:Name ="TempAvgTextBlock" 
+                               VerticalAlignment="Center" Foreground="White"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                        <TextBlock Text="°" Margin="0,12,0,0" FontSize="48"
+                               VerticalAlignment="Top" Foreground="White"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                        <TextBlock Text="C" Margin="0,12,0,0" FontSize="48"
+                               VerticalAlignment="Top" Foreground="White"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                    </StackPanel>
+                    <TabControl Grid.Row="0" Margin="0,65,80,0" Width="100" Height="100"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Grid.RowSpan="3" BorderThickness="0"
+                            x:Name="WeahterIconTabControl" Background="Transparent">
+                        <TabItem Visibility="Collapsed" x:Name="ClearSkyDayTabItem"
+                             Content="{StaticResource ClearSkyDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ClearSkyNightTabItem"
+                             Content="{StaticResource ClearSkyNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="FewCloudsDayTabItem"
+                             Content="{StaticResource FewCloudsDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="FewCloudsNightTabItem"
+                             Content="{StaticResource FewCloudsNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsDayTabItem"
+                             Content="{StaticResource ScatteredCloudsDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsNightTabItem"
+                             Content="{StaticResource ScatteredCloudsNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="BrokenCloudsDayTabItem"
+                             Content="{StaticResource BrokenCloudsDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="BrokenCloudsNightTabItem"
+                             Content="{StaticResource BrokenCloudsNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ShowerRainTabItem"
+                             Content="{StaticResource ShowRainViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="RainDayTabItem"
+                             Content="{StaticResource RainDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="RainNightTabItem"
+                             Content="{StaticResource RainNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ThunderstormTabItem"
+                             Content="{StaticResource ThunderstormViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="SnowTabItem"
+                             Content="{StaticResource SnowViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="MistTabItem"
+                             Content="{StaticResource MistViewbox}"/>
+                        <TabControl.Style>
+                            <Style TargetType="TabControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                        <Setter Property="SelectedIndex" Value="0"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                        <Setter Property="SelectedIndex" Value="1"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                        <Setter Property="SelectedIndex" Value="2"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                        <Setter Property="SelectedIndex" Value="3"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                        <Setter Property="SelectedIndex" Value="4"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                        <Setter Property="SelectedIndex" Value="5"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                        <Setter Property="SelectedIndex" Value="6"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                        <Setter Property="SelectedIndex" Value="7"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                        <Setter Property="SelectedIndex" Value="8"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                        <Setter Property="SelectedIndex" Value="8"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                        <Setter Property="SelectedIndex" Value="9"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                        <Setter Property="SelectedIndex" Value="10"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                        <Setter Property="SelectedIndex" Value="11"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                        <Setter Property="SelectedIndex" Value="11"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                        <Setter Property="SelectedIndex" Value="12"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                        <Setter Property="SelectedIndex" Value="12"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                        <Setter Property="SelectedIndex" Value="13"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                        <Setter Property="SelectedIndex" Value="13"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabControl.Style>
+                    </TabControl>
+                    <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal"
+                                HorizontalAlignment="Left">
+                        <TextBlock Text="Odczuwalna  "
+                               FontSize="16" VerticalAlignment="Center" 
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                        <TextBlock Text="{Binding FeelTemp}"
+                               FontSize="16" x:Name ="TempFeelTextBlock" 
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                        <TextBlock Text="°" Margin="0,2,0,0" FontSize="16"
+                               VerticalAlignment="Top" 
+                               Foreground="{StaticResource UpdateInfoColorBrush}"
+                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Description}" Grid.Row="2"
+                           FontSize="20" HorizontalAlignment="Left"
+                           Foreground="White"/>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                 BeginTime="0:0:0.5"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+                <Grid Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
                            TextTrimming="CharacterEllipsis" MaxWidth="240"
                            FontSize="32" x:Name ="CityTextBlock" 
                            VerticalAlignment="Center" Foreground="White"
                            SizeChanged="CityTextBlock_SizeChanged"
                            FontFamily="/Fonts/RobotoCondensed-Regular.ttf #Roboto Light">
                         <Run Text="{Binding CityName, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding Country, Mode=OneWay}"/>
-                </TextBlock>
-                <WrapPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"
-                           x:Name="ForecastDataWrapPanel">
-                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                    </TextBlock>
+                    <WrapPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"
+                               x:Name="WeatherDataWrapPanel">
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
                                 ToolTip="Ciśninie atmosferyczne" Margin="10,0,10,6">
-                        <Viewbox Width="18" Margin="0,0,6,0">
-                            <Grid>
-                                <Path Fill="Transparent" 
+                            <Viewbox Width="18" Margin="0,0,6,0">
+                                <Grid>
+                                    <Path Fill="Transparent" 
                                       Data="M 295.5 51.761719 C 160.886719 51.761719 51.757812 160.886719 51.757812 295.5 C 51.757812 430.113281 160.886719 539.242188 295.5 539.242188 C 430.113281 539.242188 539.238281 430.113281 539.238281 295.5 C 538.984375 160.988281 430.011719 52.015625 295.5 51.761719 Z M 295.5 51.761719 "/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="M 315.511719 330.179688 C 299.28125 345.171875 271.902344 334.679688 260.820312 315.511719 C 249.738281 296.347656 254.300781 267.402344 275.488281 260.820312 L 447.976562 207.496094 Z M 315.511719 330.179688 "/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="M 295.5 0 C 132.300781 0 0 132.300781 0 295.5 C 0 458.699219 132.300781 591 295.5 591 C 458.699219 591 591 458.699219 591 295.5 C 590.714844 132.417969 458.582031 0.285156 295.5 0 Z M 295.5 539.175781 C 164.835938 538.90625 57.527344 435.832031 52.019531 305.277344 L 78.097656 305.277344 C 83.492188 305.277344 87.875 300.898438 87.875 295.5 C 87.875 290.101562 83.496094 285.722656 78.097656 285.722656 L 52.019531 285.722656 C 53.441406 249.585938 62.957031 214.234375 79.855469 182.265625 L 102.671875 195.304688 C 107.351562 198.003906 113.335938 196.398438 116.035156 191.71875 C 118.734375 187.039062 117.132812 181.054688 112.449219 178.355469 L 89.765625 165.316406 C 109.046875 134.902344 134.769531 109.085938 165.125 89.699219 L 178.160156 112.382812 C 180.859375 117.0625 186.84375 118.667969 191.523438 115.96875 C 196.207031 113.269531 197.808594 107.285156 195.109375 102.605469 L 182.070312 79.921875 C 214.09375 62.972656 249.515625 53.433594 285.722656 52.019531 L 285.722656 78.097656 C 285.539062 83.492188 289.769531 88.015625 295.167969 88.195312 C 295.277344 88.199219 295.386719 88.199219 295.5 88.199219 C 300.894531 88.199219 305.277344 83.820312 305.277344 78.421875 L 305.277344 52.347656 C 341.410156 53.765625 376.761719 63.285156 408.730469 80.183594 L 395.695312 103 C 392.996094 107.679688 394.597656 113.664062 399.277344 116.363281 C 403.960938 119.0625 409.945312 117.457031 412.644531 112.777344 L 425.679688 90.089844 C 456.066406 109.277344 481.875 134.890625 501.300781 165.125 L 478.613281 178.160156 C 473.933594 180.859375 472.328125 186.84375 475.027344 191.523438 C 477.726562 196.207031 483.710938 197.808594 488.390625 195.109375 L 511.078125 182.074219 C 527.976562 214.039062 537.492188 249.394531 538.914062 285.527344 L 512.839844 285.527344 C 507.441406 285.527344 503.058594 289.90625 503.058594 295.304688 C 503.058594 300.703125 507.441406 305.085938 512.839844 305.085938 L 538.914062 305.085938 C 533.542969 435.707031 426.234375 538.933594 295.5 539.238281 C 295.5 539.238281 295.5 539.175781 295.5 539.175781 Z M 295.5 539.175781 "/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="M 316.359375 295.5 C 316.359375 307.019531 307.019531 316.359375 295.5 316.359375 C 283.980469 316.359375 274.640625 307.019531 274.640625 295.5 C 274.640625 283.980469 283.980469 274.640625 295.5 274.640625 C 307.019531 274.640625 316.359375 283.980469 316.359375 295.5 Z M 316.359375 295.5 "/>
-                            </Grid>
-                        </Viewbox>
-                        <TextBlock Text="{Binding Pressure}" 
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding Pressure}" 
                                    FontSize="16" x:Name ="PressureTextBlock" 
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <TextBlock Text="hPa" FontSize="16"
+                            <TextBlock Text="hPa" FontSize="16"
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                    </StackPanel>
-                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                        </StackPanel>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
                                 ToolTip="Wilgotność" Margin="10,0,10,6">
-                        <Viewbox Width="16" Margin="0,1,6,0">
-                            <Grid>
-                                <Path Fill="White" 
+                            <Viewbox Width="16" Margin="0,1,6,0">
+                                <Grid>
+                                    <Path Fill="White" 
                                       Data="m180 314.768c-33.084 0-60 26.916-60 60 3.296 79.598 116.716 79.575 120 0 0-33.084-26.916-60-60-60zm0 90c-16.542 0-30-13.458-30-30 1.648-39.799 58.358-39.788 60 0 0 16.542-13.458 30-30 30z"/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="m240 253.808v-194.04c-3.305-79.618-116.724-79.556-120 0v194.04c-125.832 63.654-83.296 253.91 60.021 255.96 142.888-1.63 186.161-191.96 59.979-255.96zm-61.511 225.949c-113.805-3.603-143.367-158.311-37.86-202.354l9.371-3.793v-213.842c1.653-39.809 58.362-39.778 60 0v213.842l9.371 3.793c106.871 44.884 74.943 202.462-40.882 202.354z"/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="m45 209.768h45v30h-45z"/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="m15 149.768h75v30h-75z"/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="m45 89.768h45v30h-45z"/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="m15 29.768h75v30h-75z"/>
-                                <Path Fill="White"
+                                    <Path Fill="White"
                                       Data="m450 194.768v-150c-2.479-59.713-87.544-59.667-90 0v150c-59.713 2.479-59.667 87.544 0 90v180c2.479 59.713 87.544 59.667 90 0v-180c59.713-2.479 59.667-87.544 0-90zm-60-150c.826-19.904 29.181-19.889 30 0v150h-30zm30 420c-.826 19.904-29.181 19.889-30 0v-180h30zm30-210h-90c-19.904-.826-19.889-29.181 0-30h90c19.904.826 19.889 29.181 0 30z"/>
-                            </Grid>
-                        </Viewbox>
-                        <TextBlock Text="{Binding Humidity}" 
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding Humidity}" 
                                    FontSize="16" x:Name ="HumidityTextBlock" 
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <TextBlock Text="%" FontSize="16"
+                            <TextBlock Text="%" FontSize="16"
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                    </StackPanel>
-                    <Grid VerticalAlignment="Top" ToolTip="Prędkość i kierunek wiatru" Margin="10,0,10,6">
-                        <Viewbox Width="18" Height="18" HorizontalAlignment="Left" Margin="0,0,0,0">
-                            <Grid Width="700" Height="700" Margin="-110">
-                                <Grid Width="490" Height="490">
-                                    <Path Fill="White" 
-                                      Data="M260.884,10.5c-2.6-6.4-8.9-10.5-15.8-10.5s-13.2,4.2-15.8,10.5l-190.2,455.8c-2.7,6.4-1.2,13.7,3.6,18.7
-				                            c4.9,4.9,12.2,6.4,18.6,3.9l183.8-74.2l183.7,74.1c2.1,0.8,4.3,1.2,6.4,1.2c4.5,0,8.9-1.8,12.2-5.1c4.9-4.9,6.3-12.3,3.6-18.7
-				                            L260.884,10.5z M251.484,380.3c-2.1-0.8-4.2-1.2-6.4-1.2s-4.4,0.4-6.4,1.2l-152.1,61.3l158.5-379.9l158.5,380L251.484,380.3z"/>
-                                    <Grid.LayoutTransform>
-                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
-                                    </Grid.LayoutTransform>
+                        </StackPanel>
+                        <Grid VerticalAlignment="Top" ToolTip="Prędkość i kierunek wiatru" Margin="10,0,10,6">
+                            <Viewbox Width="18" Height="18" HorizontalAlignment="Left" Margin="0,0,0,0">
+                                <Grid Width="700" Height="700" Margin="-110">
+                                    <Grid Width="490" Height="490">
+                                        <Path Fill="White" 
+                                              Data="M260.884,10.5c-2.6-6.4-8.9-10.5-15.8-10.5s-13.2,4.2-15.8,10.5l-190.2,455.8c-2.7,6.4-1.2,13.7,3.6,18.7
+				                                    c4.9,4.9,12.2,6.4,18.6,3.9l183.8-74.2l183.7,74.1c2.1,0.8,4.3,1.2,6.4,1.2c4.5,0,8.9-1.8,12.2-5.1c4.9-4.9,6.3-12.3,3.6-18.7
+				                                    L260.884,10.5z M251.484,380.3c-2.1-0.8-4.2-1.2-6.4-1.2s-4.4,0.4-6.4,1.2l-152.1,61.3l158.5-379.9l158.5,380L251.484,380.3z"/>
+                                        <Grid.LayoutTransform>
+                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
+                                        </Grid.LayoutTransform>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Viewbox>
-                        <Grid Margin="24,0,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
+                            </Viewbox>
+                            <Grid Margin="24,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
                                        FontSize="16" x:Name ="WindSpeedTextBlock" 
                                        VerticalAlignment="Top"
                                        Foreground="White"/>
-                            <TextBlock Text="km/h" FontSize="16"
+                                <TextBlock Text="km/h" FontSize="16"
                                        Grid.Column="1"
                                        VerticalAlignment="Top"
                                        Foreground="White"/>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
                                 ToolTip="Wielkość opadów śniegu w ciągu ostatniej godziny" Margin="10,0,10,6">
-                        <Viewbox Width="18" Margin="0,0,6,0">
-                            <Grid>
-                                <Path Fill="White" 
+                            <Viewbox Width="18" Margin="0,0,6,0">
+                                <Grid>
+                                    <Path Fill="White" 
                                       Data="M378.4,225.6L304,251.2L274,234v-27.6v-27.2l30-17.2l74.4,25.6c5.2,2,11.2-1.2,12.8-6.4c2-5.2-1.2-11.2-6.4-12.8
 			                                l-57.6-19.6l54-31.2c4.8-2.8,6.4-9.2,3.6-14c-2.8-4.8-9.2-6.4-14-3.6l-54,31.2l11.6-59.6c1.2-5.6-2.4-10.8-8-12
 			                                c-5.6-1.2-10.8,2.4-12,8l-15.2,77.2l-30,17.2l-22.8-13.2l-0.4-0.4l-23.2-13.6v-34.4L276,48.8c4.4-3.6,4.8-10,0.8-14.4
@@ -592,101 +860,637 @@
 			                                L316.8,282l54,31.2c4.8,2.8,11.2,1.2,14-3.6c2.8-4.8,1.2-11.2-3.6-14l-54-31.2l57.6-19.6c5.2-2,8.4-7.6,6.4-12.8
 			                                C389.2,226.8,383.6,223.6,378.4,225.6z M252.4,206.4v27.2l-23.2,13.6l-22.8,13.2l-23.6-13.6l-23.2-13.6v-26.8v-27.2l23.2-13.6
 			                                L206,152l23.2,13.6l0.4,0.4l22.8,13.2V206.4z"/>
-                            </Grid>
-                        </Viewbox>
-                        <TextBlock Text="{Binding SnowFall}" 
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding SnowFall}" 
                                    FontSize="16" x:Name ="SnowFallTextBlock" 
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <TextBlock Text="mm" FontSize="16"
+                            <TextBlock Text="mm" FontSize="16"
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <StackPanel.Style>
-                            <Style TargetType="StackPanel">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SnowFall}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </StackPanel.Style>
-                    </StackPanel>
-                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SnowFall}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                        </StackPanel>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
                                 ToolTip="Wielkość opadów deszczu w ciągu ostatniej godziny" Margin="10,0,10,6">
-                        <Viewbox Width="18" Margin="0,0,6,0">
-                            <Grid>
-                                <Path Fill="White" 
+                            <Viewbox Width="18" Margin="0,0,6,0">
+                                <Grid>
+                                    <Path Fill="White" 
                                       Data="M349 738 c-17 -18 -53 -64 -81 -103 -155 -217 -175 -380 -60 -498 60
                                             -62 105 -82 192 -82 85 0 122 15 183 74 122 115 108 278 -42 494 -68 97 -116
                                             147 -141 147 -12 0 -35 -15 -51 -32z m136 -123 c106 -149 146 -259 124 -347
                                             -22 -94 -114 -168 -209 -168 -95 0 -187 74 -209 168 -11 42 -10 61 4 114 18
                                             74 77 181 149 272 l51 64 24 -21 c13 -12 42 -49 66 -82z"/>
-                            </Grid>
-                        </Viewbox>
-                        <TextBlock Text="{Binding RainFall}" 
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding RainFall}" 
                                    FontSize="16" x:Name ="RainFallTextBlock" 
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <TextBlock Text="mm" FontSize="16"
+                            <TextBlock Text="mm" FontSize="16"
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <StackPanel.Style>
-                            <Style TargetType="StackPanel">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RainFall}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                        </StackPanel>
+                        <WrapPanel.Style>
+                            <Style TargetType="WrapPanel">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding RainFall}" Value="0">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.2" Storyboard.TargetProperty="(Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                     BeginTime="0:0:0.6"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </StackPanel.Style>
-                    </StackPanel>
-                </WrapPanel>
-                <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal">
-                    <Button Style="{StaticResource FunctionalButtonStyle}" Margin="0,0,6,0"
-                            Background="Transparent" ToolTip="Pokaż na mapie"
-                            Command="{Binding ShowMapCommand}">
-                        <Viewbox Margin="0" Width="12">
-                            <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
-                                  Data="m216.210938 0c-122.664063 0-222.460938 99.796875-222.460938 222.460938 0 154.175781 222.679688 417.539062 222.679688 417.539062s222.242187-270.945312 222.242187-417.539062c0-122.664063-99.792969-222.460938-222.460937-222.460938zm67.121093 287.597656c-18.507812 18.503906-42.8125 27.757813-67.121093 27.757813-24.304688 0-48.617188-9.253907-67.117188-27.757813-37.011719-37.007812-37.011719-97.226562 0-134.238281 17.921875-17.929687 41.761719-27.804687 67.117188-27.804687 25.355468 0 49.191406 9.878906 67.121093 27.804687 37.011719 37.011719 37.011719 97.230469 0 134.238281zm0 0"/>
-                        </Viewbox>
-                    </Button>
-                    <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
-                        <TextBlock Text="{Binding Latitude}" 
-                                   ToolTip="Szerokość geograficzna"
-                                   FontSize="16" x:Name ="LatitudeTextBlock" 
-                                   VerticalAlignment="Center"
-                                   Foreground="White"/>
-                        <TextBlock Text="  " Margin="0,2,0,0" FontSize="16"
+                        </WrapPanel.Style>
+                    </WrapPanel>
+                    <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal">
+                        <Button Style="{StaticResource FunctionalButtonStyle}" Margin="0,0,6,0"
+                                Background="Transparent" ToolTip="Pokaż na mapie"
+                                Command="{Binding ShowMapCommand}">
+                            <Viewbox Margin="0" Width="12">
+                                <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
+                                      Data="m216.210938 0c-122.664063 0-222.460938 99.796875-222.460938 222.460938 0 154.175781 222.679688 417.539062 222.679688 417.539062s222.242187-270.945312 222.242187-417.539062c0-122.664063-99.792969-222.460938-222.460937-222.460938zm67.121093 287.597656c-18.507812 18.503906-42.8125 27.757813-67.121093 27.757813-24.304688 0-48.617188-9.253907-67.117188-27.757813-37.011719-37.007812-37.011719-97.226562 0-134.238281 17.921875-17.929687 41.761719-27.804687 67.117188-27.804687 25.355468 0 49.191406 9.878906 67.121093 27.804687 37.011719 37.011719 37.011719 97.230469 0 134.238281zm0 0"/>
+                            </Viewbox>
+                        </Button>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                            <TextBlock Text="{Binding Latitude}" 
+                                       ToolTip="Szerokość geograficzna"
+                                       FontSize="16" x:Name ="LatitudeTextBlock" 
+                                       VerticalAlignment="Center"
+                                       Foreground="White"/>
+                            <TextBlock Text="  " Margin="0,2,0,0" FontSize="16"
                                    VerticalAlignment="Top"
                                    Foreground="White"/>
-                        <TextBlock Text="{Binding Longitude}" 
+                            <TextBlock Text="{Binding Longitude}" 
                                    ToolTip="Długość geograficzna"
                                    x:Name="LongitudeTextBlock"
                                    FontSize="16" VerticalAlignment="Center" 
                                    Foreground="White"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                <StackPanel Grid.Row="2" FlowDirection="LeftToRight" Orientation="Horizontal">
-                    <TextBlock Text="Zaktualizowano o: "
+                    <StackPanel Grid.Row="2" FlowDirection="LeftToRight" Orientation="Horizontal">
+                        <TextBlock Text="Zaktualizowano o: "
                                FontSize="13" VerticalAlignment="Center" 
                                Foreground="{StaticResource UpdateInfoColorBrush}"/>
-                    <TextBlock Text="{Binding UpdateTime}"
+                        <TextBlock Text="{Binding UpdateTime}"
                                FontSize="13" x:Name ="UpdateTimeTextBlock" 
                                VerticalAlignment="Center"
                                Foreground="{StaticResource UpdateInfoColorBrush}"/>
-                </StackPanel>
-                <Grid Grid.Column="1" Background="{StaticResource UpdateInfoColorBrush}"
-                          Width="0.8" Grid.RowSpan="3" Margin="20,0,10,0" x:Name="SplitGrid"/>
+                    </StackPanel>
+                    <Grid Grid.Column="1" Background="{StaticResource UpdateInfoColorBrush}"
+                          Width="0.8" Grid.RowSpan="3" Margin="20,0,10,0" x:Name="SplitGrid">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                     BeginTime="0:0:0.6"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="2" Margin="-12,12,0,11">
+                    <Border CornerRadius="2.0" Panel.ZIndex="-1" Margin="12,0">
+                        <Border.Background>
+                            <SolidColorBrush Color="LightGray" Opacity="0.14"/>
+                        </Border.Background>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight"
+                                HorizontalAlignment="Left" Margin="12,0,0,0">
+                        <Grid>
+                            <c:CommandComboBox Style="{StaticResource ElementTypeComboBox}"
+                                               ToolTip="Typ prognozy" Width="80" Margin="0,0,1,0"
+                                               SelectedIndex="0" Panel.ZIndex="1"
+                                               Foreground="White"
+                                               x:Name="ForecastTypeComboBox">
+                                <ComboBox.Items>
+                                    <ComboBoxItem Height="36" Width="140" VerticalContentAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                            <ContentPresenter Width="20" Height="20" Content="{DynamicResource ClockViewbox}"
+                                                              Margin="0,0,5,0"/>
+                                            <TextBlock Text="Godzinowa" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem Height="36" Width="140">
+                                        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                            <ContentPresenter Width="20" Height="20" Content="{DynamicResource CalendarViewbox}"
+                                                              Margin="0,-2,5,2"/>
+                                            <TextBlock Text="Dzienna" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                </ComboBox.Items>
+                            </c:CommandComboBox>
+                            <ContentPresenter Margin="0,0,16,0" Width="20" Height="20">
+                                <ContentPresenter.Style>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Content" Value="{StaticResource CalendarWhiteViewbox}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="0">
+                                                <Setter Property="Content" Value="{StaticResource ClockWhiteViewbox}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentPresenter.Style>
+                            </ContentPresenter>
+                        </Grid>
+                        <Grid Width="0.8" Margin="0,7" HorizontalAlignment="Left">
+                            <Grid.Background>
+                                <SolidColorBrush Color="LightGray" Opacity="0.25"/>
+                            </Grid.Background>
+                        </Grid>
+                        <Grid>
+                            <c:CommandListBox x:Name="ForecastListBox" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  VerticalAlignment="Bottom" Height="69.6"
+                                  Command="{Binding ShowForecastCommand}"
+                                  ItemsSource="{Binding FourDaysForecast}"
+                                  Background="Transparent" 
+                                  PreviewMouseRightButtonDown="ForecastListBox_PreviewMouseRightButtonDown"
+                                  SelectionChanged="ForecastListBox_SelectionChanged">
+                                <c:CommandListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </c:CommandListBox.ItemsPanel>
+                                <c:CommandListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Width="65">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center" FontSize="12.5"/>
+                                            <ContentControl Grid.Row="1" Height="24" Margin="0,3" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <ContentControl.Style>
+                                                    <Style TargetType="ContentControl">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                                                <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                                                <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                                                <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                                                <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                                                <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                                                <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                                                <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                                                <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                                                <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ContentControl.Style>
+                                            </ContentControl>
+                                            <TextBlock Grid.Row="2" FontSize="12.5" VerticalAlignment="Center" 
+                                                       HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </c:CommandListBox.ItemTemplate>
+                                <c:CommandListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Margin" Value="10,0"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Grid>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0" VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Center"
+                                                                       Text="{Binding Date}" FontSize="12.5"/>
+                                                            <Grid Grid.Row="1" Height="24" Margin="0,3"/>
+                                                            <TextBlock Grid.Row="2" FontSize="12.5" VerticalAlignment="Center" 
+                                                                       HorizontalAlignment="Center">
+                                                                <Run Text="{Binding MaxTemp, Mode=OneWay}" FontSize="17"/><Run Text="°" FontSize="17"/><Run Text=" /  "/><Run Text="{Binding MinTemp, Mode=OneWay}" Foreground="{StaticResource UpdateInfoColorBrush}"/><Run Text="°" Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                                                            </TextBlock>
+                                                        </Grid>
+                                                        <Grid x:Name="Bd" VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center">
+                                                            <Grid Background="Transparent">
+                                                                <ContentPresenter VerticalAlignment="Stretch"
+                                                                          Height="{Binding ElementName=Bd, Path=Height}"
+                                                                          HorizontalAlignment="Stretch"/>
+                                                            </Grid>
+                                                            <Grid.LayoutTransform>
+                                                                <ScaleTransform/>
+                                                            </Grid.LayoutTransform>
+                                                            <Grid.Triggers>
+                                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                                    <EventTrigger.Actions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" 
+                                                                                                 To="1.25" Duration="0:0:0.1"/>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" 
+                                                                                                 To="1.25" Duration="0:0:0.1"/>
+                                                                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                                    To="-8.125" Duration="0:0:0.1"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger.Actions>
+                                                                </EventTrigger>
+                                                                <EventTrigger RoutedEvent="MouseLeave">
+                                                                    <EventTrigger.Actions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" 
+                                                                                                 To="1" Duration="0:0:0.1"/>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" 
+                                                                                                 To="1" Duration="0:0:0.1"/>
+                                                                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                                    To="0" Duration="0:0:0.1"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger.Actions>
+                                                                </EventTrigger>
+                                                            </Grid.Triggers>
+                                                        </Grid>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetProperty="Foreground.Color"
+                                                                            From="White" To="#FFE5E5E5" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetProperty="Foreground.Color"
+                                                                            From="#FFE5E5E5" To="White" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                            </MultiTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </c:CommandListBox.ItemContainerStyle>
+                                <c:CommandListBox.Style>
+                                    <Style TargetType="c:CommandListBox">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="0">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,0,0,0" To="0,0,0,75" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,0,0,75" To="0,0,0,0" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </c:CommandListBox.Style>
+                            </c:CommandListBox>
+                            <Grid>
+                                <c:CommandListBox x:Name="HourlyListBox" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  VerticalAlignment="Center" HorizontalAlignment="Center" Height="69.6"
+                                  ItemsSource="{Binding HourlyForecast}"
+                                  Background="Transparent"
+                                  Command="{Binding ShowHourlyWeatherCommand}"
+                                  CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem}"
+                                  PreviewMouseRightButtonDown="ForecastListBox_PreviewMouseRightButtonDown">
+                                    <c:CommandListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
+                                        </ItemsPanelTemplate>
+                                    </c:CommandListBox.ItemsPanel>
+                                    <c:CommandListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Width="68.5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <ContentControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                                                                Height="21" Margin="0,5" HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center">
+                                                    <ContentControl.Style>
+                                                        <Style TargetType="ContentControl">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                                                    <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                                                    <Setter Property="Content" Value="{StaticResource ClearSkyNightViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                                                    <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                                                    <Setter Property="Content" Value="{StaticResource FewCloudsNightViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                                                    <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                                                    <Setter Property="Content" Value="{StaticResource ScatteredCloudsNightViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                                                    <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                                                    <Setter Property="Content" Value="{StaticResource BrokenCloudsNightViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                                                    <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                                                    <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                                                    <Setter Property="Content" Value="{StaticResource RainNightViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                                                    <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                                                    <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                                                    <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                                                    <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                                                    <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                                                    <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                                                    <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ContentControl.Style>
+                                                </ContentControl>
+                                                <TextBlock Grid.Row="0" Grid.Column="1" FontSize="12.5" VerticalAlignment="Center" 
+                                                           HorizontalAlignment="Left" Foreground="White">
+                                                    <Run Text="{Binding AvgTemp, Mode=OneWay}"/><Run Text="°"/>
+                                                </TextBlock>
+                                                <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"
+                                                           HorizontalAlignment="Left" Foreground="White"
+                                                           Text="{Binding DayTime}" FontSize="12.5"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </c:CommandListBox.ItemTemplate>
+                                    <c:CommandListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <Border x:Name="Bd" VerticalAlignment="Stretch"
+                                                                HorizontalAlignment="Stretch" Background="Transparent">
+                                                            <ContentPresenter VerticalAlignment="Stretch"
+                                                                              HorizontalAlignment="Stretch"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsSelected" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+                                                </MultiTrigger>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsSelected" Value="False"/>
+                                                    </MultiTrigger.Conditions>
+                                                </MultiTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </c:CommandListBox.ItemContainerStyle>
+                                    <c:CommandListBox.Style>
+                                        <Style TargetType="c:CommandListBox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="1">
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,0,0,0" To="0,75,0,0" Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,75,0,0" To="0,0,0,0" Duration="0:0:0.2"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </c:CommandListBox.Style>
+                                </c:CommandListBox>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.2" Storyboard.TargetProperty="(Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                 BeginTime="0:0:0.6"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.5" Storyboard.TargetProperty="(Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard TargetProperty="Margin">
+                                            <ThicknessAnimation From="12,0,0,0" To="12,-193,0,0" AccelerationRatio="0.66"
+                                                                DecelerationRatio="0.33"
+                                                                Duration="0:0:0.5" BeginTime="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard TargetProperty="Margin">
+                                            <ThicknessAnimation From="12,-193,0,0" To="12,0,0,0" AccelerationRatio="0.66"
+                                                                DecelerationRatio="0.33"
+                                                                Duration="0:0:0.5" BeginTime="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
             </Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
         </Grid>
-        <Grid.Style>
-            <Style TargetType="Grid">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsReady}" Value="False">
-                        <Setter Property="Visibility" Value="Hidden"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
     </Grid>
 </Page>

@@ -7,7 +7,7 @@ namespace AppData
 {
     public static class DataContainer
     {
-        public static KeyValuePair<Stream, string> GetImageWithHexColor(string imageId, int feelTemp)
+        public static KeyValuePair<Stream, string> GetImageWithHexColor(string imageId, int feelTemp, string description = null)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
             string imagePath, color;
@@ -96,20 +96,52 @@ namespace AppData
                     imagePath = "SnowNight.jpg";
                     break;
                 case "50d":
-                    if (feelTemp > 8)
+                    if (!string.IsNullOrEmpty(description) && (description.ToLower().Contains("sand") ||
+                        description.ToLower().Contains("piasek") || description.ToLower().Contains("dust") ||
+                        description.ToLower().Contains("pył")))
                     {
-                        color = "#FFADADAD";
-                        imagePath = "FoggySummerDay.jpg";
+                        color = "#FFD0B097";
+                        imagePath = "SandDay.jpg";
+                    }
+                    else if (!string.IsNullOrEmpty(description) && (description.ToLower().Contains("volcanic") ||
+                             description.ToLower().Contains("wulaniczny")))
+                    {
+                        color = "#FF475965";
+                        imagePath = "VolcanicAsh.jpg";
                     }
                     else
                     {
-                        color = "#FF428FFF";
-                        imagePath = "FoggyWinterDay.jpg";
+                        if (feelTemp > 8)
+                        {
+                            color = "#FFADADAD";
+                            imagePath = "FoggySummerDay.jpg";
+                        }
+                        else
+                        {
+                            color = "#FF428FFF";
+                            imagePath = "FoggyWinterDay.jpg";
+                        }
                     }
                     break;
                 case "50n":
-                    color = "#FF1F243C";
-                    imagePath = "FoggyNight.jpg";
+                    if (!string.IsNullOrEmpty(description) && (description.ToLower().Contains("sand") ||
+                        description.ToLower().Contains("piasek") || description.ToLower().Contains("dust") ||
+                        description.ToLower().Contains("pył")))
+                    {
+                        color = "#FFC96B25";
+                        imagePath = "SandNight.jpg";
+                    }
+                    else if (!string.IsNullOrEmpty(description) && (description.ToLower().Contains("volcanic") ||
+                            description.ToLower().Contains("wulaniczny")))
+                    {
+                        color = "#FF475965";
+                        imagePath = "VolcanicAsh.jpg";
+                    }
+                    else
+                    {
+                        color = "#FF1F243C";
+                        imagePath = "FoggyNight.jpg";
+                    }
                     break;
                 default:
                     throw new ArgumentException($"Invalid input data. There is no appropriate content for Id: {imageId}");
@@ -118,12 +150,12 @@ namespace AppData
             return new KeyValuePair<Stream, string>(asm.GetManifestResourceStream($"AppData.Images.{imagePath}"), color);
         }
 
-        public static Stream GetIcon(string imageId)
+        public static Stream GetIcon(string iconId)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
             string iconPath;
 
-            switch (imageId)
+            switch (iconId)
             {
                 case "01d":
                     iconPath = "ClearSkyDay.ico";
@@ -170,6 +202,9 @@ namespace AppData
                 case "50d":
                 case "50n":
                     iconPath = "Mist.ico";
+                    break;
+                case "Update":
+                    iconPath = "Update.ico";
                     break;
                 default:
                     iconPath = "NoConnection.ico";

@@ -118,7 +118,19 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\NoConnection.ico" />
-    <Content Include="Icons\ScatteredCloudsDay.ico" />
+    <EmbeddedResource Include="Icons\ScatteredCloudsDay.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SandDay.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\SandNight.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\VolcanicAsh.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Update.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

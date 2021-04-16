@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
+using WeatherBar.Utils;
+using System.Diagnostics;
 
 namespace WeatherBar.ViewModels
 {
@@ -17,9 +19,19 @@ namespace WeatherBar.ViewModels
 
         private readonly Timer autoUpdateTimer = new Timer();
 
-        private CurrentWeatherData currentWeatherData;
+        private ViewModelUtils.HourlyForecast currentWeatherData = new ViewModelUtils.HourlyForecast()
+        {
+            CityName = "Warszawa",
+            Icon = "01d",
+        };
 
         private bool isReady;
+
+        private bool isConnected;
+
+        private bool isStarted;
+
+        private bool isForecastPanelVisible;
 
         #endregion
 
@@ -39,6 +51,12 @@ namespace WeatherBar.ViewModels
 
         public ICommand SearchCommand { get; private set; }
 
+        public ICommand ShowForecastCommand { get; private set; }
+
+        public ICommand ShowHourlyWeatherCommand { get; private set; }
+
+        public ICommand ReturnToMainPanelCommand { get; private set; }
+
         public bool IsReady
         {
             get
@@ -52,11 +70,50 @@ namespace WeatherBar.ViewModels
             }
         }
 
+        public bool IsStarted
+        {
+            get
+            {
+                return isStarted;
+            }
+            private set
+            {
+                isStarted = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsConnected
+        {
+            get
+            {
+                return isConnected;
+            }
+            private set
+            {
+                isConnected = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsForecastPanelVisible
+        {
+            get
+            {
+                return isForecastPanelVisible;
+            }
+            set
+            {
+                isForecastPanelVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string CityName
         {
             get
             {
-                return currentWeatherData?.Name;
+                return currentWeatherData.CityName;
             }
         }
 
@@ -64,15 +121,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                if (currentWeatherData != null)
-                {
-                    var input = currentWeatherData.WheatherData[0].Description;
-                    return input.FirstOrDefault().ToString().ToUpper() + input.Substring(1);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                return currentWeatherData.Description;
             }
         }
 
@@ -80,7 +129,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToInt32(currentWeatherData?.MainData.Temp);
+                return currentWeatherData.AvgTemp;
             }
         }
 
@@ -88,7 +137,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToInt32(currentWeatherData?.MainData.FeelsLike);
+                return currentWeatherData.FeelTemp;
             }
         }
 
@@ -96,7 +145,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToDouble(currentWeatherData?.SnowData._1h);
+                return currentWeatherData.SnowFall;
             }
         }
 
@@ -104,7 +153,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToDouble(currentWeatherData?.RainData._1h);
+                return currentWeatherData.RainFall;
             }
         }
 
@@ -120,12 +169,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                if (currentWeatherData != null)
-                {
-                    return (SharedFunctions.UnixTimeStampToDateTime(currentWeatherData.SysData.Sunset) + DateTimeOffset.Now.Offset).ToString("HH:mm");
-                }
-
-                return string.Empty;
+                return currentWeatherData.SunsetTime;
             }
         }
 
@@ -133,12 +177,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                if (currentWeatherData != null)
-                {
-                    return (SharedFunctions.UnixTimeStampToDateTime(currentWeatherData.SysData.Sunrise) + DateTimeOffset.Now.Offset).ToString("HH:mm");
-                }
-
-                return string.Empty;
+                return currentWeatherData.SunriseTime;
             }
         }
 
@@ -146,7 +185,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return currentWeatherData?.SysData.Country;
+                return currentWeatherData.Country;
             }
         }
 
@@ -154,14 +193,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                if (currentWeatherData != null)
-                {
-                    return ConvertDecToDeg(currentWeatherData.CoordData.Lon, true);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                return currentWeatherData.Longitude;
             }
         }
 
@@ -169,14 +201,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                if (currentWeatherData != null)
-                {
-                    return ConvertDecToDeg(currentWeatherData.CoordData.Lat, false);
-                }
-                else
-                {
-                    return string.Empty;
-                }
+                return currentWeatherData.Latitude;
             }
         }
 
@@ -184,7 +209,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToInt32(currentWeatherData?.MainData.Pressure);
+                return currentWeatherData.Pressure;
             }
         }
 
@@ -192,7 +217,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToInt32(currentWeatherData?.MainData.Humidity);
+                return currentWeatherData.Humidity;
             }
         }
 
@@ -200,7 +225,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToInt32(currentWeatherData?.WindData.Speed * 3.6);
+                return currentWeatherData.WindSpeed;
             }
         }
 
@@ -208,7 +233,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                return Convert.ToInt32(currentWeatherData?.WindData.Deg - 180);
+                return currentWeatherData.WindAngle;
             }
         }
 
@@ -216,14 +241,7 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                if (currentWeatherData != null)
-                {
-                    return currentWeatherData.WheatherData[0].Icon;
-                }
-                else
-                {
-                    return "01d";
-                }
+                return currentWeatherData.Icon;
             }
         }
 
@@ -231,12 +249,16 @@ namespace WeatherBar.ViewModels
         {
             get
             {
-                var imageData = AppData.DataContainer.GetImageWithHexColor(Icon, FeelTemp);
+                var imageData = AppData.DataContainer.GetImageWithHexColor(Icon, FeelTemp, Description);
 
                 return new KeyValuePair<BitmapImage, Color>(
                     SharedFunctions.LoadImage(imageData.Key), (Color)ColorConverter.ConvertFromString(imageData.Value));
             }
         }
+
+        public List<ViewModelUtils.DailyForecast> FourDaysForecast { get; private set; }
+
+        public List<ViewModelUtils.HourlyForecast> HourlyForecast { get; private set; }
 
         #endregion
 
@@ -245,26 +267,31 @@ namespace WeatherBar.ViewModels
         public MainViewModel()
         {
             this.IsReady = false;
+            this.IsStarted = false;
+            this.IsConnected = true;
+            this.IsForecastPanelVisible = false;
             this.ShowMapCommand = new RelayCommand((o) => ShowMap());
-            this.OpenSiteCommand = new RelayCommand((o) => OpenSite());
-            this.RefreshCommand = new RelayCommand(Refresh);
-            this.SearchCommand = new RelayCommand(Refresh);
+            this.OpenSiteCommand = new RelayCommand((o) => OpenWeathermapSite());
+            this.RefreshCommand = new RelayCommand((o) => Refresh(CityName));
+            this.SearchCommand = new RelayCommand((o) => Refresh(o), (o) => !string.IsNullOrWhiteSpace((string)o));
+            this.ShowForecastCommand = new RelayCommand(ShowForecast);
+            this.ReturnToMainPanelCommand = new RelayCommand(ReturnToMainPanel);
+            this.ShowHourlyWeatherCommand = new RelayCommand(ShowHourlyWeather, (o) => o != null);
 
-            Refresh();
+            Refresh(CityName);
             StartAutoUpdateEvent();
         }
 
         #endregion
 
-        #region Methods
+        #region Public methods
 
-        public void Refresh(object obj = null)
+        public void Refresh(object obj = null, bool isRefreshIndicatorVisible = true)
         {
-            obj = obj ?? (!string.IsNullOrEmpty(CityName) ? CityName : "Warszawa");
-
             using (var refreshWorker = new BackgroundWorker())
             {
-                refreshWorker.DoWork += (s, e) => LoadCurrentWeather(obj.ToString(), e);
+                IsReady = !isRefreshIndicatorVisible;
+                refreshWorker.DoWork += (s, e) => LoadCurrentWeather((string)obj, e);
                 refreshWorker.RunWorkerCompleted += UpdateWeatherData;
                 refreshWorker.RunWorkerAsync();
             }
@@ -275,21 +302,36 @@ namespace WeatherBar.ViewModels
 
         public void Refresh(object sender, ElapsedEventArgs e)
         {
-            Refresh(CityName);
+            Refresh(CityName, false);
         }
 
         #endregion
 
         #region Private methods
 
-        private void ShowMap()
+
+        private void ReturnToMainPanel(object obj)
         {
-            System.Diagnostics.Process.Start($"https://www.google.com/maps/place/{Latitude}+{Longitude}");
+            this.IsForecastPanelVisible = false;
         }
 
-        private void OpenSite()
+        private void ShowForecast(object obj)
         {
-            System.Diagnostics.Process.Start($"https://openweathermap.org/");
+            this.IsForecastPanelVisible = true;
+        }
+
+        private void ShowHourlyWeather(object obj)
+        {
+        }
+
+        private void ShowMap()
+        {
+            Process.Start($"https://www.google.com/maps/place/{Latitude}+{Longitude}");
+        }
+
+        private void OpenWeathermapSite()
+        {
+            Process.Start($"https://openweathermap.org/");
         }
 
         private void StartAutoUpdateEvent()
@@ -304,12 +346,41 @@ namespace WeatherBar.ViewModels
         {
             if (e.Cancelled)
             {
-                IsReady = false;
+                SetIsStartedFlag();
+                IsReady = true;
+                IsConnected = false;
                 return;
             }
 
+            UpdateProperties();
+            SetIsStartedFlag();
+            IsReady = true;
+        }
+
+        private void LoadCurrentWeather(string cityName, DoWorkEventArgs e)
+        {
+            try
+            {
+                System.Threading.Thread.Sleep(250);
+                CurrentWeatherData currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
+                WeatherForecastData weatherForecastData = App.WebApiClient.GetWeatherForecastData(cityName);
+                this.currentWeatherData = ViewModelUtils.PrepareCurrentWeatherData(currentWeatherData);
+                HourlyForecast = ViewModelUtils.PrepareHourlyForecastData(currentWeatherData, weatherForecastData).ToList();
+                FourDaysForecast = ViewModelUtils.PrepareFourDaysForecastData(weatherForecastData).ToList();
+                IsConnected = true;
+            }
+            catch (TaskCanceledException)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void UpdateProperties()
+        {
             var propertiesToUpdate = new List<string>()
                 {
+                    "FourDaysForecast",
+                    "HourlyForecast",
                     "CityName",
                     "AvgTemp",
                     "FeelTemp",
@@ -331,51 +402,13 @@ namespace WeatherBar.ViewModels
                 };
 
             propertiesToUpdate.ForEach(property => OnPropertyChanged(property));
-            IsReady = true;
         }
 
-        private string ConvertDecToDeg(double decValue, bool isLongitude)
+        private void SetIsStartedFlag()
         {
-            string direction;
-
-            if (decValue > 0)
+            if (!IsStarted)
             {
-                if (isLongitude)
-                {
-                    direction = "E";
-                }
-                else
-                {
-                    direction = "N";
-                }
-            }
-            else
-            {
-                if (isLongitude)
-                {
-                    direction = "W";
-                }
-                else
-                {
-                    direction = "S";
-                }
-            }
-
-            var temp = Math.Round(decValue > 0 ? decValue : -decValue, 2).ToString().Split('.', ',');
-            var minutesValue = Math.Round(double.Parse(temp.Last()) * 60 / 100).ToString();
-
-            return string.Concat(temp.First(), "° ", minutesValue.Length != 1 ? minutesValue : $"0{minutesValue}", $"' {direction}");
-        }
-
-        private void LoadCurrentWeather(string cityName, DoWorkEventArgs e)
-        {
-            try
-            {
-                currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
-            }
-            catch (TaskCanceledException)
-            {
-                e.Cancel = true;
+                IsStarted = true;
             }
         }
 

@@ -112,6 +112,9 @@ namespace WeatherBar.WebApi.Models
 
             [JsonProperty("snow")]
             public Snow Snow { get; set; }
+
+            [JsonProperty("rain")]
+            public Rain Rain { get; set; }
         }
 
         public struct City

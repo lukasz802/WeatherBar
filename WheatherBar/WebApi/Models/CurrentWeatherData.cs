@@ -10,10 +10,10 @@ namespace WeatherBar.WebApi.Models
         #region Properties
 
         [JsonProperty("coord")]
-        public Coord CoordData { get; private set; }
+        public Coord CoordData { get; set; }
 
         [JsonProperty("weather")]
-        public List<Weather> WheatherData { get; }
+        public List<Weather> WeatherData { get; set; }
 
         [JsonProperty("main")]
         public Main MainData { get; set; }
@@ -61,12 +61,12 @@ namespace WeatherBar.WebApi.Models
         /// <summary>
         /// Initializes a new instance of the CurrentWeatherData class.
         /// </summary>
-        public CurrentWeatherData(List<Weather> wheatherData = default(List<Weather>), Coord coord = default(Coord), Main main = default(Main), Wind wind = default(Wind),
+        public CurrentWeatherData(List<Weather> weatherData = default(List<Weather>), Coord coord = default(Coord), Main main = default(Main), Wind wind = default(Wind),
             Clouds clouds = default(Clouds), Snow snow = default(Snow), Rain rain = default(Rain), Sys sys = default(Sys), string _base = default(string), 
             int visisbility = default(int), int dt = default(int), int timezone = default(int), int id = default(int), string name = default(string), int cod = default(int))
         {
             CoordData = coord;
-            WheatherData = wheatherData;
+            WeatherData = weatherData;
             MainData = main;
             WindData = wind;
             CloudsData = clouds;

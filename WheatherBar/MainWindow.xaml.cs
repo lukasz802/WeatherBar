@@ -1,8 +1,6 @@
-﻿using AppData;
-using System;
-using System.IO;
-using System.Reflection;
+﻿using System;
 using System.Windows;
+using WeatherBar.Utils;
 using WeatherBar.ViewModels;
 
 namespace WeatherBar
@@ -14,8 +12,6 @@ namespace WeatherBar
     {
         #region Fields
 
-        private System.Windows.Forms.NotifyIcon trayNotifyIcon;
-
         private MainViewModel viewModel = new MainViewModel();
         
         #endregion
@@ -25,10 +21,11 @@ namespace WeatherBar
         public MainWindow()
         {
             InitializeComponent();
-            InitializeTrayIcon();
             this.Loaded += (s, e) => this.DataContext = viewModel;
+            InitializeTrayIcon();
             this.Loaded += (s, e) => MainPanelFrame.DataContext = viewModel;
             this.Loaded += (s, e) => ConnectionFailedFrame.DataContext = viewModel;
+            this.Loaded += (s, e) => ForecastFrame.DataContext = viewModel;
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
@@ -36,73 +33,16 @@ namespace WeatherBar
 
         #region Private methods
 
-        private void SetNotifyIconText(string text)
-        {
-            Type type = typeof(System.Windows.Forms.NotifyIcon);
-            BindingFlags hiddenFieldFlag = BindingFlags.NonPublic | BindingFlags.Instance;
-            type.GetField("text", hiddenFieldFlag).SetValue(trayNotifyIcon, text);
-
-            if ((bool)type.GetField("added", hiddenFieldFlag).GetValue(trayNotifyIcon))
-            {
-                type.GetMethod("UpdateIcon", hiddenFieldFlag).Invoke(trayNotifyIcon, new object[] { true });
-            }
-        }
-
         private void InitializeTrayIcon()
         {
-            trayNotifyIcon = new System.Windows.Forms.NotifyIcon
-            {
-                ContextMenuStrip = PrepareContextMenu(),
-                Visible = false,
-            };
-            trayNotifyIcon.MouseClick += TrayNotifyIcon_MouseClick;
-        }
-
-        private System.Windows.Forms.ContextMenuStrip PrepareContextMenu()
-        {
-            var openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem("Otwórz WeatherBar")
-            {
-                BackColor = System.Drawing.Color.Transparent,
-                Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Bold),
-            };
-            openToolStripMenuItem.Click += (s, e) => 
-                TrayNotifyIcon_MouseClick(s, new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1 ,0, 0, 0));
-
-            var updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem("Aktualizuj")
-            {
-                BackColor = System.Drawing.Color.Transparent,
-                Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Regular),
-            };
-            updateToolStripMenuItem.Click += (s, e) => viewModel.Refresh();
-
-            var closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem("Zakończ")
-            {
-                BackColor = System.Drawing.Color.Transparent,
-                Font = new System.Drawing.Font("Segoe UI", 9, System.Drawing.FontStyle.Regular),
-            };
-            closeToolStripMenuItem.Click += (s, e) => MenuBarButton_Click(CloseButton, null);
-
-            System.Windows.Forms.ContextMenuStrip contextMenu = new System.Windows.Forms.ContextMenuStrip
-            {
-                BackColor = System.Drawing.Color.Transparent,
-            };
-            contextMenu.Items.Add(openToolStripMenuItem);
-            contextMenu.Items.Add(updateToolStripMenuItem);
-            contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator()
-            {
-                BackColor = System.Drawing.Color.Transparent,
-            });
-            contextMenu.Items.Add(closeToolStripMenuItem);
-
-            return contextMenu;
+            TrayNotifyIconManager.TrayNotifyIconInstance.MainViewModelInstance = viewModel;
+            TrayNotifyIconManager.TrayNotifyIconInstance.OpenToolStripMenuItemMouseEventHandler = TrayNotifyIcon_MouseClick;
+            TrayNotifyIconManager.TrayNotifyIconInstance.CloseToolStripMenuItemMouseEventHandler = (s, e) => MenuBarButton_Click(CloseButton, null);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var text = viewModel.IsReady ? $"{viewModel.CityName}, {viewModel.Country}\n{viewModel.Description}\nTemperatura: {viewModel.AvgTemp}/{viewModel.FeelTemp}°C\n" +
-                    $"Zaktualizowano o: {viewModel.UpdateTime}" : "Brak połączenia z serwerem Openweather.org";
-            SetNotifyIconText(text);
-            trayNotifyIcon.Icon = new System.Drawing.Icon(DataContainer.GetIcon(viewModel.IsReady ? viewModel.Icon : string.Empty));
+            TrayNotifyIconManager.TrayNotifyIconInstance.Update();
         }
 
         private void TrayNotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -131,11 +71,11 @@ namespace WeatherBar
             if (this.WindowState == WindowState.Minimized)
             {
                 this.ShowInTaskbar = false;
-                trayNotifyIcon.Visible = true;
+                TrayNotifyIconManager.TrayNotifyIconInstance.IsIconVisible = true;
             }
             else if (this.WindowState == WindowState.Normal)
             {
-                trayNotifyIcon.Visible = false;
+                TrayNotifyIconManager.TrayNotifyIconInstance.IsIconVisible = false;
                 this.ShowInTaskbar = true;
             }
         }

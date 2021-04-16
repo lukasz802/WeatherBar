@@ -19,5 +19,43 @@
             <GradientStop Offset="0.0" Color="#FF0e2a47"/>
             <GradientStop Offset="1.0" Color="#FF08192b"/>
         </LinearGradientBrush>
+        <LinearGradientBrush x:Key="LoadingBackgroundColorBrush" StartPoint="0,1" EndPoint="0.5,0" >
+            <GradientStop Offset="0.0" Color="#FF49d797"/>
+            <GradientStop Offset="1.0" Color="#FF8deba6"/>
+        </LinearGradientBrush>
+        <Style x:Key="MenuBarControlButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="0"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Stretch"
+                                Name="Panel">
+                            <StackPanel Name="ContentStackPanel"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                                <ContentPresenter VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource UpdateInfoColorBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>
