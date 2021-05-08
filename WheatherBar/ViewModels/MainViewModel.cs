@@ -2,7 +2,6 @@
 using System.Timers;
 using System.ComponentModel;
 using System.Windows.Input;
-using WeatherBar.WebApi.Models;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media;
@@ -10,6 +9,8 @@ using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
 using WeatherBar.Utils;
 using System.Diagnostics;
+using WeatherBar.WebApi.Models.Interfaces;
+using WeatherBar.WebApi.Models.Factories;
 
 namespace WeatherBar.ViewModels
 {
@@ -19,17 +20,13 @@ namespace WeatherBar.ViewModels
 
         private readonly Timer autoUpdateTimer = new Timer();
 
-        private ViewModelUtils.HourlyForecast currentWeatherData = new ViewModelUtils.HourlyForecast()
-        {
-            CityName = "Warszawa",
-            Icon = "01d",
-        };
+        private IHourlyData currentWeatherData = WeatherDataFactory.GetHourlyDataTransferObject();
 
         private bool isReady;
 
         private bool isConnected;
 
-        private bool isStarted;
+        private bool hasStarted;
 
         private bool isForecastPanelVisible;
 
@@ -70,15 +67,15 @@ namespace WeatherBar.ViewModels
             }
         }
 
-        public bool IsStarted
+        public bool HasStarted
         {
             get
             {
-                return isStarted;
+                return hasStarted;
             }
             private set
             {
-                isStarted = value;
+                hasStarted = value;
                 OnPropertyChanged();
             }
         }
@@ -256,9 +253,9 @@ namespace WeatherBar.ViewModels
             }
         }
 
-        public List<ViewModelUtils.DailyForecast> FourDaysForecast { get; private set; }
+        public List<IDailyData> FourDaysForecast { get; private set; }
 
-        public List<ViewModelUtils.HourlyForecast> HourlyForecast { get; private set; }
+        public Tuple<List<IHourlyData>, List<IHourlyData>> HourlyForecast { get; private set; }
 
         #endregion
 
@@ -267,7 +264,7 @@ namespace WeatherBar.ViewModels
         public MainViewModel()
         {
             this.IsReady = false;
-            this.IsStarted = false;
+            this.HasStarted = false;
             this.IsConnected = true;
             this.IsForecastPanelVisible = false;
             this.ShowMapCommand = new RelayCommand((o) => ShowMap());
@@ -309,7 +306,6 @@ namespace WeatherBar.ViewModels
 
         #region Private methods
 
-
         private void ReturnToMainPanel(object obj)
         {
             this.IsForecastPanelVisible = false;
@@ -344,16 +340,16 @@ namespace WeatherBar.ViewModels
 
         private void UpdateWeatherData(object sender, RunWorkerCompletedEventArgs e)
         {
+            SetHasStartedFlag();
+
             if (e.Cancelled)
             {
-                SetIsStartedFlag();
                 IsReady = true;
                 IsConnected = false;
                 return;
             }
 
             UpdateProperties();
-            SetIsStartedFlag();
             IsReady = true;
         }
 
@@ -361,12 +357,13 @@ namespace WeatherBar.ViewModels
         {
             try
             {
-                System.Threading.Thread.Sleep(250);
-                CurrentWeatherData currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
-                WeatherForecastData weatherForecastData = App.WebApiClient.GetWeatherForecastData(cityName);
-                this.currentWeatherData = ViewModelUtils.PrepareCurrentWeatherData(currentWeatherData);
-                HourlyForecast = ViewModelUtils.PrepareHourlyForecastData(currentWeatherData, weatherForecastData).ToList();
-                FourDaysForecast = ViewModelUtils.PrepareFourDaysForecastData(weatherForecastData).ToList();
+                System.Threading.Thread.Sleep(350);
+
+                var weatherForecastData = App.WebApiClient.GetFourDaysForecastData(cityName);
+                currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
+                HourlyForecast = new Tuple<List<IHourlyData>, List<IHourlyData>>(
+                    weatherForecastData.HourlyData.Take(5).ToList(), weatherForecastData.HourlyData.Skip(5).ToList());
+                FourDaysForecast = weatherForecastData.DailyData.ToList();
                 IsConnected = true;
             }
             catch (TaskCanceledException)
@@ -404,11 +401,11 @@ namespace WeatherBar.ViewModels
             propertiesToUpdate.ForEach(property => OnPropertyChanged(property));
         }
 
-        private void SetIsStartedFlag()
+        private void SetHasStartedFlag()
         {
-            if (!IsStarted)
+            if (!HasStarted)
             {
-                IsStarted = true;
+                HasStarted = true;
             }
         }
 

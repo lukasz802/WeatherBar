@@ -1,6 +1,6 @@
 ﻿using System;
-using WeatherBar.WebApi.Models;
 using WeatherBar.WebApi.Models.Enums;
+using WeatherBar.WebApi.Models.Interfaces;
 
 namespace WeatherBar.WebApi
 {
@@ -9,12 +9,12 @@ namespace WeatherBar.WebApi
         /// <summary>
         /// Get current weather data.
         /// </summary>
-        CurrentWeatherData GetCurrentWeatherData(string cityName);
+        IHourlyData GetCurrentWeatherData(string cityName);
 
         /// <summary>
-        /// Get 5 day weather forecast data.
+        /// Get 4 days weather forecast data.
         /// </summary>
-        WeatherForecastData GetWeatherForecastData(string cityName);
+        IFourDaysData GetFourDaysForecastData(string cityName);
 
         /// <summary>
         /// Get unique API key.

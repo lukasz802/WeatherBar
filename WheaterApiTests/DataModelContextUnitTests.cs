@@ -2,7 +2,7 @@
 using System.Linq;
 using WeatherBar.Models;
 
-namespace WheaterApiTests
+namespace WeatherBarTests
 {
     [TestClass]
     public class DataModelContextUnitTests

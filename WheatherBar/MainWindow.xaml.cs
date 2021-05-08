@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using WeatherBar.Utils;
 using WeatherBar.ViewModels;
 
@@ -71,13 +74,39 @@ namespace WeatherBar
             if (this.WindowState == WindowState.Minimized)
             {
                 this.ShowInTaskbar = false;
-                TrayNotifyIconManager.TrayNotifyIconInstance.IsIconVisible = true;
+                TrayNotifyIconManager.TrayNotifyIconInstance.IsVisible = true;
             }
             else if (this.WindowState == WindowState.Normal)
             {
-                TrayNotifyIconManager.TrayNotifyIconInstance.IsIconVisible = false;
+                TrayNotifyIconManager.TrayNotifyIconInstance.IsVisible = false;
                 this.ShowInTaskbar = true;
             }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(100)
+            };
+
+            timer.Start();
+            timer.Tick += (s, a) =>
+            {
+                timer.Stop();
+
+                var prevButton = ((FrameworkElement)MainPanelFrame.Content).FindName("PreviousButton") as Button;
+
+                if (prevButton.IsEnabled)
+                {
+                    MouseButtonEventArgs arg = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = Button.ClickEvent
+                    };
+
+                    prevButton.RaiseEvent(arg);
+                }
+            };
         }
 
         #endregion

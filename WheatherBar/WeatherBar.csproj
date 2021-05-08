@@ -130,20 +130,19 @@
     <Compile Include="Utils\SharedFunctions.cs" />
     <Compile Include="Utils\TrayNotifyIconManager.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="Utils\ViewModelUtils.cs" />
+    <Compile Include="WebApi\Models\Converters\CurrentWeatherDataConverter.cs" />
+    <Compile Include="WebApi\Models\Converters\FourDaysForecastDataConverter.cs" />
+    <Compile Include="WebApi\Models\DataTransferObjects\FourDaysForecast.cs" />
+    <Compile Include="WebApi\Models\Factories\WeatherDataFactory.cs" />
+    <Compile Include="WebApi\Models\Interfaces\IFourDaysData.cs" />
+    <Compile Include="WebApi\Models\Interfaces\IDailyData.cs" />
+    <Compile Include="WebApi\Models\Interfaces\IHourlyData.cs" />
+    <Compile Include="WebApi\Models\DataTransferObjects\DailyForecast.cs" />
     <Compile Include="WebApi\Models\Enums\WeatherDataType.cs" />
+    <Compile Include="WebApi\Models\DataTransferObjects\HourlyForecast.cs" />
     <Compile Include="WebApi\Models\Interfaces\IWeatherData.cs" />
     <Compile Include="WebApi\Models\Enums\Units.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\City.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\Coordinates.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\ForecastData.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\Internal.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\Main.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\Rain.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\Snow.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\WeatherData.cs" />
-    <Compile Include="WebApi\Models\TransferDataStructs\Wind.cs" />
-    <Compile Include="WebApi\Models\WeatherForecastTransferDataObject.cs" />
+    <Compile Include="WebApi\Models\Utils.cs" />
     <Compile Include="WebApi\WeatherApi.cs" />
     <Page Include="Controls\SearchTextBox.xaml">
       <SubType>Designer</SubType>
@@ -180,7 +179,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="WebApi\IWeatherApi.cs" />
-    <Compile Include="WebApi\Models\CurrentWeatherTransferDataObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

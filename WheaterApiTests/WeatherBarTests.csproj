@@ -9,8 +9,8 @@
     <ProjectGuid>{BEB84CAE-0F7A-47F3-A49E-35EDB726B825}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WeatherApiTests</RootNamespace>
-    <AssemblyName>WeatherApiTests</AssemblyName>
+    <RootNamespace>WeatherBarTests</RootNamespace>
+    <AssemblyName>WeatherBarTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

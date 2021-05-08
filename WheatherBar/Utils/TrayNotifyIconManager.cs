@@ -30,14 +30,14 @@ namespace WeatherBar.Utils
             {
                 if (trayNotifyIconInstance == null)
                 {
-                    trayNotifyIconInstance =  new TrayNotifyIconManager();
+                    trayNotifyIconInstance = new TrayNotifyIconManager();
                 }
 
                 return trayNotifyIconInstance;
             }
         }
 
-        public bool IsIconVisible
+        public bool IsVisible
         {
             get
             {

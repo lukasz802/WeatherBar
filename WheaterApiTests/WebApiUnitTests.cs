@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WeatherBar.WebApi;
 
-namespace WheaterApiTests
+namespace WeatherBarTests
 {
     [TestClass]
     public class WebApiUnitTests
@@ -25,7 +25,7 @@ namespace WheaterApiTests
             WeatherApi client = new WeatherApi("c5976f0996947c1488798209b0bc3f77");
 
             //Assert
-            Assert.ThrowsException<HttpOperationException>(() => client.GetWeatherForecastData("AA"));
+            Assert.ThrowsException<HttpOperationException>(() => client.GetFourDaysForecastData("AA"));
         }
     }
 }

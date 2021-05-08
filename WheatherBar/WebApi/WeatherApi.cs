@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WeatherBar.WebApi.Models;
 using WeatherBar.WebApi.Models.Enums;
 using WeatherBar.WebApi.Models.Interfaces;
+using WeatherBar.WebApi.Models.Converters;
 
 namespace WeatherBar.WebApi
 {
@@ -40,14 +40,17 @@ namespace WeatherBar.WebApi
         /// <summary>
         /// Get current weather data.
         /// </summary>
-        public CurrentWeatherData GetCurrentWeatherData(string cityName)
+        public IHourlyData GetCurrentWeatherData(string cityName)
         {
-            return Task.Factory.StartNew(() => GetCurrentWeatherDataBodyAsync(cityName)).Unwrap().GetAwaiter().GetResult();
+            return Task.Run(() => GetCurrentWeatherDataBodyAsync(cityName)).GetAwaiter().GetResult();
         }
 
-        public WeatherForecastData GetWeatherForecastData(string cityName)
+        /// <summary>
+        /// Get four days forecast data.
+        /// </summary>
+        public IFourDaysData GetFourDaysForecastData(string cityName)
         {
-            return Task.Factory.StartNew(() => GetWeatherForecastDataBodyAsync(cityName)).Unwrap().GetAwaiter().GetResult();
+            return Task.Run(() => GetWeatherForecastDataBodyAsync(cityName)).GetAwaiter().GetResult();
         }
 
         #endregion
@@ -79,8 +82,8 @@ namespace WeatherBar.WebApi
 
                         try
                         {
-                            return weatherDataType == WeatherDataType.CurrentWeather ? SafeJsonConvert.DeserializeObject<CurrentWeatherData>(responseContent)
-                                : (IWeatherData)SafeJsonConvert.DeserializeObject<WeatherForecastData>(responseContent);
+                            return weatherDataType == WeatherDataType.CurrentWeather ? SafeJsonConvert.DeserializeObject<IHourlyData>(responseContent, new CurrentWeatherDataConverter())
+                                : SafeJsonConvert.DeserializeObject<IFourDaysData>(responseContent, new FourDaysForecastDataConverter()) as IWeatherData;
                         }
                         catch (JsonException ex)
                         {
@@ -96,14 +99,14 @@ namespace WeatherBar.WebApi
             }
         }
 
-        private async Task<CurrentWeatherData> GetCurrentWeatherDataBodyAsync(string cityName)
+        private async Task<IHourlyData> GetCurrentWeatherDataBodyAsync(string cityName)
         {
-            return (CurrentWeatherData) await GetForecastDataAsync(WeatherDataType.CurrentWeather, cityName);
+            return (IHourlyData) await GetForecastDataAsync(WeatherDataType.CurrentWeather, cityName);
         }
 
-        private async Task<WeatherForecastData> GetWeatherForecastDataBodyAsync(string cityName)
+        private async Task<IFourDaysData> GetWeatherForecastDataBodyAsync(string cityName)
         {
-            return (WeatherForecastData) await GetForecastDataAsync(WeatherDataType.WeatherForecast, cityName);
+            return (IFourDaysData) await GetForecastDataAsync(WeatherDataType.WeatherForecast, cityName);
         }
 
         #endregion

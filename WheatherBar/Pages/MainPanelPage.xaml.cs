@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Controls;
@@ -17,6 +15,7 @@ namespace WeatherBar.Pages
         public MainPanelPage()
         {
             InitializeComponent();
+            ForecastTypeComboBox.SelectionChanged += ForecastTypeComboBox_Selected;
         }
 
         #endregion
@@ -40,6 +39,7 @@ namespace WeatherBar.Pages
                 case Key.Left:
                 case Key.Right:
                 case Key.Delete:
+                case Key.OemMinus:
                     break;
                 default:
                     if (e.Key.ToString().Length != 1)
@@ -61,9 +61,41 @@ namespace WeatherBar.Pages
             ((CommandListBox)sender).UnselectAll();
         }
 
-        private void ForecastListBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void ListBox_PreviewMouseButtonDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void HourlyListBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ((Button)sender).IsEnabled = false;
+
+            if (sender == NextButton)
+            {
+                PreviousButton.IsEnabled = true;
+            }
+            else if (sender == PreviousButton)
+            {
+                NextButton.IsEnabled = true;
+            }
+        }
+
+        private void ForecastTypeComboBox_Selected(object sender, RoutedEventArgs e)
+        {
+            if (((ComboBox)sender).SelectedIndex == 1)
+            {
+                MouseButtonEventArgs arg = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Button.ClickEvent
+                };
+
+                PreviousButton.RaiseEvent(arg);
+            }
         }
 
         #endregion

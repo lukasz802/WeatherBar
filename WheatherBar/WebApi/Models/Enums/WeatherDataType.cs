@@ -1,9 +1,8 @@
 ﻿namespace WeatherBar.WebApi.Models.Enums
 {
-    public enum WeatherDataType
+    internal enum WeatherDataType
     {
         CurrentWeather,
         WeatherForecast,
-
     }
 }

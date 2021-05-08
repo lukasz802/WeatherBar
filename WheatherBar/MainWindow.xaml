@@ -57,11 +57,12 @@
                x:Name="LoadingFrame">
             <Frame.Style>
                 <Style TargetType="Frame">
+                    <Setter Property="Visibility" Value="Visible"/>
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsReady}" Value="False"/>
-                                <Condition Binding="{Binding IsStarted}" Value="True"/>
+                                <Condition Binding="{Binding HasStarted}" Value="True"/>
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard>
@@ -274,6 +275,7 @@
                     Style="{StaticResource MenuBarControlButtonStyle}"
                     Command="{Binding RefreshCommand}"
                     CommandParameter="{Binding CityName}"
+                    Click="RefreshButton_Click"
                     Width="40" Height="40" ToolTip="Odśwież">
                 <Viewbox Width="16">
                     <Grid>
