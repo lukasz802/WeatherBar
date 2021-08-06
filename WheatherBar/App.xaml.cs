@@ -11,8 +11,6 @@ namespace WeatherBar
     {
         #region Fields
 
-        private const string UniqueApiKey = "c5976f0996947c1488798209b0bc3f77";
-
         private static WeatherApi client;
 
         #endregion
@@ -25,7 +23,7 @@ namespace WeatherBar
             {
                 if (client == null)
                 {
-                    client = new WeatherApi(UniqueApiKey, Units.Metric);
+                    client = new WeatherApi(Units.Metric);
                 }
 
                 return client;

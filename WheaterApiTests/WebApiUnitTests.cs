@@ -12,7 +12,7 @@ namespace WeatherBarTests
         public void HttpOperationException_TestMethod_1()
         {
             //Arrange
-            WeatherApi client = new WeatherApi("c5976f0996947c1488798209b0bc3f77");
+            WeatherApi client = new WeatherApi();
 
             //Assert
             Assert.ThrowsException<HttpOperationException>(() => client.GetCurrentWeatherData("AA"));
@@ -22,7 +22,7 @@ namespace WeatherBarTests
         public void HttpOperationException_TestMethod_2()
         {
             //Arrange
-            WeatherApi client = new WeatherApi("c5976f0996947c1488798209b0bc3f77");
+            WeatherApi client = new WeatherApi();
 
             //Assert
             Assert.ThrowsException<HttpOperationException>(() => client.GetFourDaysForecastData("AA"));

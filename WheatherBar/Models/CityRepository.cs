@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace WeatherBar.Models
@@ -39,18 +38,17 @@ namespace WeatherBar.Models
 
         public async Task<IEnumerable<City>> GetAllAsync()
         {
-            return await Task.Factory.StartNew(() => GetSqliteCommandResult("SELECT * FROM CITYLIST"));
+            return await Task.Run(() => GetSqliteCommandResult("SELECT * FROM CITYLIST"));
         }
 
         public IEnumerable<City> GetAllWithName(string cityName)
         {
-            return GetSqliteCommandResult(PrepareGetAllWithNameComamnd(cityName.ToLower().Trim()));
+            return GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim()));
         }
 
         public async Task<IEnumerable<City>> GetAllWithNameAsync(string cityName)
         {
-            return await Task.Factory.StartNew(
-                () => GetSqliteCommandResult(PrepareGetAllWithNameComamnd(cityName.ToLower().Trim())));
+            return await Task.Run(() => GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim())));
         }
 
         public void Dispose()
@@ -87,7 +85,7 @@ namespace WeatherBar.Models
             }
         }
 
-        private string PrepareGetAllWithNameComamnd(string cityName)
+        private string PrepareGetAllWithNameCommand(string cityName)
         {
             var charToCheck = new List<char>() { 'l', 'a', 'c', 'e', 'o', 'n', 's', 'z', };
             var rootCommand = "SELECT * FROM CITYLIST WHERE";

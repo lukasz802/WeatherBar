@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Controls;
+using WeatherBar.Utils;
+using WeatherBar.ViewModels;
 
 namespace WeatherBar.Pages
 {
@@ -53,20 +55,16 @@ namespace WeatherBar.Pages
 
         private void SearchUserControl_SearchClick(object sender, RoutedEventArgs e)
         {
-            ((SearchTextBox)sender).SearchTextBoxControl.Clear();
-        }
-
-        private void ForecastListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ((CommandListBox)sender).UnselectAll();
+            if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
+            {
+                ((SearchTextBox)sender).SearchTextBoxControl.Clear();
+                var vm = (MainViewModel)(App.Current.MainWindow.FindName("MainPanelFrame") as Frame).DataContext;
+                SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
+                SharedFunctions.RaiseEventWithDelay(() => vm.IsForecastPanelVisible = false, 50);
+            }
         }
 
         private void ListBox_PreviewMouseButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true;
-        }
-
-        private void HourlyListBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
         }
@@ -87,15 +85,25 @@ namespace WeatherBar.Pages
 
         private void ForecastTypeComboBox_Selected(object sender, RoutedEventArgs e)
         {
-            if (((ComboBox)sender).SelectedIndex == 1)
+            SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton));
+        }
+
+        private void ButtonPressAction(Button button)
+        {
+            if (button.IsEnabled)
             {
                 MouseButtonEventArgs arg = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
                 {
                     RoutedEvent = Button.ClickEvent
                 };
 
-                PreviousButton.RaiseEvent(arg);
+                button.RaiseEvent(arg);
             }
+        }
+
+        private void ForecastListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((ListBox)sender).UnselectAll();
         }
 
         #endregion

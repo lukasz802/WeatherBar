@@ -7,7 +7,8 @@
         mc:Ignorable="d" ResizeMode="CanMinimize"
         SnapsToDevicePixels="True" StateChanged="Window_StateChanged"
         FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
-        Title="WeatherBar" Height="450" Width="450">
+        Title="WeatherBar" Height="450" Width="450"
+        PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="FontSize" Value="11"/>
@@ -67,7 +68,7 @@
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard TargetProperty="Opacity">
-                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.15"/>
+                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                                 <BeginStoryboard>
@@ -81,12 +82,12 @@
                             <MultiDataTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard TargetProperty="Opacity">
-                                        <DoubleAnimation From="1" To="0" Duration="0:0:0.15"/>
+                                        <DoubleAnimation From="1" To="0" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.25" Storyboard.TargetProperty="(Visibility)">
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
@@ -109,11 +110,55 @@
                 </Style>
             </Frame.Style>
         </Frame>
+        <Frame Panel.ZIndex="1" Source="Pages/NotFoundPage.xaml"
+               x:Name="NotFoundFrame">
+            <Frame.Style>
+                <Style TargetType="Frame">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResourceFounded}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="1" To="0" Duration="0:0:0.15"
+                                                         BeginTime="0:0:0.0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.25" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.0"
+                                                         BeginTime="0:0:0.0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Frame.Style>
+        </Frame>
         <Frame Panel.ZIndex="1" Source="Pages/ForecastPage.xaml"
                x:Name="ForecastFrame" Opacity="0">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
                         <Trigger Property="Opacity" Value="0">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </Trigger>
@@ -215,7 +260,7 @@
                                     <GeometryDrawing>
                                         <GeometryDrawing.Pen>
                                             <Pen Brush="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}"
-                                                 Thickness="0.35"/>
+                                                 Thickness="0.5"/>
                                         </GeometryDrawing.Pen>
                                         <GeometryDrawing.Geometry>
                                             <PathGeometry>
@@ -272,7 +317,6 @@
                 </Viewbox>
             </Button>
             <Button x:Name="RefreshButton" HorizontalAlignment="Left"
-                    Style="{StaticResource MenuBarControlButtonStyle}"
                     Command="{Binding RefreshCommand}"
                     CommandParameter="{Binding CityName}"
                     Click="RefreshButton_Click"
@@ -289,6 +333,38 @@
 			                            C142.258,462.278,49.724,369.742,49.724,256.001z"/>
                     </Grid>
                 </Viewbox>
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource MenuBarControlButtonStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ResourceFounded}" Value="False">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard TargetProperty="Opacity">
+                                            <DoubleAnimation From="0" To="1" Duration="0:0:0.15"
+                                                         BeginTime="0:0:0.0"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
             </Button>
         </StackPanel>
         <Grid Margin="0,0,0,4" VerticalAlignment="Bottom"
@@ -321,6 +397,35 @@
                     <GradientStop Offset="1.0" Color="Black"/>
                 </LinearGradientBrush>
             </Image.OpacityMask>
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="0" KernelType="Gaussian"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Effect.Radius">
+                                        <DoubleAnimation From="0" To="10" Duration="0:0:0.6"
+                                                         BeginTime="0:0:0.0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Effect.Radius">
+                                        <DoubleAnimation From="10" To="0" Duration="0:0:0.6"
+                                                         BeginTime="0:0:0.0"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
         </Image>
     </Grid>
 </Window>

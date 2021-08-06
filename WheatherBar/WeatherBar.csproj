@@ -126,10 +126,14 @@
     <Compile Include="Pages\MainPanelPage.xaml.cs">
       <DependentUpon>MainPanelPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\NotFoundPage.xaml.cs">
+      <DependentUpon>NotFoundPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="Utils\SharedFunctions.cs" />
     <Compile Include="Utils\TrayNotifyIconManager.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="WebApi\Models\Converters\AppConfigConverter.cs" />
     <Compile Include="WebApi\Models\Converters\CurrentWeatherDataConverter.cs" />
     <Compile Include="WebApi\Models\Converters\FourDaysForecastDataConverter.cs" />
     <Compile Include="WebApi\Models\DataTransferObjects\FourDaysForecast.cs" />
@@ -173,6 +177,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\MainPanelPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\NotFoundPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -235,6 +243,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CityList.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

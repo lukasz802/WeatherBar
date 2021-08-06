@@ -144,6 +144,7 @@ namespace WeatherBar.Controls
             if (Command != null)
             {
                 ICommand command = Command;
+
                 if (command.CanExecute(CommandParameter))
                 {
                     command.Execute(CommandParameter);

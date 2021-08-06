@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 using WeatherBar.WebApi.Models.Enums;
 using WeatherBar.WebApi.Models.Interfaces;
 using WeatherBar.WebApi.Models.Converters;
+using System.IO;
 
 namespace WeatherBar.WebApi
 {
     public class WeatherApi : ServiceClient<WeatherApi>, IWeatherApi
     {
+        #region Fields and constants
+
+        private const string ConfigFileName = "config.json";
+
+        #endregion
 
         #region Properties
 
@@ -26,10 +32,10 @@ namespace WeatherBar.WebApi
         /// <summary>
         /// Initializes a new instance of the MyAPI class.
         /// </summary>
-        public WeatherApi(string apiKey, Units units = Units.Standard) : base()
+        public WeatherApi(Units units = Units.Standard) : base()
         {
             HttpClient.Timeout = TimeSpan.FromSeconds(5);
-            this.ApiKey = apiKey;
+            this.ApiKey = GetUniqueApiKey();
             this.Units = units;
         }
 
@@ -107,6 +113,14 @@ namespace WeatherBar.WebApi
         private async Task<IFourDaysData> GetWeatherForecastDataBodyAsync(string cityName)
         {
             return (IFourDaysData) await GetForecastDataAsync(WeatherDataType.WeatherForecast, cityName);
+        }
+
+        private string GetUniqueApiKey()
+        {
+            using (var stream = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName)))
+            {
+                return SafeJsonConvert.DeserializeObject<string>(stream.ReadToEnd(), new AppConfigConvrter());
+            }
         }
 
         #endregion

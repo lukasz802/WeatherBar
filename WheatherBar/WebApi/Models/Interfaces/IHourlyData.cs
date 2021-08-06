@@ -16,6 +16,10 @@
 
         string DayTime { get; set; }
 
+        string Date { get; set; }
+
+        string WeekDay { get; set; }
+
         string SunsetTime { get; set; }
 
         string SunriseTime { get; set; }

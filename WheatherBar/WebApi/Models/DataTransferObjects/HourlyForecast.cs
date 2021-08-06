@@ -20,6 +20,8 @@ namespace WeatherBar.WebApi.Models.DataTransferObjects
 
         public double RainFall { get; set; }
 
+        public string Date { get; set; }
+
         public string DayTime { get; set; }
 
         public string SunsetTime { get; set; }
@@ -41,6 +43,8 @@ namespace WeatherBar.WebApi.Models.DataTransferObjects
         public int WindAngle { get; set; }
 
         public string Icon { get; set; }
+
+        public string WeekDay { get ; set ; }
 
         #endregion
 

@@ -33,8 +33,8 @@ namespace WeatherBar.WebApi.Models.Converters
                 transferObject.FeelTemp = Convert.ToInt32(item["main"]["feels_like"].ToObject<double>());
                 transferObject.Pressure = Convert.ToInt32(item["main"]["pressure"].ToObject<int>());
                 transferObject.Humidity = Convert.ToInt32(item["main"]["humidity"].ToObject<int>());
-                transferObject.RainFall = Math.Round(Convert.ToDouble(item["rain"]?.Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>()), 2);
-                transferObject.SnowFall = Math.Round(Convert.ToDouble(item["snow"]?.Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>()), 2);
+                transferObject.RainFall = Math.Round(Convert.ToDouble(item["rain"]?.Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>()), 1);
+                transferObject.SnowFall = Math.Round(Convert.ToDouble(item["snow"]?.Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>()), 1);
                 transferObject.WindAngle = Convert.ToInt32(item["wind"]["deg"].ToObject<int>() - 180);
                 transferObject.WindSpeed = Convert.ToInt32(item["wind"]["speed"].ToObject<double>() * 3.6);
                 transferObject.Description =

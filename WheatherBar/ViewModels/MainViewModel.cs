@@ -11,6 +11,7 @@ using WeatherBar.Utils;
 using System.Diagnostics;
 using WeatherBar.WebApi.Models.Interfaces;
 using WeatherBar.WebApi.Models.Factories;
+using Microsoft.Rest;
 
 namespace WeatherBar.ViewModels
 {
@@ -22,11 +23,15 @@ namespace WeatherBar.ViewModels
 
         private IHourlyData currentWeatherData = WeatherDataFactory.GetHourlyDataTransferObject();
 
+        private IFourDaysData weatherForecastData;
+
         private bool isReady;
 
         private bool isConnected;
 
         private bool hasStarted;
+
+        private bool resourceFounded;
 
         private bool isForecastPanelVisible;
 
@@ -49,8 +54,6 @@ namespace WeatherBar.ViewModels
         public ICommand SearchCommand { get; private set; }
 
         public ICommand ShowForecastCommand { get; private set; }
-
-        public ICommand ShowHourlyWeatherCommand { get; private set; }
 
         public ICommand ReturnToMainPanelCommand { get; private set; }
 
@@ -76,6 +79,19 @@ namespace WeatherBar.ViewModels
             private set
             {
                 hasStarted = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool ResourceFounded
+        {
+            get
+            {
+                return resourceFounded;
+            }
+            private set
+            {
+                resourceFounded = value;
                 OnPropertyChanged();
             }
         }
@@ -257,12 +273,15 @@ namespace WeatherBar.ViewModels
 
         public Tuple<List<IHourlyData>, List<IHourlyData>> HourlyForecast { get; private set; }
 
+        public List<IHourlyData> DailyForecast { get; private set; }
+
         #endregion
 
         #region Constructors
 
         public MainViewModel()
         {
+            this.ResourceFounded = true;
             this.IsReady = false;
             this.HasStarted = false;
             this.IsConnected = true;
@@ -271,9 +290,8 @@ namespace WeatherBar.ViewModels
             this.OpenSiteCommand = new RelayCommand((o) => OpenWeathermapSite());
             this.RefreshCommand = new RelayCommand((o) => Refresh(CityName));
             this.SearchCommand = new RelayCommand((o) => Refresh(o), (o) => !string.IsNullOrWhiteSpace((string)o));
-            this.ShowForecastCommand = new RelayCommand(ShowForecast);
+            this.ShowForecastCommand = new RelayCommand(ShowForecast, (o) => o != null && (int)o != -1);
             this.ReturnToMainPanelCommand = new RelayCommand(ReturnToMainPanel);
-            this.ShowHourlyWeatherCommand = new RelayCommand(ShowHourlyWeather, (o) => o != null);
 
             Refresh(CityName);
             StartAutoUpdateEvent();
@@ -309,15 +327,14 @@ namespace WeatherBar.ViewModels
         private void ReturnToMainPanel(object obj)
         {
             this.IsForecastPanelVisible = false;
+            this.ResourceFounded = true;
         }
 
         private void ShowForecast(object obj)
         {
+            DailyForecast = SharedFunctions.GetHourlyForecastForSpecificDate(weatherForecastData.HourlyData, DateTime.Now.AddDays((int)obj + 1).ToString("dd MMMM")).ToList();
+            OnPropertyChanged("DailyForecast");
             this.IsForecastPanelVisible = true;
-        }
-
-        private void ShowHourlyWeather(object obj)
-        {
         }
 
         private void ShowMap()
@@ -345,7 +362,6 @@ namespace WeatherBar.ViewModels
             if (e.Cancelled)
             {
                 IsReady = true;
-                IsConnected = false;
                 return;
             }
 
@@ -357,17 +373,22 @@ namespace WeatherBar.ViewModels
         {
             try
             {
-                System.Threading.Thread.Sleep(350);
+                System.Threading.Thread.Sleep(HasStarted ? 500 : 2000);
 
-                var weatherForecastData = App.WebApiClient.GetFourDaysForecastData(cityName);
+                weatherForecastData = App.WebApiClient.GetFourDaysForecastData(cityName);
                 currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
-                HourlyForecast = new Tuple<List<IHourlyData>, List<IHourlyData>>(
-                    weatherForecastData.HourlyData.Take(5).ToList(), weatherForecastData.HourlyData.Skip(5).ToList());
+                HourlyForecast = SharedFunctions.GetHourlyForecast(weatherForecastData.HourlyData);
                 FourDaysForecast = weatherForecastData.DailyData.ToList();
                 IsConnected = true;
             }
+            catch (HttpOperationException)
+            {
+                ResourceFounded = false;
+                e.Cancel = true;
+            }
             catch (TaskCanceledException)
             {
+                IsConnected = false;
                 e.Cancel = true;
             }
         }

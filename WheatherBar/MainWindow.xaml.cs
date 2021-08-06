@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
+using System.Windows.Media.Animation;
 using WeatherBar.Utils;
 using WeatherBar.ViewModels;
 
@@ -46,6 +46,30 @@ namespace WeatherBar
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             TrayNotifyIconManager.TrayNotifyIconInstance.Update();
+
+            if (e.PropertyName == "HasStarted" && viewModel.HasStarted)
+            {
+                SharedFunctions.RaiseEventWithDelay(LoadingFrameVisibilityVerication, 1000);
+            }
+        }
+
+        private void LoadingFrameVisibilityVerication()
+        {
+            if (LoadingFrame.Visibility == Visibility.Visible)
+            {
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0,
+                    Duration = new Duration(TimeSpan.Parse("0:0:0.2"))
+                };
+
+                LoadingFrame.BeginAnimation(OpacityProperty, animation);
+                SharedFunctions.RaiseEventWithDelay(() =>
+                {
+                    LoadingFrame.Visibility = Visibility.Hidden;
+                }, 300);
+            }
         }
 
         private void TrayNotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -83,30 +107,32 @@ namespace WeatherBar
             }
         }
 
+        private void ButtonPressAction()
+        {
+            var prevButton = ((FrameworkElement)MainPanelFrame.Content).FindName("PreviousButton") as Button;
+
+            if (prevButton.IsEnabled)
+            {
+                MouseButtonEventArgs arg = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Button.ClickEvent
+                };
+
+                prevButton.RaiseEvent(arg);
+            }
+        }
+
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            var timer = new DispatcherTimer
+            SharedFunctions.RaiseEventWithDelay(ButtonPressAction, 200);
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
             {
-                Interval = TimeSpan.FromMilliseconds(100)
-            };
-
-            timer.Start();
-            timer.Tick += (s, a) =>
-            {
-                timer.Stop();
-
-                var prevButton = ((FrameworkElement)MainPanelFrame.Content).FindName("PreviousButton") as Button;
-
-                if (prevButton.IsEnabled)
-                {
-                    MouseButtonEventArgs arg = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
-                    {
-                        RoutedEvent = Button.ClickEvent
-                    };
-
-                    prevButton.RaiseEvent(arg);
-                }
-            };
+                e.Handled = true;
+            }
         }
 
         #endregion

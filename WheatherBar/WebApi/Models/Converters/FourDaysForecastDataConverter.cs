@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using WeatherBar.WebApi.Models.Factories;
 using WeatherBar.WebApi.Models.Interfaces;
 
@@ -51,22 +52,26 @@ namespace WeatherBar.WebApi.Models.Converters
         {
             var result = new List<IHourlyData>();
 
-            foreach (var item in ((JArray)weatherForecastData["list"]).Take(10))
+            foreach (var item in ((JArray)weatherForecastData["list"]).Take(40))
             {
                 IHourlyData transferObject = WeatherDataFactory.GetHourlyDataTransferObject();
+                DateTime localDate = item["dt_txt"].ToObject<DateTime>();
 
                 transferObject.AvgTemp = Convert.ToInt32(item["main"]["temp"].ToObject<double>());
                 transferObject.FeelTemp = Convert.ToInt32(item["main"]["feels_like"].ToObject<double>());
                 transferObject.Pressure = Convert.ToInt32(item["main"]["pressure"].ToObject<int>());
                 transferObject.Humidity = Convert.ToInt32(item["main"]["humidity"].ToObject<int>());
-                transferObject.RainFall = Math.Round(Convert.ToDouble(item["rain"]?.Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>()), 2);
-                transferObject.SnowFall = Math.Round(Convert.ToDouble(item["snow"]?.Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>()), 2);
+                transferObject.RainFall = Math.Round(Convert.ToDouble(item["rain"]?.Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>()), 1);
+                transferObject.SnowFall = Math.Round(Convert.ToDouble(item["snow"]?.Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>()), 1);
                 transferObject.WindAngle = Convert.ToInt32(item["wind"]["deg"].ToObject<int>() - 180);
                 transferObject.WindSpeed = Convert.ToInt32(item["wind"]["speed"].ToObject<double>() * 3.6);
                 transferObject.Description =
                         ((JArray)item["weather"])[0]["description"].ToObject<string>().FirstOrDefault().ToString().ToUpper() + ((JArray)item["weather"])[0]["description"].ToObject<string>().Substring(1);
                 transferObject.Icon = ((JArray)item["weather"])[0]["icon"].ToObject<string>();
                 transferObject.DayTime = (Utils.UnixTimeStampToDateTime(item["dt"].ToObject<long>()) + DateTimeOffset.Now.Offset).ToString("HH:mm");
+                transferObject.Date = localDate.ToString("dd MMMM").First() == '0' ? localDate.ToString("dd MMMM").Remove(0,1) : localDate.ToString("dd MMMM");
+                transferObject.WeekDay = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.GetDayName(localDate.DayOfWeek).FirstOrDefault().ToString().ToUpper() +
+                    Thread.CurrentThread.CurrentUICulture.DateTimeFormat.GetDayName(localDate.DayOfWeek).Substring(1);
 
                 result.Add(transferObject);
             }
@@ -104,8 +109,8 @@ namespace WeatherBar.WebApi.Models.Converters
                                                           select value["main"]["temp"].ToObject<double>()).Min());
                 transferObject.Date = DateTimeFormatInfo.CurrentInfo.GetAbbreviatedDayName(weekDay) + ", " +
                            int.Parse(local.Groups["Day"].Value).ToString() + " " + DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(int.Parse(local.Groups["Month"].Value));
-                transferObject.Description = (DateTimeFormatInfo.CurrentInfo.GetDayName(weekDay).First().ToString().ToUpper() +
-                           DateTimeFormatInfo.CurrentInfo.GetDayName(weekDay).Substring(1)) + ", " +
+                transferObject.Description = DateTimeFormatInfo.CurrentInfo.GetDayName(weekDay).First().ToString().ToUpper() +
+                           DateTimeFormatInfo.CurrentInfo.GetDayName(weekDay).Substring(1) + ", " +
                            ((JArray)groupingElement.FirstOrDefault()["weather"])[0]["description"].ToObject<string>();
 
                 result.Add(transferObject);
