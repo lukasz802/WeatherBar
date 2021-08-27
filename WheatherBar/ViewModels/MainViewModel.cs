@@ -9,9 +9,11 @@ using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
 using WeatherBar.Utils;
 using System.Diagnostics;
-using WeatherBar.WebApi.Models.Interfaces;
-using WeatherBar.WebApi.Models.Factories;
+using WebApi.Models.Interfaces;
+using WebApi.Models.Factories;
 using Microsoft.Rest;
+using WeatherBar.Models.Repositories;
+using System.Collections.ObjectModel;
 
 namespace WeatherBar.ViewModels
 {
@@ -19,7 +21,11 @@ namespace WeatherBar.ViewModels
     {
         #region Fields
 
+        private static int queryCounter = 0;
+
         private readonly Timer autoUpdateTimer = new Timer();
+
+        private readonly CityRepository cityRepository = new CityRepository();
 
         private IHourlyData currentWeatherData = WeatherDataFactory.GetHourlyDataTransferObject();
 
@@ -34,6 +40,8 @@ namespace WeatherBar.ViewModels
         private bool resourceFounded;
 
         private bool isForecastPanelVisible;
+
+        private ObservableCollection<KeyValuePair<string, string>> queryResult;
 
         #endregion
 
@@ -53,16 +61,15 @@ namespace WeatherBar.ViewModels
 
         public ICommand SearchCommand { get; private set; }
 
+        public ICommand QueryCommand { get; private set; }
+
         public ICommand ShowForecastCommand { get; private set; }
 
         public ICommand ReturnToMainPanelCommand { get; private set; }
 
         public bool IsReady
         {
-            get
-            {
-                return isReady;
-            }
+            get => isReady;
             private set
             {
                 isReady = value;
@@ -72,10 +79,7 @@ namespace WeatherBar.ViewModels
 
         public bool HasStarted
         {
-            get
-            {
-                return hasStarted;
-            }
+            get => hasStarted;
             private set
             {
                 hasStarted = value;
@@ -85,10 +89,7 @@ namespace WeatherBar.ViewModels
 
         public bool ResourceFounded
         {
-            get
-            {
-                return resourceFounded;
-            }
+            get => resourceFounded;
             private set
             {
                 resourceFounded = value;
@@ -98,10 +99,7 @@ namespace WeatherBar.ViewModels
 
         public bool IsConnected
         {
-            get
-            {
-                return isConnected;
-            }
+            get => isConnected;
             private set
             {
                 isConnected = value;
@@ -111,10 +109,7 @@ namespace WeatherBar.ViewModels
 
         public bool IsForecastPanelVisible
         {
-            get
-            {
-                return isForecastPanelVisible;
-            }
+            get => isForecastPanelVisible;
             set
             {
                 isForecastPanelVisible = value;
@@ -122,147 +117,45 @@ namespace WeatherBar.ViewModels
             }
         }
 
-        public string CityName
-        {
-            get
-            {
-                return currentWeatherData.CityName;
-            }
-        }
+        public string CityName => currentWeatherData.CityName;
 
-        public string Description
-        {
-            get
-            {
-                return currentWeatherData.Description;
-            }
-        }
+        public string Description => currentWeatherData.Description;
 
-        public int AvgTemp
-        {
-            get
-            {
-                return currentWeatherData.AvgTemp;
-            }
-        }
+        public int AvgTemp => currentWeatherData.AvgTemp;
 
-        public int FeelTemp
-        {
-            get
-            {
-                return currentWeatherData.FeelTemp;
-            }
-        }
+        public int FeelTemp => currentWeatherData.FeelTemp;
 
-        public double SnowFall
-        {
-            get
-            {
-                return currentWeatherData.SnowFall;
-            }
-        }
+        public double SnowFall => currentWeatherData.SnowFall;
 
-        public double RainFall
-        {
-            get
-            {
-                return currentWeatherData.RainFall;
-            }
-        }
+        public double RainFall => currentWeatherData.RainFall;
 
-        public string UpdateTime
-        {
-            get
-            {
-                return DateTime.Now.ToString("HH:mm");
-            }
-        }
+        public string UpdateTime => DateTime.Now.ToString("HH:mm");
 
-        public string SunsetTime
-        {
-            get
-            {
-                return currentWeatherData.SunsetTime;
-            }
-        }
+        public string SunsetTime => currentWeatherData.SunsetTime;
 
-        public string SunriseTime
-        {
-            get
-            {
-                return currentWeatherData.SunriseTime;
-            }
-        }
+        public string SunriseTime => currentWeatherData.SunriseTime;
 
-        public string Country
-        {
-            get
-            {
-                return currentWeatherData.Country;
-            }
-        }
+        public string Country => currentWeatherData.Country;
 
-        public string Longitude
-        {
-            get
-            {
-                return currentWeatherData.Longitude;
-            }
-        }
+        public string Longitude => currentWeatherData.Longitude;
 
-        public string Latitude
-        {
-            get
-            {
-                return currentWeatherData.Latitude;
-            }
-        }
+        public string Latitude => currentWeatherData.Latitude;
 
-        public int Pressure
-        {
-            get
-            {
-                return currentWeatherData.Pressure;
-            }
-        }
+        public int Pressure => currentWeatherData.Pressure;
 
-        public int Humidity
-        {
-            get
-            {
-                return currentWeatherData.Humidity;
-            }
-        }
+        public int Humidity => currentWeatherData.Humidity;
 
-        public int WindSpeed
-        {
-            get
-            {
-                return currentWeatherData.WindSpeed;
-            }
-        }
+        public int WindSpeed => currentWeatherData.WindSpeed;
 
-        public int WindAngle
-        {
-            get
-            {
-                return currentWeatherData.WindAngle;
-            }
-        }
+        public int WindAngle => currentWeatherData.WindAngle;
 
-        public string Icon
-        {
-            get
-            {
-                return currentWeatherData.Icon;
-            }
-        }
+        public string Icon => currentWeatherData.Icon;
 
         public KeyValuePair<BitmapImage, Color> BackgroundImage
         {
             get
             {
-                var imageData = AppData.DataContainer.GetImageWithHexColor(Icon, FeelTemp, Description);
+                var imageData = AppResources.Utils.GetImageWithHexColor(Icon, FeelTemp, Description);
 
                 return new KeyValuePair<BitmapImage, Color>(
                     SharedFunctions.LoadImage(imageData.Key), (Color)ColorConverter.ConvertFromString(imageData.Value));
@@ -275,12 +168,28 @@ namespace WeatherBar.ViewModels
 
         public List<IHourlyData> DailyForecast { get; private set; }
 
+        public ObservableCollection<KeyValuePair<string, string>> QueryResult 
+        {
+            get => queryResult; 
+            private set
+            {
+                queryResult = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Constructors
 
         public MainViewModel()
         {
+            currentWeatherData.CityName = App.WebApiClient.CityName;
+            queryResult = new ObservableCollection<KeyValuePair<string, string>>()
+            { 
+                new KeyValuePair<string, string>("Warszawa, PL", "214. 37' N, 214. 37' E"),
+                new KeyValuePair<string, string>("Warszawa, PL", "214. 37' N, 214. 37' E")
+            };
             this.ResourceFounded = true;
             this.IsReady = false;
             this.HasStarted = false;
@@ -292,6 +201,7 @@ namespace WeatherBar.ViewModels
             this.SearchCommand = new RelayCommand((o) => Refresh(o), (o) => !string.IsNullOrWhiteSpace((string)o));
             this.ShowForecastCommand = new RelayCommand(ShowForecast, (o) => o != null && (int)o != -1);
             this.ReturnToMainPanelCommand = new RelayCommand(ReturnToMainPanel);
+            this.QueryCommand = new RelayCommand(ExecuteQuery, (o) => !string.IsNullOrWhiteSpace((string)o));
 
             Refresh(CityName);
             StartAutoUpdateEvent();
@@ -324,6 +234,20 @@ namespace WeatherBar.ViewModels
 
         #region Private methods
 
+        private void ExecuteQuery(object obj)
+        {
+            using (var queryBackgroundWorker = new BackgroundWorker())
+            {
+                queryBackgroundWorker.DoWork += (s, e) =>
+                {
+                    //queryResult = new ObservableCollection<KeyValuePair<string, string>>(cityRepository.GetAllWithName((string)obj)?.Select(x => new KeyValuePair<string, string>(
+                    //        string.Concat(x.Name, ", ", x.Country), 
+                    //        string.Concat(WebApi.Models.Utils.ConvertCoordinatesFromDecToDeg((double)x.Latitude, false), ", ", WebApi.Models.Utils.ConvertCoordinatesFromDecToDeg((double)x.Longtitude, true)))));
+                };
+                queryBackgroundWorker.RunWorkerAsync();
+            }
+        }
+
         private void ReturnToMainPanel(object obj)
         {
             this.IsForecastPanelVisible = false;
@@ -350,7 +274,7 @@ namespace WeatherBar.ViewModels
         private void StartAutoUpdateEvent()
         {
             autoUpdateTimer.AutoReset = true;
-            autoUpdateTimer.Interval = (int)TimeSpan.FromMinutes(15).TotalMilliseconds;
+            autoUpdateTimer.Interval = (int)TimeSpan.FromMinutes(App.WebApiClient.Interval).TotalMilliseconds;
             autoUpdateTimer.Elapsed += Refresh;
             autoUpdateTimer.Start();
         }

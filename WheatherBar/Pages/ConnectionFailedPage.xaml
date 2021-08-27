@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:WeatherBar.Pages"
       mc:Ignorable="d"
       SnapsToDevicePixels="True"
-      FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
+      FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
       d:DesignHeight="450" d:DesignWidth="450">
     <Grid Background="{StaticResource ConnectionFailBackgroundColorBrush}">
         <Grid Margin="-2,-55,2,55">

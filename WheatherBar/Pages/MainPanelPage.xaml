@@ -7,7 +7,7 @@
       xmlns:c="clr-namespace:WeatherBar.Controls"
       mc:Ignorable="d"
       SnapsToDevicePixels="True"
-      FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
+      FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
       d:DesignHeight="450" d:DesignWidth="450">
     <Page.Resources>
         <Style x:Key="ElementTypeComboBox" TargetType="ComboBox">
@@ -240,11 +240,14 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Panel.ZIndex="1">
-                <c:SearchTextBox x:Name="SearchUserControl" Width="220"
-                             PreviewKeyDown="SearchUserControl_KeyDown"
-                             SearchClick="SearchUserControl_SearchClick"
-                             Command="{Binding SearchCommand}"
-                             CommandParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"/>
+                <c:SearchTextBox x:Name="SearchUserControl" Width="220" Height="32"
+                                 PreviewKeyDown="SearchUserControl_KeyDown"
+                                 SearchClick="SearchUserControl_SearchClick"
+                                 Command="{Binding SearchCommand}"
+                                 CommandParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
+                                 Query="{Binding QueryCommand}"
+                                 QueryParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
+                                 ItemsSource="{Binding QueryResult}"/>
             </Grid>
             <Grid Grid.Row="1" HorizontalAlignment="Stretch">
                 <StackPanel Grid.Row="0" FlowDirection="RightToLeft" Orientation="Horizontal"
@@ -294,17 +297,17 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" FlowDirection="LeftToRight" Orientation="Horizontal"
-                            HorizontalAlignment="Left" Margin="0,28,0,-5">
+                            HorizontalAlignment="Left" Margin="0,28,0,-4">
                         <TextBlock Text="{Binding AvgTemp}"
                                FontSize="96" x:Name ="TempAvgTextBlock" 
                                VerticalAlignment="Center" Foreground="White"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                               FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
                         <TextBlock Text="°" Margin="0,12,0,0" FontSize="48"
                                VerticalAlignment="Top" Foreground="White"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                               FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
                         <TextBlock Text="C" Margin="0,12,0,0" FontSize="48"
                                VerticalAlignment="Top" Foreground="White"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                               FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
                     </StackPanel>
                     <TabControl Grid.Row="0" Margin="0,65,80,0" Width="100" Height="100"
                             HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -408,14 +411,13 @@
                                FontSize="16" x:Name ="TempFeelTextBlock" 
                                VerticalAlignment="Center"
                                Foreground="{StaticResource UpdateInfoColorBrush}"/>
-                        <TextBlock Text="°" Margin="0,2,0,0" FontSize="16"
+                        <TextBlock Text="°" FontSize="16"
                                VerticalAlignment="Top" 
                                Foreground="{StaticResource UpdateInfoColorBrush}"
-                               FontFamily="/Fonts/Roboto-Thin.ttf #Roboto Thin"/>
+                               FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding Description}" Grid.Row="2"
-                           FontSize="20" HorizontalAlignment="Left"
-                           Foreground="White"/>
+                    <TextBlock Text="{Binding Description}" Grid.Row="2" FontSize="20"
+                               HorizontalAlignment="Left" Foreground="White" Margin="0,0,0,5"/>
                     <Grid.Style>
                         <Style TargetType="Grid">
                             <Style.Triggers>
@@ -453,10 +455,10 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
                            TextTrimming="CharacterEllipsis" MaxWidth="240"
-                           FontSize="32" x:Name ="CityTextBlock" 
+                           FontSize="32" x:Name ="CityTextBlock" Margin="0,0,0,5"
                            VerticalAlignment="Center" Foreground="White"
                            SizeChanged="CityTextBlock_SizeChanged"
-                           FontFamily="/Fonts/RobotoCondensed-Regular.ttf #Roboto Light">
+                           FontFamily="/AppResources;Component/Fonts/#Roboto Condensed">
                         <Run Text="{Binding CityName, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding Country, Mode=OneWay}"/>
                     </TextBlock>
                     <WrapPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"
@@ -646,7 +648,8 @@
                             </Style>
                         </WrapPanel.Style>
                     </WrapPanel>
-                    <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal">
+                    <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal"
+                                Margin="0,0.5">
                         <Button Style="{StaticResource FunctionalButtonStyle}" Margin="0,0,6,0"
                                 Background="Transparent" ToolTip="Pokaż na mapie"
                                 Command="{Binding ShowMapCommand}">
@@ -765,7 +768,8 @@
                                   CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedIndex}"
                                   ItemsSource="{Binding FourDaysForecast}"
                                   Background="Transparent" SelectionChanged="ForecastListBox_SelectionChanged"
-                                  PreviewMouseRightButtonDown="ListBox_PreviewMouseButtonDown">
+                                  PreviewMouseRightButtonDown="ListBox_PreviewMouseButtonDown"
+                                  KeyboardNavigation.TabNavigation="None">
                                 <c:CommandListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
@@ -969,7 +973,7 @@
                                             <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
                                                   Data="M57.633,129.007L165.93,237.268c4.752,4.74,12.451,4.74,17.215,0c4.752-4.74,4.752-12.439,0-17.179
 		                                                l-99.707-99.671l99.695-99.671c4.752-4.74,4.752-12.439,0-17.191c-4.752-4.74-12.463-4.74-17.215,0L57.621,111.816
-		                                                C52.942,116.507,52.942,124.327,57.633,129.007z"/>                                                       
+		                                                C52.942,116.507,52.942,124.327,57.633,129.007z"/>
                                         </Viewbox>
                                         <Button.Triggers>
                                             <EventTrigger RoutedEvent="Button.Click">
@@ -1191,194 +1195,194 @@
                                                   VerticalAlignment="Center" Height="69.6"
                                                   ItemsSource="{Binding HourlyForecast.Item2}"
                                                   Background="Transparent" Margin="0,0,0,0" Width="315">
-                                    <c:CommandListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
-                                        </ItemsPanelTemplate>
-                                    </c:CommandListBox.ItemsPanel>
-                                    <c:CommandListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Width="62.5" VerticalAlignment="Center">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="Auto"/>
-                                                </Grid.RowDefinitions>
-                                                <ContentControl Grid.Row="0" Focusable="False"
+                                        <c:CommandListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
+                                            </ItemsPanelTemplate>
+                                        </c:CommandListBox.ItemsPanel>
+                                        <c:CommandListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Width="62.5" VerticalAlignment="Center">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ContentControl Grid.Row="0" Focusable="False"
                                                                 Height="18" Margin="0,2,0,1" HorizontalAlignment="Center" 
                                                                 VerticalAlignment="Center">
-                                                    <ContentControl.Style>
-                                                        <Style TargetType="ContentControl">
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="01d">
-                                                                    <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="01n">
-                                                                    <Setter Property="Content" Value="{StaticResource ClearSkyNightViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="02d">
-                                                                    <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="02n">
-                                                                    <Setter Property="Content" Value="{StaticResource FewCloudsNightViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="03d">
-                                                                    <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="03n">
-                                                                    <Setter Property="Content" Value="{StaticResource ScatteredCloudsNightViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="04d">
-                                                                    <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="04n">
-                                                                    <Setter Property="Content" Value="{StaticResource BrokenCloudsNightViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="09d">
-                                                                    <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="09n">
-                                                                    <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="10n">
-                                                                    <Setter Property="Content" Value="{StaticResource RainNightViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="10d">
-                                                                    <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="11d">
-                                                                    <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="11n">
-                                                                    <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="13d">
-                                                                    <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="13n">
-                                                                    <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="50d">
-                                                                    <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Icon}" Value="50n">
-                                                                    <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </ContentControl.Style>
-                                                </ContentControl>
-                                                <TextBlock Grid.Row="1" FontSize="13.5" VerticalAlignment="Center" 
+                                                        <ContentControl.Style>
+                                                            <Style TargetType="ContentControl">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                                                        <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                                                        <Setter Property="Content" Value="{StaticResource ClearSkyNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                                                        <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                                                        <Setter Property="Content" Value="{StaticResource FewCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                                                        <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                                                        <Setter Property="Content" Value="{StaticResource ScatteredCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                                                        <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                                                        <Setter Property="Content" Value="{StaticResource BrokenCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                                                        <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                                                        <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                                                        <Setter Property="Content" Value="{StaticResource RainNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                                                        <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                                                        <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                                                        <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                                                        <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                                                        <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                                                        <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                                                        <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ContentControl.Style>
+                                                    </ContentControl>
+                                                    <TextBlock Grid.Row="1" FontSize="13.5" VerticalAlignment="Center" 
                                                            HorizontalAlignment="Center" Foreground="White"
                                                            Margin="0,0,0,0">
                                                     <Run Text="{Binding AvgTemp, Mode=OneWay}"/><Run Text="°"/>
-                                                </TextBlock>
-                                                <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0.5">
-                                                    <Viewbox Width="7" Height="7" HorizontalAlignment="Left">
-                                                        <Grid Width="700" Height="700" Margin="-110">
-                                                            <Grid Width="490" Height="490">
-                                                                <Path Fill="LightGray" 
+                                                    </TextBlock>
+                                                    <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0.5">
+                                                        <Viewbox Width="7" Height="7" HorizontalAlignment="Left">
+                                                            <Grid Width="700" Height="700" Margin="-110">
+                                                                <Grid Width="490" Height="490">
+                                                                    <Path Fill="LightGray" 
                                                                       Data="M409.49,485.75l-165-80.9l-165,80.9c-25.3,12.4-52.4-13.1-41.6-39.1l178.5-427.9c10.4-25,45.8-25,56.3,0l178.4,427.9
 			                                                                C461.89,472.55,434.79,498.15,409.49,485.75z"/>
-                                                                <Grid.LayoutTransform>
-                                                                    <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
-                                                                </Grid.LayoutTransform>
+                                                                    <Grid.LayoutTransform>
+                                                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
+                                                                    </Grid.LayoutTransform>
+                                                                </Grid>
                                                             </Grid>
-                                                        </Grid>
-                                                    </Viewbox>
-                                                    <Grid Margin="10,0,0,0">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition/>
-                                                            <ColumnDefinition/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
+                                                        </Viewbox>
+                                                        <Grid Margin="10,0,0,0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
                                                                    FontSize="9.5"
                                                                    VerticalAlignment="Top"
                                                                    Foreground="LightGray"/>
-                                                        <TextBlock Text=" km/h" FontSize="9.5"
+                                                            <TextBlock Text=" km/h" FontSize="9.5"
                                                                    Grid.Column="1"
                                                                    VerticalAlignment="Top"
                                                                    Foreground="LightGray"/>
+                                                        </Grid>
                                                     </Grid>
-                                                </Grid>
-                                                <TextBlock Grid.Row="3" VerticalAlignment="Center"
+                                                    <TextBlock Grid.Row="3" VerticalAlignment="Center"
                                                            HorizontalAlignment="Center" Foreground="{StaticResource UpdateInfoColorBrush}"
                                                            Text="{Binding DayTime}" FontSize="11"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </c:CommandListBox.ItemTemplate>
-                                    <c:CommandListBox.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
+                                                </Grid>
+                                            </DataTemplate>
+                                        </c:CommandListBox.ItemTemplate>
+                                        <c:CommandListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
                                                 <Setter Property="Focusable" Value="False"/>
                                                 <Setter Property="ToolTip">
-                                                <Setter.Value>
-                                                    <Grid>
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition/>
-                                                            <RowDefinition/>
-                                                            <RowDefinition/>
-                                                            <RowDefinition/>
-                                                        </Grid.RowDefinitions>
-                                                        <TextBlock Grid.Row="0">
+                                                    <Setter.Value>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0">
                                                             <Run Text="{Binding Description, Mode=OneWay}"/>
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="1">
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="1">
                                                              <Run Text="Temperatura odczuwalna: "/><Run Text="{Binding FeelTemp, Mode=OneTime}"/><Run Text="°"/>
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="2">
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="2">
                                                             <Run Text="Wielkość opadów deszczu: "/><Run Text="{Binding RainFall, Mode=OneTime}"/><Run Text="mm"/>
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding RainFall}" Value="0">
-                                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
-                                                        <TextBlock Grid.Row="3">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding RainFall}" Value="0">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="3">
                                                             <Run Text="Wielkość opadów śniegu: "/><Run Text="{Binding SnowFall, Mode=OneTime}"/><Run Text="mm"/>
-                                                            <TextBlock.Style>
-                                                                <Style TargetType="TextBlock">
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding SnowFall}" Value="0">
-                                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </TextBlock.Style>
-                                                        </TextBlock>
-                                                    </Grid>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="ListBoxItem">
-                                                        <Border x:Name="Bd" VerticalAlignment="Stretch"
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding SnowFall}" Value="0">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </Grid>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                            <Border x:Name="Bd" VerticalAlignment="Stretch"
                                                                 HorizontalAlignment="Stretch" Background="Transparent">
-                                                            <ContentPresenter VerticalAlignment="Stretch"
+                                                                <ContentPresenter VerticalAlignment="Stretch"
                                                                               HorizontalAlignment="Stretch"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Style.Triggers>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsSelected" Value="True"/>
-                                                    </MultiTrigger.Conditions>
-                                                </MultiTrigger>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="IsSelected" Value="False"/>
-                                                    </MultiTrigger.Conditions>
-                                                </MultiTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </c:CommandListBox.ItemContainerStyle>
-                                </c:CommandListBox>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                        </MultiTrigger.Conditions>
+                                                    </MultiTrigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="False"/>
+                                                        </MultiTrigger.Conditions>
+                                                    </MultiTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </c:CommandListBox.ItemContainerStyle>
+                                    </c:CommandListBox>
                                 </StackPanel>
                                 <Grid Grid.Column="2" Height="16" Margin="0,0,0,0">
                                     <Button Style="{StaticResource FunctionalButtonStyle}" Background="Transparent"
@@ -1411,6 +1415,7 @@
                                     <Style TargetType="Grid">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="1">
+                                                <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                                                 <DataTrigger.EnterActions>
                                                     <BeginStoryboard>
                                                         <Storyboard>

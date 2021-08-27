@@ -1,6 +1,5 @@
 ﻿using System.Windows;
-using WeatherBar.WebApi;
-using WeatherBar.WebApi.Models.Enums;
+using WebApi;
 
 namespace WeatherBar
 {
@@ -23,7 +22,7 @@ namespace WeatherBar
             {
                 if (client == null)
                 {
-                    client = new WeatherApi(Units.Metric);
+                    client = new WeatherApi();
                 }
 
                 return client;

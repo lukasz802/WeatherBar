@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -52,8 +53,36 @@ namespace WeatherBar.Controls
 
         #region Properties implementation
 
+        public IEnumerable ItemsSource
+        {
+            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(SearchTextBox));
+
+
+        public static readonly DependencyProperty QueryProperty =
+            DependencyProperty.Register("Query", typeof(ICommand), typeof(SearchTextBox));
+
+        public ICommand Query
+        {
+            get { return (ICommand)GetValue(QueryProperty); }
+            set { SetValue(QueryProperty, value); }
+        }
+
         public static readonly DependencyProperty CommandProperty =
            DependencyProperty.Register("Command", typeof(ICommand), typeof(SearchTextBox));
+
+        public static readonly DependencyProperty QueryParameterProperty =
+            DependencyProperty.Register("QueryParameter", typeof(object), typeof(SearchTextBox));
+
+        public object QueryParameter
+        {
+            get { return (object)GetValue(QueryParameterProperty); }
+            set { SetValue(QueryParameterProperty, value); }
+        }
 
         public ICommand Command
         {
@@ -166,6 +195,17 @@ namespace WeatherBar.Controls
         {
             e.Handled = true;
             Text = SearchTextBoxControl.Text;
+
+            if (Query != null)
+            {
+                ICommand command = Query;
+
+                if (command.CanExecute(QueryParameter))
+                {
+                    command.Execute(QueryParameter);
+                }
+            }
+
             _args = new RoutedEventArgs(TextChangedEvent);
             RaiseEvent(_args);
         }

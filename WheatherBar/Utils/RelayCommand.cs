@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace WeatherBar.Utils
@@ -32,7 +31,7 @@ namespace WeatherBar.Utils
 
         public bool CanExecute(object parameter)
         {
-            return canExecuteFunc == null ? true : canExecuteFunc(parameter);
+            return canExecuteFunc == null || canExecuteFunc(parameter);
         }
 
         public event EventHandler CanExecuteChanged

@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using WeatherBar.Controls.WinForms;
 using WeatherBar.Utils;
 using WeatherBar.ViewModels;
 
@@ -38,22 +39,22 @@ namespace WeatherBar
 
         private void InitializeTrayIcon()
         {
-            TrayNotifyIconManager.TrayNotifyIconInstance.MainViewModelInstance = viewModel;
-            TrayNotifyIconManager.TrayNotifyIconInstance.OpenToolStripMenuItemMouseEventHandler = TrayNotifyIcon_MouseClick;
-            TrayNotifyIconManager.TrayNotifyIconInstance.CloseToolStripMenuItemMouseEventHandler = (s, e) => MenuBarButton_Click(CloseButton, null);
+            TrayNotifyIcon.TrayNotifyIconInstance.MainViewModelInstance = viewModel;
+            TrayNotifyIcon.TrayNotifyIconInstance.OpenToolStripMenuItemMouseEventHandler = TrayNotifyIcon_MouseClick;
+            TrayNotifyIcon.TrayNotifyIconInstance.CloseToolStripMenuItemMouseEventHandler = (s, e) => MenuBarButton_Click(CloseButton, null);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            TrayNotifyIconManager.TrayNotifyIconInstance.Update();
+            TrayNotifyIcon.TrayNotifyIconInstance.Update();
 
             if (e.PropertyName == "HasStarted" && viewModel.HasStarted)
             {
-                SharedFunctions.RaiseEventWithDelay(LoadingFrameVisibilityVerication, 1000);
+                SharedFunctions.RaiseEventWithDelay(LoadingFrameVisibilityVerification, 1000);
             }
         }
 
-        private void LoadingFrameVisibilityVerication()
+        private void LoadingFrameVisibilityVerification()
         {
             if (LoadingFrame.Visibility == Visibility.Visible)
             {
@@ -98,11 +99,11 @@ namespace WeatherBar
             if (this.WindowState == WindowState.Minimized)
             {
                 this.ShowInTaskbar = false;
-                TrayNotifyIconManager.TrayNotifyIconInstance.IsVisible = true;
+                TrayNotifyIcon.TrayNotifyIconInstance.IsVisible = true;
             }
             else if (this.WindowState == WindowState.Normal)
             {
-                TrayNotifyIconManager.TrayNotifyIconInstance.IsVisible = false;
+                TrayNotifyIcon.TrayNotifyIconInstance.IsVisible = false;
                 this.ShowInTaskbar = true;
             }
         }
@@ -125,14 +126,6 @@ namespace WeatherBar
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             SharedFunctions.RaiseEventWithDelay(ButtonPressAction, 200);
-        }
-
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Tab)
-            {
-                e.Handled = true;
-            }
         }
 
         #endregion

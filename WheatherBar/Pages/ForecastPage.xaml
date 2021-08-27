@@ -7,7 +7,7 @@
       xmlns:c="clr-namespace:WeatherBar.Controls"
       mc:Ignorable="d"
       SnapsToDevicePixels="True"
-      FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
+      FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
       d:DesignHeight="450" d:DesignWidth="450">
     <Grid HorizontalAlignment="Center" Margin="0,140,0,0" Width="450">
         <Button x:Name="BackToMainPanelButton" HorizontalAlignment="Left"
@@ -42,7 +42,7 @@
         </Button>
         <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,11,12,0">
             <TextBlock Grid.Row="0" FontSize="16" VerticalAlignment="Center" Foreground="White"
-                       FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light">
+                       FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light">
                      <Run Text="{Binding DailyForecast[0].Date, Mode=OneWay}"/><Run Text=",  "/><Run Foreground="{StaticResource UpdateInfoColorBrush}" Text="{Binding DailyForecast[0].WeekDay, Mode=OneWay}"/>
             </TextBlock>
         </Grid>
@@ -59,7 +59,8 @@
                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
                           VerticalAlignment="Top" HorizontalAlignment="Center"
                           ItemsSource="{Binding DailyForecast}"
-                          Background="Transparent" Margin="0,50,0,40" Width="440">
+                          Background="Transparent" Margin="0,50,0,40" Width="440"
+                          KeyboardNavigation.TabNavigation="None">
             <c:CommandListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>

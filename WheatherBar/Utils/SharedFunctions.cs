@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using WeatherBar.WebApi.Models.Interfaces;
+using WebApi.Models.Interfaces;
 
 namespace WeatherBar.Utils
 {

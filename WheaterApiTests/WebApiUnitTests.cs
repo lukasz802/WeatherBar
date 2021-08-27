@@ -1,6 +1,6 @@
 ﻿using Microsoft.Rest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WeatherBar.WebApi;
+using WebApi;
 
 namespace WeatherBarTests
 {

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WeatherBar.Controls;
 using WeatherBar.Utils;
@@ -12,22 +13,46 @@ namespace WeatherBar.Pages
     /// </summary>
     public partial class MainPanelPage : Page
     {
+        #region Fields
+
+        private MainViewModel viewModel;
+
+        #endregion
+
         #region Constructors
 
         public MainPanelPage()
         {
             InitializeComponent();
             ForecastTypeComboBox.SelectionChanged += ForecastTypeComboBox_Selected;
+            this.Loaded += (s, e) =>
+            {
+                viewModel = (MainViewModel)(Application.Current.MainWindow.FindName("MainPanelFrame") as Frame).DataContext;
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            };
         }
 
         #endregion
 
         #region Private methods
 
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (viewModel.HasStarted && e.PropertyName == "IsReady" && viewModel.IsReady)
+            {
+                SharedFunctions.RaiseEventWithDelay(() =>
+                {
+                    SearchUserControl.Focusable = true;
+                    SearchUserControl.SearchTextBoxControl.Focus();
+                    SearchUserControl.Focusable = false;
+                }, 300);
+            }
+        }
+
         private void CityTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             WeatherDataWrapPanel.Width =
-                App.Current.MainWindow.ActualWidth - CityTextBlock.ActualWidth - SplitGrid.Margin.Left - SplitGrid.Margin.Right - 12;
+                Application.Current.MainWindow.ActualWidth - CityTextBlock.ActualWidth - SplitGrid.Margin.Left - SplitGrid.Margin.Right - 12;
         }
 
         private void SearchUserControl_KeyDown(object sender, KeyEventArgs e)
@@ -58,9 +83,8 @@ namespace WeatherBar.Pages
             if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
             {
                 ((SearchTextBox)sender).SearchTextBoxControl.Clear();
-                var vm = (MainViewModel)(App.Current.MainWindow.FindName("MainPanelFrame") as Frame).DataContext;
                 SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
-                SharedFunctions.RaiseEventWithDelay(() => vm.IsForecastPanelVisible = false, 50);
+                SharedFunctions.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 50);
             }
         }
 
@@ -85,7 +109,7 @@ namespace WeatherBar.Pages
 
         private void ForecastTypeComboBox_Selected(object sender, RoutedEventArgs e)
         {
-            SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton));
+            SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 400);
         }
 
         private void ButtonPressAction(Button button)

@@ -6,9 +6,8 @@
         xmlns:local="clr-namespace:WeatherBar"
         mc:Ignorable="d" ResizeMode="CanMinimize"
         SnapsToDevicePixels="True" StateChanged="Window_StateChanged"
-        FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
-        Title="WeatherBar" Height="450" Width="450"
-        PreviewKeyDown="Window_PreviewKeyDown">
+        FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
+        Title="WeatherBar" Height="450" Width="450">
     <Window.Style>
         <Style TargetType="Window">
             <Setter Property="FontSize" Value="11"/>
@@ -55,7 +54,8 @@
     </Window.Style>
     <Grid>
         <Frame Panel.ZIndex="2" Source="Pages/LoadingPage.xaml"
-               x:Name="LoadingFrame">
+               x:Name="LoadingFrame" 
+               Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Setter Property="Visibility" Value="Visible"/>
@@ -99,7 +99,8 @@
             </Frame.Style>
         </Frame>
         <Frame Panel.ZIndex="1" Source="Pages/ConnectionFailedPage.xaml"
-               x:Name="ConnectionFailedFrame">
+               x:Name="ConnectionFailedFrame"
+               Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
@@ -111,7 +112,8 @@
             </Frame.Style>
         </Frame>
         <Frame Panel.ZIndex="1" Source="Pages/NotFoundPage.xaml"
-               x:Name="NotFoundFrame">
+               x:Name="NotFoundFrame"
+               Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
@@ -152,10 +154,14 @@
             </Frame.Style>
         </Frame>
         <Frame Panel.ZIndex="1" Source="Pages/ForecastPage.xaml"
-               x:Name="ForecastFrame" Opacity="0">
+               x:Name="ForecastFrame" Opacity="0"
+               Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResourceFounded}" Value="False">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsConnected}" Value="False">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
@@ -185,16 +191,43 @@
             </Frame.Style>
         </Frame>
         <Frame Source="Pages/MainPanelPage.xaml"
-               x:Name="MainPanelFrame">
+               x:Name="MainPanelFrame"
+               Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding ResourceFounded}" Value="False">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsConneted}" Value="True"/>
                                 <Condition Binding="{Binding IsReady}" Value="True"/>
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsReady}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -366,11 +399,40 @@
                     </Style>
                 </Button.Style>
             </Button>
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsReady}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.ExitActions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
         </StackPanel>
         <Grid Margin="0,0,0,4" VerticalAlignment="Bottom"
               Panel.ZIndex="1">
             <Button Command="{Binding OpenSiteCommand}"
-                        ToolTip="Openweathermap.org" HorizontalAlignment="Center">
+                    ToolTip="Openweathermap.org" HorizontalAlignment="Center">
                 <Button.Style>
                     <Style BasedOn="{StaticResource MenuBarControlButtonStyle}" TargetType="Button">
                         <Setter Property="Margin" Value="0"/>
@@ -383,10 +445,33 @@
                                 <Setter Property="Background" Value="Transparent"/>
                                 <Setter Property="Cursor" Value="Hand"/>
                             </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsReady}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiDataTrigger.ExitActions>
+                                <MultiDataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiDataTrigger.EnterActions>
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <Image Width="70" Source="Images/logo_white_cropped.png"/>
+                <Image Width="70" Source="/AppResources;Component/Images/logo_white_cropped.png"  />
             </Button>
         </Grid>
         <Image VerticalAlignment="Bottom" Source="{Binding BackgroundImage.Key}"

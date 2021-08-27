@@ -68,11 +68,12 @@
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.22\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -113,7 +114,7 @@
     <Compile Include="Controls\SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\CityRepository.cs" />
+    <Compile Include="Models\Repositories\CityRepository.cs" />
     <Compile Include="Pages\ConnectionFailedPage.xaml.cs">
       <DependentUpon>ConnectionFailedPage.xaml</DependentUpon>
     </Compile>
@@ -131,23 +132,8 @@
     </Compile>
     <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="Utils\SharedFunctions.cs" />
-    <Compile Include="Utils\TrayNotifyIconManager.cs" />
+    <Compile Include="Controls\WinForms\TrayNotifyIcon.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="WebApi\Models\Converters\AppConfigConverter.cs" />
-    <Compile Include="WebApi\Models\Converters\CurrentWeatherDataConverter.cs" />
-    <Compile Include="WebApi\Models\Converters\FourDaysForecastDataConverter.cs" />
-    <Compile Include="WebApi\Models\DataTransferObjects\FourDaysForecast.cs" />
-    <Compile Include="WebApi\Models\Factories\WeatherDataFactory.cs" />
-    <Compile Include="WebApi\Models\Interfaces\IFourDaysData.cs" />
-    <Compile Include="WebApi\Models\Interfaces\IDailyData.cs" />
-    <Compile Include="WebApi\Models\Interfaces\IHourlyData.cs" />
-    <Compile Include="WebApi\Models\DataTransferObjects\DailyForecast.cs" />
-    <Compile Include="WebApi\Models\Enums\WeatherDataType.cs" />
-    <Compile Include="WebApi\Models\DataTransferObjects\HourlyForecast.cs" />
-    <Compile Include="WebApi\Models\Interfaces\IWeatherData.cs" />
-    <Compile Include="WebApi\Models\Enums\Units.cs" />
-    <Compile Include="WebApi\Models\Utils.cs" />
-    <Compile Include="WebApi\WeatherApi.cs" />
     <Page Include="Controls\SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -186,7 +172,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WebApi\IWeatherApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,13 +189,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="Fonts\RobotoCondensed-Light.ttf" />
-    <Resource Include="Fonts\RobotoCondensed-LightItalic.ttf" />
-    <Resource Include="Fonts\RobotoCondensed-Regular.ttf" />
-    <Resource Include="Fonts\Roboto-Light.ttf" />
-    <Resource Include="Fonts\Roboto-LightItalic.ttf" />
-    <Resource Include="Fonts\Roboto-Thin.ttf" />
-    <Resource Include="Fonts\Roboto-ThinItalic.ttf" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -221,15 +199,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\logo_white_cropped.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="LogoIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppData\AppData.csproj">
+    <ProjectReference Include="..\AppData\AppResources.csproj">
       <Project>{a6306dd5-b236-4ffb-b258-596cfe1d0d0b}</Project>
-      <Name>AppData</Name>
+      <Name>AppResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebApi\WebApi.csproj">
+      <Project>{7e75f96b-67d8-4e76-a5c3-e7a85605e3ab}</Project>
+      <Name>WebApi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

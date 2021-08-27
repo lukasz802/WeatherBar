@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WeatherBar.Controls"
              mc:Ignorable="d" x:Name="SearchTxtBox"
-             FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
+             FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
              SnapsToDevicePixels="True" 
              WindowChrome.IsHitTestVisibleInChrome="True"
              d:DesignWidth="250">
@@ -64,6 +64,125 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="ElementTypeComboBox" TargetType="ComboBox">
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Grid Width="250">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="105"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid VerticalAlignment="Center" Grid.Column="0">
+                                <TextBlock Text="{Binding Key}" TextTrimming="CharacterEllipsis"
+                                           FontFamily="/AppResources;Component/Fonts/#Roboto Condensed"/>
+                            </Grid>
+                            <Grid VerticalAlignment="Center" Grid.Column="1"
+                                  Margin="8,0,0,0" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Value}" FontSize="12.0"/>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid SnapsToDevicePixels="True">
+                            <ToggleButton Name="ToggleButton" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border Name="Border" BorderThickness="0"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            CornerRadius="2,0,0,2"
+                                                            Background="Transparent"
+                                                            VerticalAlignment="Stretch" 
+                                                            HorizontalAlignment="Stretch">
+                                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"
+                                                                    Margin="2,0,0,0">
+                                                            <Border Width="20" Height="20"
+                                                                    Margin="0,0,14,0"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                            <Popup Name="Popup"
+                                   SnapsToDevicePixels="True"
+                                   Placement="Bottom"
+                                   VerticalOffset="0"
+                                   HorizontalOffset="0"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Name="DropDownBorder"
+                                            CornerRadius="5"
+                                            Background="White"
+                                            BorderThickness="0"/>
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Border" SnapsToDevicePixels="True" 
+                                BorderThickness="0" BorderBrush="Black"
+                                CornerRadius="5" Background="White">
+                            <Grid>
+                                <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                    <Viewbox Height="19" Width="19" Margin="8,0">
+                                        <Grid>
+                                            <Path Fill="{Binding ElementName=Border, Path=BorderBrush}" 
+                                                  Data="m473.901 482v-160.028h-172.357v160.028h-30v-190.028h101.179v-171.094h-33.726v-67.031h-38.163v-53.847h-30v53.847h-38.164v67.031h-33.726v361.122h-30v-294.09h-130.845v294.09h-38.099v30h512v-30zm-169.552-324.09h30v30h-30zm0 67.031h30v30h-30zm-186.49 245.294h-30v-30h30zm0-71.765h-30v-30h30zm0-71.764h-30v-30h30zm0-71.765h-30v-30h30zm149.459 0h-30v-30h30zm0-67.031h-30v-30h30zm3.515-97.032h30v30h-30zm98.164 391.122h-30v-120.4h30zm67.452 0h-30v-120.4h30z"/>
+                                        </Grid>
+                                    </Viewbox>
+                                    <ContentPresenter VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF49d797"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
     <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
         <Grid.ColumnDefinitions>
@@ -118,5 +237,17 @@
                 </Style>
             </Button.Style>
         </Button>
+        <ComboBox Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"
+                  HorizontalAlignment="Left" Style="{StaticResource ElementTypeComboBox}"
+                  SelectedIndex="0" x:Name="ElementsTypeComboBox"
+                  FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
+                  ItemsSource="{Binding ItemsSource}">
+            <ComboBox.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                    <GradientStop Color="#FFD8DADA" Offset="1"/>
+                </LinearGradientBrush>
+            </ComboBox.Background>
+        </ComboBox>
     </Grid>
 </UserControl>

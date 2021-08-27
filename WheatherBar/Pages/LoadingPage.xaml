@@ -7,7 +7,7 @@
       xmlns:f="http://schemas.fontawesome.io/icons/"
       mc:Ignorable="d"
       SnapsToDevicePixels="True"
-      FontFamily="/Fonts/RobotoCondensed-Light.ttf #Roboto Light"
+      FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
       d:DesignHeight="450" d:DesignWidth="450">
     <Grid Background="{StaticResource LoadingBackgroundColorBrush}">
         <f:ImageAwesome Icon="CircleOutlineNotch" Spin="True" SpinDuration="1"
