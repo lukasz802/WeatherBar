@@ -15,7 +15,7 @@ namespace WeatherBarTests
             WeatherApi client = new WeatherApi();
 
             //Assert
-            Assert.ThrowsException<HttpOperationException>(() => client.GetCurrentWeatherData("AA"));
+            Assert.ThrowsException<HttpOperationException>(() => client.GetCurrentWeatherDataByCityName("AA"));
         }
 
         [TestMethod]
@@ -25,7 +25,7 @@ namespace WeatherBarTests
             WeatherApi client = new WeatherApi();
 
             //Assert
-            Assert.ThrowsException<HttpOperationException>(() => client.GetFourDaysForecastData("AA"));
+            Assert.ThrowsException<HttpOperationException>(() => client.GetFourDaysForecastDataByCityName("AA"));
         }
     }
 }

@@ -59,6 +59,7 @@
     <Compile Include="Models\DataTransferObjects\DailyForecastTransferObject.cs" />
     <Compile Include="Models\DataTransferObjects\FourDaysForecastTransferObject.cs" />
     <Compile Include="Models\DataTransferObjects\HourlyForecastTransferObject.cs" />
+    <Compile Include="Models\Enums\CallType.cs" />
     <Compile Include="Models\Enums\Units.cs" />
     <Compile Include="Models\Enums\WeatherDataType.cs" />
     <Compile Include="Models\Factories\WeatherDataFactory.cs" />

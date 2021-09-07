@@ -247,6 +247,7 @@
                                  CommandParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
                                  Query="{Binding QueryCommand}"
                                  QueryParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
+                                 QueryResult="{Binding ResultCommand}"
                                  ItemsSource="{Binding QueryResult}"/>
             </Grid>
             <Grid Grid.Row="1" HorizontalAlignment="Stretch">

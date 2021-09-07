@@ -12,9 +12,9 @@ using System.Diagnostics;
 using WebApi.Models.Interfaces;
 using WebApi.Models.Factories;
 using Microsoft.Rest;
-using WeatherBar.Models.Repositories;
 using System.Collections.ObjectModel;
 using WeatherBar.Models;
+using WebApi.Models.Enums;
 
 namespace WeatherBar.ViewModels
 {
@@ -23,8 +23,6 @@ namespace WeatherBar.ViewModels
         #region Fields
 
         private readonly Timer autoUpdateTimer = new Timer();
-
-        private readonly CityRepository cityRepository = new CityRepository();
 
         private IHourlyData currentWeatherData = WeatherDataFactory.GetHourlyDataTransferObject();
 
@@ -61,6 +59,8 @@ namespace WeatherBar.ViewModels
         public ICommand SearchCommand { get; private set; }
 
         public ICommand QueryCommand { get; private set; }
+
+        public ICommand ResultCommand { get; private set; }
 
         public ICommand ShowForecastCommand { get; private set; }
 
@@ -191,13 +191,14 @@ namespace WeatherBar.ViewModels
             this.IsForecastPanelVisible = false;
             this.ShowMapCommand = new RelayCommand((o) => ShowMap());
             this.OpenSiteCommand = new RelayCommand((o) => OpenWeathermapSite());
-            this.RefreshCommand = new RelayCommand((o) => Refresh(CityName));
-            this.SearchCommand = new RelayCommand((o) => Refresh(o), (o) => !string.IsNullOrWhiteSpace((string)o));
+            this.RefreshCommand = new RelayCommand((o) => Refresh(CityName, true));
+            this.SearchCommand = new RelayCommand((o) => Refresh(o, true), (o) => !string.IsNullOrWhiteSpace((string)o));
             this.ShowForecastCommand = new RelayCommand(ShowForecast, (o) => o != null && (int)o != -1);
             this.ReturnToMainPanelCommand = new RelayCommand(ReturnToMainPanel);
-            this.QueryCommand = new RelayCommand(ExecuteQuery, (o) => !string.IsNullOrWhiteSpace((string)o));
+            this.QueryCommand = new RelayCommand(ExecuteQuery);
+            this.ResultCommand = new RelayCommand(Refresh);
 
-            Refresh(CityName);
+            Refresh(CityName, true);
             StartAutoUpdateEvent();
         }
 
@@ -205,12 +206,33 @@ namespace WeatherBar.ViewModels
 
         #region Public methods
 
-        public void Refresh(object obj = null, bool isRefreshIndicatorVisible = true)
+        public void Refresh(object obj, bool isRefreshIndicatorVisible)
+        {
+            RefreshBase(obj, isRefreshIndicatorVisible, CallType.ByCityName);
+        }
+
+        #endregion
+
+        #region Private methods
+
+        public void Refresh(object sender, ElapsedEventArgs e)
+        {
+            RefreshBase(CityName, false, CallType.ByCityName);
+        }
+
+        public void Refresh(object obj)
+        {
+            RefreshBase(obj, true, CallType.ByCityID);
+        }
+
+        private void RefreshBase(object obj, bool isRefreshIndicatorVisible, CallType callType)
         {
             using (var refreshWorker = new BackgroundWorker())
             {
+                var arg = new DoWorkEventArgs(callType);
+
                 IsReady = !isRefreshIndicatorVisible;
-                refreshWorker.DoWork += (s, e) => LoadCurrentWeather((string)obj, e);
+                refreshWorker.DoWork += (s, e) => GetCurrentWeather(obj, arg);
                 refreshWorker.RunWorkerCompleted += UpdateWeatherData;
                 refreshWorker.RunWorkerAsync();
             }
@@ -219,39 +241,19 @@ namespace WeatherBar.ViewModels
             autoUpdateTimer.Start();
         }
 
-        public void Refresh(object sender, ElapsedEventArgs e)
-        {
-            Refresh(CityName, false);
-        }
-
-        #endregion
-
-        #region Private methods
-
         private void ExecuteQuery(object obj)
         {
             using (var queryBackgroundWorker = new BackgroundWorker())
             {
-                queryBackgroundWorker.DoWork += (s, e) => FilterCityData((string)obj);
+                ObservableCollection<City> result = null;
+
+                queryBackgroundWorker.DoWork += (s, e) =>
+                {
+                    result = new ObservableCollection<City>(Utils.GetCityList((string)obj));
+                };
+                queryBackgroundWorker.RunWorkerCompleted += (s, e) => QueryResult = result;
                 queryBackgroundWorker.RunWorkerAsync();
             }
-        }
-
-        private void FilterCityData(string cityName)
-        {
-            var coordinatesList = new List<KeyValuePair<decimal, decimal>>();
-            var result = new List<City>();
-
-            foreach (var city in cityRepository.GetAllWithName(cityName))
-            {
-                if (!coordinatesList.Any(x => Math.Floor(x.Key * 10) == Math.Floor(city.Latitude * 10) && Math.Floor(x.Value * 10) == Math.Floor(city.Longtitude * 10)))
-                {
-                    coordinatesList.Add(new KeyValuePair<decimal, decimal>(city.Latitude, city.Longtitude));
-                    result.Add(city);
-                }
-            }
-
-            QueryResult = new ObservableCollection<City>(result);
         }
 
         private void ReturnToMainPanel(object obj)
@@ -299,14 +301,23 @@ namespace WeatherBar.ViewModels
             IsReady = true;
         }
 
-        private void LoadCurrentWeather(string cityName, DoWorkEventArgs e)
+        private void GetCurrentWeather(object input, DoWorkEventArgs e)
         {
             try
             {
                 System.Threading.Thread.Sleep(HasStarted ? 500 : 2000);
 
-                weatherForecastData = App.WebApiClient.GetFourDaysForecastData(cityName);
-                currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
+                if ((CallType)e.Argument == CallType.ByCityName)
+                {
+                    weatherForecastData = App.WebApiClient.GetFourDaysForecastDataByCityName((string)input);
+                    currentWeatherData = App.WebApiClient.GetCurrentWeatherDataByCityName((string)input);
+                }
+                else
+                {
+                    weatherForecastData = App.WebApiClient.GetFourDaysForecastDataByCityId(((City)input).Id.ToString());
+                    currentWeatherData = App.WebApiClient.GetCurrentWeatherDataByCityId(((City)input).Id.ToString());
+                }
+
                 HourlyForecast = Utils.GetHourlyForecast(weatherForecastData.HourlyData);
                 FourDaysForecast = weatherForecastData.DailyData.ToList();
                 IsConnected = true;

@@ -26,6 +26,19 @@ namespace WeatherBar.Controls
             set { SetValue(CommandProperty, value); }
         }
 
+        public static readonly DependencyProperty CommandParameterProperty =
+                DependencyProperty.Register("CommandParameter", typeof(object), typeof(CommandListBox));
+
+        public object CommandParameter
+        {
+            get { return (object)GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
+
+        #endregion
+
+        #region Private methods
+
         private static void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CommandListBox control = (CommandListBox)sender;
@@ -39,15 +52,6 @@ namespace WeatherBar.Controls
                     command.Execute(control.CommandParameter);
                 }
             }
-        }
-
-        public static readonly DependencyProperty CommandParameterProperty =
-                DependencyProperty.Register("CommandParameter", typeof(object), typeof(CommandListBox));
-
-        public object CommandParameter
-        {
-            get { return (object)GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
         }
 
         #endregion

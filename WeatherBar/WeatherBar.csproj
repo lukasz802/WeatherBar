@@ -111,6 +111,7 @@
     <Compile Include="Controls\CommandComboBox.cs" />
     <Compile Include="Converters\LatitudeFormatConverter.cs" />
     <Compile Include="Converters\LongtitudeFormatConverter.cs" />
+    <Compile Include="Core\EventDispatcher.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Controls\CommandListBox.cs" />
     <Compile Include="Controls\SearchTextBox.xaml.cs">

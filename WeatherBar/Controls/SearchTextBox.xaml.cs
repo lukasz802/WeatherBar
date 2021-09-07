@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using WeatherBar.Core;
 
 namespace WeatherBar.Controls
 {
@@ -14,7 +15,15 @@ namespace WeatherBar.Controls
     {
         #region Fields
 
+        private static bool isResultLoading = false;
+
         private RoutedEventArgs args;
+
+        private Popup popup;
+
+        private ListBox itemList;
+
+        private EventDispatcher eventDispatcher;
 
         #endregion
 
@@ -61,7 +70,8 @@ namespace WeatherBar.Controls
         }
 
         public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(SearchTextBox));
+            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(SearchTextBox),
+            new FrameworkPropertyMetadata(propertyChangedCallback: OnItemsSourceChanged));
 
 
         public static readonly DependencyProperty QueryProperty =
@@ -73,9 +83,6 @@ namespace WeatherBar.Controls
             set { SetValue(QueryProperty, value); }
         }
 
-        public static readonly DependencyProperty CommandProperty =
-           DependencyProperty.Register("Command", typeof(ICommand), typeof(SearchTextBox));
-
         public static readonly DependencyProperty QueryParameterProperty =
             DependencyProperty.Register("QueryParameter", typeof(object), typeof(SearchTextBox));
 
@@ -84,6 +91,9 @@ namespace WeatherBar.Controls
             get { return (object)GetValue(QueryParameterProperty); }
             set { SetValue(QueryParameterProperty, value); }
         }
+
+        public static readonly DependencyProperty CommandProperty =
+            DependencyProperty.Register("Command", typeof(ICommand), typeof(SearchTextBox));
 
         public ICommand Command
         {
@@ -98,6 +108,15 @@ namespace WeatherBar.Controls
         {
             get { return (object)GetValue(CommandParameterProperty); }
             set { SetValue(CommandParameterProperty, value); }
+        }
+
+        public static readonly DependencyProperty QueryResultProperty =
+            DependencyProperty.Register("QueryResult", typeof(ICommand), typeof(SearchTextBox));
+
+        public ICommand QueryResult
+        {
+            get { return (ICommand)GetValue(QueryResultProperty); }
+            set { SetValue(QueryResultProperty, value); }
         }
 
         public static readonly DependencyProperty TextProperty =
@@ -120,11 +139,33 @@ namespace WeatherBar.Controls
 
         #endregion
 
-        #region Poperties
+        #region Private properties
 
-        private Popup Popup => SearchTextBoxControl.Template.FindName("PART_Popup", SearchTextBoxControl) as Popup;
+        private Popup Popup
+        {
+            get
+            {
+                if (popup == null)
+                {
+                    popup = SearchTextBoxControl.Template.FindName("PART_Popup", SearchTextBoxControl) as Popup;
+                }
 
-        private ListBox ItemList => SearchTextBoxControl.Template.FindName("PART_ItemList", SearchTextBoxControl) as ListBox;
+                return popup;
+            }
+        }
+
+        private ListBox ItemList
+        {
+            get
+            {
+                if (itemList == null)
+                {
+                    itemList = SearchTextBoxControl.Template.FindName("PART_ItemList", SearchTextBoxControl) as ListBox;
+                }
+
+                return itemList;
+            }
+        }
 
         #endregion
 
@@ -137,20 +178,58 @@ namespace WeatherBar.Controls
             this.LostFocus += SearchTxtBox_Focus;
             this.KeyDown += SearchTxtBox_KeyDown;
             this.Loaded += (s, e) => AutoRepositionPopupBehavior();
+            SearchTextBoxControl.LostFocus += SearchTextBoxControl_LostFocus;
+            SearchTextBoxControl.GotFocus += SearchTextBoxControl_GotFocus;
             SearchButtonControl.Click += OnSearchClick;
             ClearButtonControl.Click += OnRemoveResultsClick;
             SearchTextBoxControl.TextChanged += OnTextChanged;
+            InitializeEventDispatcher();
         }
 
         #endregion
 
         #region Private methods
 
+        private static void OnItemsSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            SearchTextBox searchTextBox = (SearchTextBox)sender;
+
+            if (searchTextBox.Popup != null && !isResultLoading)
+            {
+                searchTextBox.Popup.IsOpen = ((IEnumerable)e.NewValue).GetEnumerator().MoveNext();
+            }
+
+            isResultLoading = false;
+        }
+
+        private void InitializeEventDispatcher()
+        {
+            eventDispatcher = new EventDispatcher(() =>
+            {
+                if (Query != null)
+                {
+                    ICommand command = Query;
+
+                    if (command.CanExecute(QueryParameter))
+                    {
+                        command.Execute(QueryParameter);
+                    }
+                }
+            }, 400);
+        }
+
         private void ItemList_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.OriginalSource is ListBoxItem && e.Key == Key.Enter)
             {
                 Popup.IsOpen = false;
+                e.Handled = true;
+
+                if (QueryResult != null && ItemList.SelectedItem != null)
+                {
+                    QueryResult.Execute(ItemList.SelectedItem);
+                    Query.Execute(string.Empty);
+                }
             }
         }
 
@@ -158,9 +237,12 @@ namespace WeatherBar.Controls
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                Popup.IsOpen = false;
+                e.Handled = true;
+
+                if (QueryResult != null && ItemList.SelectedItem != null)
                 {
-                    Popup.IsOpen = false;
-                    e.Handled = true;
+                    QueryResult.Execute(ItemList.SelectedItem);
                 }
             }
         }
@@ -172,14 +254,34 @@ namespace WeatherBar.Controls
 
         private void SearchTextBoxControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            SearchTextBoxControl.LostFocus -= SearchTextBoxControl_LostFocus;
+
             if (e.Key == Key.Down && ItemList.Items.Count > 0 && !(e.OriginalSource is ListBoxItem))
             {
                 ItemList.Focus();
                 ItemList.SelectedIndex = 0;
-                ListBoxItem listBox = ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex) as ListBoxItem;
-                listBox.Focus();
+                ((ListBoxItem)ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex)).Focus();
                 e.Handled = true;
             }
+            else if (e.Key == Key.Up && ItemList.SelectedIndex == 0)
+            {
+                SearchTextBoxControl.Focus();
+                ItemList.UnselectAll();
+            }
+            else if (e.Key == Key.Down && ItemList.Items.Count > 0)
+            {
+                ItemList.SelectedIndex += 1;
+                ((ListBoxItem)ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex)).Focus();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Up && ItemList.Items.Count > 0 && ItemList.SelectedItem != null)
+            {
+                ItemList.SelectedIndex -= 1;
+                ((ListBoxItem)ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex)).Focus();
+                e.Handled = true;
+            }
+
+            SearchTextBoxControl.LostFocus += SearchTextBoxControl_LostFocus;
         }
 
         private void SearchTxtBox_Focus(object sender, RoutedEventArgs e)
@@ -196,6 +298,7 @@ namespace WeatherBar.Controls
         private void OnSearchClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
+            isResultLoading = true;
 
             if (Command != null)
             {
@@ -214,6 +317,7 @@ namespace WeatherBar.Controls
         private void OnRemoveResultsClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
+            Query.Execute(string.Empty);
             args = new RoutedEventArgs(RemoveResultsClickEvent);
             RaiseEvent(args);
         }
@@ -222,18 +326,9 @@ namespace WeatherBar.Controls
         {
             e.Handled = true;
             Text = SearchTextBoxControl.Text;
+            Popup.IsOpen = false;
 
-            Popup.IsOpen = !string.IsNullOrEmpty(Text);
-
-            if (Query != null)
-            {
-                ICommand command = Query;
-
-                if (command.CanExecute(QueryParameter))
-                {
-                    command.Execute(QueryParameter);
-                }
-            }
+            eventDispatcher.Restart();
 
             args = new RoutedEventArgs(TextChangedEvent);
             RaiseEvent(args);
@@ -265,9 +360,20 @@ namespace WeatherBar.Controls
             }
         }
 
-        private void PART_Popup_Closed(object sender, System.EventArgs e)
+        private void SearchTextBoxControl_GotFocus(object sender, RoutedEventArgs e)
         {
-            Query.Execute(string.Empty);
+            if (Popup != null && ItemsSource != null)
+            {
+                Popup.IsOpen = ItemsSource.GetEnumerator().MoveNext();
+            }
+        }
+
+        private void SearchTextBoxControl_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (Popup != null)
+            {
+                Popup.IsOpen = false;
+            }
         }
 
         #endregion

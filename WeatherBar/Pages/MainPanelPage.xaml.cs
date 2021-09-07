@@ -39,7 +39,7 @@ namespace WeatherBar.Pages
         {
             if (viewModel.HasStarted && e.PropertyName == "IsReady" && viewModel.IsReady)
             {
-                Utils.RaiseEventWithDelay(() =>
+                EventDispatcher.RaiseEventWithDelay(() =>
                 {
                     SearchUserControl.Focusable = true;
                     SearchUserControl.SearchTextBoxControl.Focus();
@@ -83,8 +83,8 @@ namespace WeatherBar.Pages
             if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
             {
                 ((SearchTextBox)sender).SearchTextBoxControl.Clear();
-                Utils.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
-                Utils.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 50);
+                EventDispatcher.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
+                EventDispatcher.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 50);
             }
         }
 
@@ -109,7 +109,7 @@ namespace WeatherBar.Pages
 
         private void ForecastTypeComboBox_Selected(object sender, RoutedEventArgs e)
         {
-            Utils.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 400);
+            EventDispatcher.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 400);
         }
 
         private void ButtonPressAction(Button button)

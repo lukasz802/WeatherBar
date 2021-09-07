@@ -50,7 +50,7 @@ namespace WeatherBar
 
             if (e.PropertyName == "HasStarted" && viewModel.HasStarted)
             {
-                Utils.RaiseEventWithDelay(this.LoadingFrameVisibilityVerification, 1000);
+                EventDispatcher.RaiseEventWithDelay(this.LoadingFrameVisibilityVerification, 1000);
             }
         }
 
@@ -66,7 +66,7 @@ namespace WeatherBar
                 };
 
                 LoadingFrame.BeginAnimation(OpacityProperty, animation);
-                Utils.RaiseEventWithDelay(() =>
+                EventDispatcher.RaiseEventWithDelay(() =>
                 {
                     LoadingFrame.Visibility = Visibility.Hidden;
                 }, 300);
@@ -125,7 +125,7 @@ namespace WeatherBar
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            Utils.RaiseEventWithDelay(this.ButtonPressAction, 200);
+            EventDispatcher.RaiseEventWithDelay(this.ButtonPressAction, 200);
         }
 
         #endregion

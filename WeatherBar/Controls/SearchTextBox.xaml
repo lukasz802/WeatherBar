@@ -66,13 +66,13 @@
                             <Grid>
                                 <ScrollViewer x:Name="PART_ContentHost"/>
                                 <Popup x:Name="PART_Popup"
+                                       IsOpen="False"
                                        SnapsToDevicePixels="True"
                                        Placement="Bottom"
                                        VerticalOffset="0"
                                        HorizontalOffset="0"
                                        AllowsTransparency="True"
-                                       PopupAnimation="Slide"
-                                       Closed="PART_Popup_Closed">
+                                       PopupAnimation="Slide">
                                     <ListBox x:Name="PART_ItemList"
                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
@@ -156,14 +156,7 @@
                                                                 </Grid>
                                                             </Border>
                                                             <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsFocused" Value="True">
-                                                                    <Setter TargetName="Border" Property="Background" Value="#FF49d797"/>
-                                                                    <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
-                                                                    <Setter TargetName="CityTextBlock" Property="Foreground" Value="White"/>
-                                                                    <Setter TargetName="CoordinatesTextBlock" Property="Foreground" Value="White"/>
-                                                                    <Setter Property="Cursor" Value="Hand"/>
-                                                                </Trigger>
-                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                <Trigger Property="Selector.IsSelected" Value="True">
                                                                     <Setter TargetName="Border" Property="Background" Value="#FF49d797"/>
                                                                     <Setter TargetName="Border" Property="BorderBrush" Value="White"/>
                                                                     <Setter TargetName="CityTextBlock" Property="Foreground" Value="White"/>
@@ -176,6 +169,9 @@
                                                 </Setter>
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="IsSelected" Value="True"/>
+                                                    </Trigger>
+                                                    <Trigger Property="Selector.IsSelected" Value="True">
                                                         <Setter Property="Cursor" Value="Hand"/>
                                                     </Trigger>
                                                 </Style.Triggers>

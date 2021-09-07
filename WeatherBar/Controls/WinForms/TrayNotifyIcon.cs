@@ -130,22 +130,22 @@ namespace WeatherBar.Controls.WinForms
             };
         }
 
-        private void UpdateOpenToolStripMenuEventHandler(System.Windows.Forms.MouseEventHandler NewOpenToolStripMenuItemMouseEventHandler)
+        private void UpdateOpenToolStripMenuEventHandler(System.Windows.Forms.MouseEventHandler newOpenToolStripMenuItemMouseEventHandler)
         {
             trayNotifyIcon.MouseClick += OpenToolStripMenuItemMouseEventHandler;
             contextMenuStrip.Items[0].Click += (s, e) =>
-                NewOpenToolStripMenuItemMouseEventHandler(s, new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 0, 0, 0));
+                newOpenToolStripMenuItemMouseEventHandler(s, new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 0, 0, 0));
         }
 
-        private void UpdateCloseToolStripMenuEventHandler(System.Windows.Forms.MouseEventHandler NewCloseToolStripMenuItemMouseEventHandler)
+        private void UpdateCloseToolStripMenuEventHandler(System.Windows.Forms.MouseEventHandler newCloseToolStripMenuItemMouseEventHandler)
         {
             contextMenuStrip.Items[3].Click += (s, e) =>
-               NewCloseToolStripMenuItemMouseEventHandler(s, new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 0, 0, 0));
+               newCloseToolStripMenuItemMouseEventHandler(s, new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 0, 0, 0));
         }
 
         private void UpdateMainViewModelInstance(MainViewModel newMainViewModel)
         {
-            contextMenuStrip.Items[1].Click += (s, e) => MainViewModelInstance.Refresh(MainViewModelInstance.CityName);
+            contextMenuStrip.Items[1].Click += (s, e) => newMainViewModel.Refresh(newMainViewModel.CityName, true);
         }
 
         private System.Windows.Forms.ContextMenuStrip PrepareContextMenu()
