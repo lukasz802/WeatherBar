@@ -6,9 +6,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using WebApi.Models.Interfaces;
 
-namespace WeatherBar.Utils
+namespace WeatherBar.Core
 {
-    public static class SharedFunctions
+    public static class Utils
     {
         #region Public methods
 

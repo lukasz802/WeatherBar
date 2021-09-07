@@ -1,9 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WeatherBar.Controls;
-using WeatherBar.Utils;
+using WeatherBar.Core;
 using WeatherBar.ViewModels;
 
 namespace WeatherBar.Pages
@@ -40,7 +39,7 @@ namespace WeatherBar.Pages
         {
             if (viewModel.HasStarted && e.PropertyName == "IsReady" && viewModel.IsReady)
             {
-                SharedFunctions.RaiseEventWithDelay(() =>
+                Utils.RaiseEventWithDelay(() =>
                 {
                     SearchUserControl.Focusable = true;
                     SearchUserControl.SearchTextBoxControl.Focus();
@@ -65,6 +64,8 @@ namespace WeatherBar.Pages
                 case Key.Tab:
                 case Key.Left:
                 case Key.Right:
+                case Key.Up:
+                case Key.Down:
                 case Key.Delete:
                 case Key.OemMinus:
                     break;
@@ -73,7 +74,6 @@ namespace WeatherBar.Pages
                     {
                         e.Handled = true;
                     }
-
                     break;
             }
         }
@@ -83,8 +83,8 @@ namespace WeatherBar.Pages
             if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
             {
                 ((SearchTextBox)sender).SearchTextBoxControl.Clear();
-                SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
-                SharedFunctions.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 50);
+                Utils.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
+                Utils.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 50);
             }
         }
 
@@ -109,7 +109,7 @@ namespace WeatherBar.Pages
 
         private void ForecastTypeComboBox_Selected(object sender, RoutedEventArgs e)
         {
-            SharedFunctions.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 400);
+            Utils.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 400);
         }
 
         private void ButtonPressAction(Button button)

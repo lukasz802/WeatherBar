@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace WeatherBar.Utils
+namespace WeatherBar.Core
 {
     public class RelayCommand : ICommand
     {

@@ -7,21 +7,20 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
-using WeatherBar.Utils;
+using WeatherBar.Core;
 using System.Diagnostics;
 using WebApi.Models.Interfaces;
 using WebApi.Models.Factories;
 using Microsoft.Rest;
 using WeatherBar.Models.Repositories;
 using System.Collections.ObjectModel;
+using WeatherBar.Models;
 
 namespace WeatherBar.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
         #region Fields
-
-        private static int queryCounter = 0;
 
         private readonly Timer autoUpdateTimer = new Timer();
 
@@ -41,7 +40,7 @@ namespace WeatherBar.ViewModels
 
         private bool isForecastPanelVisible;
 
-        private ObservableCollection<KeyValuePair<string, string>> queryResult;
+        private ObservableCollection<City> queryResult;
 
         #endregion
 
@@ -158,7 +157,7 @@ namespace WeatherBar.ViewModels
                 var imageData = AppResources.Utils.GetImageWithHexColor(Icon, FeelTemp, Description);
 
                 return new KeyValuePair<BitmapImage, Color>(
-                    SharedFunctions.LoadImage(imageData.Key), (Color)ColorConverter.ConvertFromString(imageData.Value));
+                    Utils.LoadImage(imageData.Key), (Color)ColorConverter.ConvertFromString(imageData.Value));
             }
         }
 
@@ -168,7 +167,7 @@ namespace WeatherBar.ViewModels
 
         public List<IHourlyData> DailyForecast { get; private set; }
 
-        public ObservableCollection<KeyValuePair<string, string>> QueryResult 
+        public ObservableCollection<City> QueryResult 
         {
             get => queryResult; 
             private set
@@ -185,11 +184,6 @@ namespace WeatherBar.ViewModels
         public MainViewModel()
         {
             currentWeatherData.CityName = App.WebApiClient.CityName;
-            queryResult = new ObservableCollection<KeyValuePair<string, string>>()
-            { 
-                new KeyValuePair<string, string>("Warszawa, PL", "214. 37' N, 214. 37' E"),
-                new KeyValuePair<string, string>("Warszawa, PL", "214. 37' N, 214. 37' E")
-            };
             this.ResourceFounded = true;
             this.IsReady = false;
             this.HasStarted = false;
@@ -238,14 +232,26 @@ namespace WeatherBar.ViewModels
         {
             using (var queryBackgroundWorker = new BackgroundWorker())
             {
-                queryBackgroundWorker.DoWork += (s, e) =>
-                {
-                    //queryResult = new ObservableCollection<KeyValuePair<string, string>>(cityRepository.GetAllWithName((string)obj)?.Select(x => new KeyValuePair<string, string>(
-                    //        string.Concat(x.Name, ", ", x.Country), 
-                    //        string.Concat(WebApi.Models.Utils.ConvertCoordinatesFromDecToDeg((double)x.Latitude, false), ", ", WebApi.Models.Utils.ConvertCoordinatesFromDecToDeg((double)x.Longtitude, true)))));
-                };
+                queryBackgroundWorker.DoWork += (s, e) => FilterCityData((string)obj);
                 queryBackgroundWorker.RunWorkerAsync();
             }
+        }
+
+        private void FilterCityData(string cityName)
+        {
+            var coordinatesList = new List<KeyValuePair<decimal, decimal>>();
+            var result = new List<City>();
+
+            foreach (var city in cityRepository.GetAllWithName(cityName))
+            {
+                if (!coordinatesList.Any(x => Math.Floor(x.Key * 10) == Math.Floor(city.Latitude * 10) && Math.Floor(x.Value * 10) == Math.Floor(city.Longtitude * 10)))
+                {
+                    coordinatesList.Add(new KeyValuePair<decimal, decimal>(city.Latitude, city.Longtitude));
+                    result.Add(city);
+                }
+            }
+
+            QueryResult = new ObservableCollection<City>(result);
         }
 
         private void ReturnToMainPanel(object obj)
@@ -256,7 +262,7 @@ namespace WeatherBar.ViewModels
 
         private void ShowForecast(object obj)
         {
-            DailyForecast = SharedFunctions.GetHourlyForecastForSpecificDate(weatherForecastData.HourlyData, DateTime.Now.AddDays((int)obj + 1).ToString("dd MMMM")).ToList();
+            DailyForecast = Utils.GetHourlyForecastForSpecificDate(weatherForecastData.HourlyData, DateTime.Now.AddDays((int)obj + 1).ToString("dd MMMM")).ToList();
             OnPropertyChanged("DailyForecast");
             this.IsForecastPanelVisible = true;
         }
@@ -301,7 +307,7 @@ namespace WeatherBar.ViewModels
 
                 weatherForecastData = App.WebApiClient.GetFourDaysForecastData(cityName);
                 currentWeatherData = App.WebApiClient.GetCurrentWeatherData(cityName);
-                HourlyForecast = SharedFunctions.GetHourlyForecast(weatherForecastData.HourlyData);
+                HourlyForecast = Utils.GetHourlyForecast(weatherForecastData.HourlyData);
                 FourDaysForecast = weatherForecastData.DailyData.ToList();
                 IsConnected = true;
             }

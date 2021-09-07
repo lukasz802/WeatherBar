@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using WeatherBar.Controls.WinForms;
-using WeatherBar.Utils;
+using WeatherBar.Core;
 using WeatherBar.ViewModels;
 
 namespace WeatherBar
@@ -50,7 +50,7 @@ namespace WeatherBar
 
             if (e.PropertyName == "HasStarted" && viewModel.HasStarted)
             {
-                SharedFunctions.RaiseEventWithDelay(LoadingFrameVisibilityVerification, 1000);
+                Utils.RaiseEventWithDelay(this.LoadingFrameVisibilityVerification, 1000);
             }
         }
 
@@ -66,7 +66,7 @@ namespace WeatherBar
                 };
 
                 LoadingFrame.BeginAnimation(OpacityProperty, animation);
-                SharedFunctions.RaiseEventWithDelay(() =>
+                Utils.RaiseEventWithDelay(() =>
                 {
                     LoadingFrame.Visibility = Visibility.Hidden;
                 }, 300);
@@ -125,7 +125,7 @@ namespace WeatherBar
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            SharedFunctions.RaiseEventWithDelay(ButtonPressAction, 200);
+            Utils.RaiseEventWithDelay(this.ButtonPressAction, 200);
         }
 
         #endregion

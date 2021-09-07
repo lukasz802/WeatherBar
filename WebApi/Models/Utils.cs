@@ -21,6 +21,11 @@ namespace WebApi.Models
             return string.Concat(temp.First(), "° ", minutesValue.Length != 1 ? minutesValue : $"0{minutesValue}", $"' {direction}");
         }
 
+        public static object ConvertCoordinatesFromDecToDeg(object convertvalue, bool v)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

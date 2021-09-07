@@ -86,13 +86,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppResources\AppResources.csproj">
+      <Project>{a6306dd5-b236-4ffb-b258-596cfe1d0d0b}</Project>
+      <Name>AppResources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WeatherBar\WeatherBar.csproj">
+      <Project>{e847e3ed-fc51-404f-9be9-63b888926c22}</Project>
+      <Name>WeatherBar</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebApi\WebApi.csproj">
       <Project>{7E75F96B-67D8-4E76-A5C3-E7A85605E3AB}</Project>
       <Name>WebApi</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WheatherBar\WeatherBar.csproj">
-      <Project>{E847E3ED-FC51-404F-9BE9-63B888926C22}</Project>
-      <Name>WeatherBar</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

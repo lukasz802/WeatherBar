@@ -43,12 +43,12 @@ namespace WeatherBar.Models.Repositories
 
         public IEnumerable<City> GetAllWithName(string cityName)
         {
-            return GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim()));
+            return !string.IsNullOrEmpty(cityName) ? GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim())) : Enumerable.Empty<City>();
         }
 
         public async Task<IEnumerable<City>> GetAllWithNameAsync(string cityName)
         {
-            return await Task.Run(() => GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim())));
+            return !string.IsNullOrEmpty(cityName) ? await Task.Run(() => GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim()))) : Enumerable.Empty<City>();
         }
 
         public void Dispose()
