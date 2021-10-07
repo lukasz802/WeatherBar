@@ -8,7 +8,7 @@ namespace WeatherBar.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return WebApi.Models.Utils.ConvertCoordinatesFromDecToDeg(System.Convert.ToDouble(value), true);
+            return WebApi.Model.Utils.ConvertCoordinatesFromDecToDeg(System.Convert.ToDouble(value), true);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

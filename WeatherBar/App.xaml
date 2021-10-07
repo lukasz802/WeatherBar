@@ -2,8 +2,50 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WeatherBar"
-             StartupUri="MainWindow.xaml">
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             StartupUri="View/MainWindow.xaml">
     <Application.Resources>
+        <s:String x:Key="Close">Zamknij</s:String>
+        <s:String x:Key="Minimalize">Minimalizuj</s:String>
+        <s:String x:Key="SearchClick">Szukaj</s:String>
+        <s:String x:Key="Refresh">Odśwież</s:String>
+        <s:String x:Key="RemovePhrase">Usuń frazę</s:String>
+        <s:String x:Key="Options">Opcje</s:String>
+        <s:String x:Key="ForecastType">Typ prognozy</s:String>
+        <s:String x:Key="Map">Pokaż na mapie</s:String>
+        <s:String x:Key="Pressure">Ciśnienie atmosferyczne</s:String>
+        <s:String x:Key="Humidity">Wilgotność</s:String>
+        <s:String x:Key="Wind">Prędkość i kierunek wiatru</s:String>
+        <s:String x:Key="Return">Wróć do panel głownego</s:String>
+        <s:String x:Key="Update">Zaktualizowano o:</s:String>
+        <s:String x:Key="Sunrise">Wschód słońca</s:String>
+        <s:String x:Key="Sunset">Zachód słońca</s:String>
+        <s:String x:Key="Latitiude">Szerokość geograficzna</s:String>
+        <s:String x:Key="Longtitiude">Długość geograficzna</s:String>
+        <s:String x:Key="Rain">Wielkość opadów deszczu w ciągu ostatniej doby</s:String>
+        <s:String x:Key="Snow">Wielkość opadów śniego w ciągu ostatniej doby</s:String>
+        <s:String x:Key="FeelTemp">Odczuwalna</s:String>
+        <s:String x:Key="FeelTempDescription">Temperatura odczuwalna: </s:String>
+        <s:String x:Key="EmptySearchText">Wyszukaj</s:String>
+        <s:String x:Key="Next">Następny</s:String>
+        <s:String x:Key="Previous">Poprzedni</s:String>
+        <s:String x:Key="WindSpeed">km/h</s:String>
+        <s:String x:Key="SnowRainFall">mm</s:String>
+        <s:String x:Key="Degress">°</s:String>
+        <s:String x:Key="TempUnit">°C</s:String>
+        <s:String x:Key="Language">Język</s:String>
+        <s:String x:Key="LanguageDescription">Domyślny język aplikacji</s:String>
+        <s:String x:Key="LanguageComboBox">Wybierz język</s:String>
+        <s:String x:Key="UnitsDescription">Jednostki miary wielkości fizycznych</s:String>
+        <s:String x:Key="Units">Jednostki</s:String>
+        <s:String x:Key="Location">Lokalizacja startowa</s:String>
+        <s:String x:Key="LocationDescription">Ustawienia lokalizacji startowej aplikacji</s:String>
+        <s:String x:Key="RefreshTime">Czas odświeżania</s:String>
+        <s:String x:Key="RefreshTimeDescription">Częstotliwość odświeżania danych pogodowych</s:String>
+        <s:String x:Key="PolishLanguage">Polski</s:String>
+        <s:String x:Key="EnglishLanguage">Angielski</s:String>
+        <s:String x:Key="Hourly">Godzinowa</s:String>
+        <s:String x:Key="Daily">Dzienna</s:String>
         <SolidColorBrush x:Key="MenuBackgroundColorBrush" Color="#FFE5E5E5"/>
         <SolidColorBrush x:Key="MenuBarBackgroundColorBrush" Color="#FF2F69DC"/>
         <SolidColorBrush x:Key="MenuBarActiveControlColorBrush" Color="#FF6087D7"/>
@@ -15,6 +57,11 @@
         <SolidColorBrush x:Key="EnabledUserControlBorderColorBrush" Color="#FFCACACA"/>
         <SolidColorBrush x:Key="UpdateInfoColorBrush" Color="White" Opacity="0.5"/>
         <SolidColorBrush x:Key="MouseOverColorBrush" Color="White" Opacity="0.15"/>
+        <SolidColorBrush x:Key="SingleOptionBackgroundColorBrush" Color="#6a6085"/>
+        <LinearGradientBrush x:Key="CornerOptionBackgroundColorBrush" StartPoint="0,0" EndPoint="1,1" >
+            <GradientStop Offset="0.0" Color="#6a6085"/>
+            <GradientStop Offset="1.0" Color="#6f6f90"/>
+        </LinearGradientBrush>
         <LinearGradientBrush x:Key="ConnectionFailBackgroundColorBrush" StartPoint="0,0" EndPoint="0.5,1" >
             <GradientStop Offset="0.0" Color="#FF0e2a47"/>
             <GradientStop Offset="1.0" Color="#FF08192b"/>
@@ -22,6 +69,10 @@
         <LinearGradientBrush x:Key="LoadingBackgroundColorBrush" StartPoint="0,1" EndPoint="0.5,0" >
             <GradientStop Offset="0.0" Color="#FF49d797"/>
             <GradientStop Offset="1.0" Color="#FF8deba6"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="OptionsBackgroundColorBrush" StartPoint="0,0" EndPoint="1,1" >
+            <GradientStop Offset="0.0" Color="#483969"/>
+            <GradientStop Offset="1.0" Color="#5c5c78"/>
         </LinearGradientBrush>
         <Style x:Key="MenuBarControlButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0"/>

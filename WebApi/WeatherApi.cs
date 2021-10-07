@@ -4,51 +4,23 @@ using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebApi.Models.Enums;
-using WebApi.Models.Interfaces;
-using WebApi.Models.Converters;
-using System.Configuration;
+using WebApi.Model.Enums;
+using WebApi.Model.Interfaces;
+using WebApi.Model.Converters;
 
 namespace WebApi
 {
     public class WeatherApi : ServiceClient<WeatherApi>, IWeatherApi
     {
-        #region Fields and constants
-
-        private int interval = 15;
-
-        #endregion
-
         #region Properties
 
-        public string ApiKey { get; private set; }
+        public string ApiKey { get; }
 
-        public Units Units { get; set; }
+        public Units Units { get; private set;}
 
-        public string CityName { get; set; }
+        public string CityId { get; private set; }
 
-        public int Interval 
-        { 
-            get
-            {
-                return interval;
-            }
-            set
-            {
-                if (value < 15)
-                {
-                    interval = 15;
-                }
-                else if (value > 60)
-                {
-                    interval = 60;
-                }
-                else
-                {
-                    interval = value;
-                }
-            }
-        }
+        public int Interval { get; private set; }
 
         #endregion
 
@@ -57,10 +29,13 @@ namespace WebApi
         /// <summary>
         /// Initializes a new instance of the WeatherAPI class.
         /// </summary>
-        public WeatherApi() : base()
+        public WeatherApi(string apiKey, string cityId, Units units, int interval) : base()
         {
             HttpClient.Timeout = TimeSpan.FromSeconds(5);
-            SetApiConfiguration();
+            ApiKey = apiKey;
+            CityId = cityId;
+            Interval = interval;
+            Units = units;
         }
 
         #endregion
@@ -99,9 +74,19 @@ namespace WebApi
             return Task.Run(() => GetWeatherForecastDataBodyAsync(CallType.ByCityID, cityId)).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Update WeatherAPI configuration.
+        /// </summary>
+        public void UpdateConfiguration(string cityId, Units units, int interval)
+        {
+            CityId = cityId;
+            Units = units;
+            Interval = interval;
+        }
+
         #endregion
 
-        #region Methods
+        #region Private methods
 
         private async Task<IWeatherData> GetForecastDataAsync(WeatherDataType weatherDataType, CallType callType, string input)
         {
@@ -154,16 +139,6 @@ namespace WebApi
         private async Task<IFourDaysData> GetWeatherForecastDataBodyAsync(CallType callType, string input)
         {
             return (IFourDaysData) await GetForecastDataAsync(WeatherDataType.WeatherForecast, callType, input);
-        }
-
-        private void SetApiConfiguration()
-        {
-            string[] apiKeysArray = ConfigurationManager.AppSettings.Get("ApiKeys").Replace(" ", string.Empty).Split(',');
-
-            ApiKey = apiKeysArray[new Random().Next(0, apiKeysArray.Length)];
-            Units = (Units)Enum.Parse(typeof(Units), ConfigurationManager.AppSettings.Get("Units"));
-            Interval = int.Parse(ConfigurationManager.AppSettings.Get("Interval"));
-            CityName = ConfigurationManager.AppSettings.Get("CityName");
         }
 
         #endregion

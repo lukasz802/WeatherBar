@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using WeatherBar.ViewModels;
+﻿using System;
+using System.Reflection;
 
 namespace WeatherBar.Controls.WinForms
 {
@@ -17,7 +17,8 @@ namespace WeatherBar.Controls.WinForms
 
         private System.Windows.Forms.MouseEventHandler closeToolStripMenuItemMouseEventHandler;
 
-        private MainViewModel mainViewModelInstance;
+        private Action refreshToolStripMenuItemAction;
+
 
         #endregion
 
@@ -48,16 +49,16 @@ namespace WeatherBar.Controls.WinForms
             }
         }
 
-        public MainViewModel MainViewModelInstance
+        public Action RefreshToolStripMenuItemAction
         {
             get
             {
-                return mainViewModelInstance;
+                return refreshToolStripMenuItemAction;
             }
             set
             {
-                mainViewModelInstance = value;
-                UpdateMainViewModelInstance(value);
+                refreshToolStripMenuItemAction = value;
+                UpdateRefreshToolStripMenuItemAction(value);
             }
         }
 
@@ -102,13 +103,12 @@ namespace WeatherBar.Controls.WinForms
 
         public void Update()
         {
-            var text = !MainViewModelInstance.IsReady ? "Aktualizowanie..." : MainViewModelInstance.IsConnected ?
-                       $"{MainViewModelInstance.CityName}, {MainViewModelInstance.Country}\n{MainViewModelInstance.Description}\nTemperatura: " +
-                       $"{MainViewModelInstance.AvgTemp}/{MainViewModelInstance.FeelTemp}°C\n" +
-                       $"Zaktualizowano o: {MainViewModelInstance.UpdateTime}" : "Brak połączenia z serwerem Openweather.org";
+            var text = !App.ViewModel.IsReady ? "Aktualizowanie..." : App.ViewModel.IsConnected ?
+                       $"{App.ViewModel.CityName}, {App.ViewModel.Country}\n{App.ViewModel.Description}\nTemperatura: " + $"{App.ViewModel.AvgTemp}/{App.ViewModel.FeelTemp}°C\n" +
+                       $"Zaktualizowano o: {App.ViewModel.UpdateTime}" : "Brak połączenia z serwerem Openweather.org";
+
             SetNotifyIconText(text);
-            trayNotifyIcon.Icon = new System.Drawing.Icon(
-                AppResources.Utils.GetIcon(!MainViewModelInstance.IsReady ? "Update" : MainViewModelInstance.IsConnected ? MainViewModelInstance.Icon : string.Empty));
+            trayNotifyIcon.Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon(!App.ViewModel.IsReady ? "Update" : App.ViewModel.IsConnected ? App.ViewModel.Icon : string.Empty));
         }
 
         #endregion
@@ -126,7 +126,7 @@ namespace WeatherBar.Controls.WinForms
             {
                 ContextMenuStrip = contextMenuStrip,
                 Visible = false,
-                Icon = new System.Drawing.Icon(AppResources.Utils.GetIcon("Update")),
+                Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon("Update")),
             };
         }
 
@@ -143,9 +143,9 @@ namespace WeatherBar.Controls.WinForms
                newCloseToolStripMenuItemMouseEventHandler(s, new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 0, 0, 0));
         }
 
-        private void UpdateMainViewModelInstance(MainViewModel newMainViewModel)
+        private void UpdateRefreshToolStripMenuItemAction(Action newRefreshToolStripMenuItemAction)
         {
-            contextMenuStrip.Items[1].Click += (s, e) => newMainViewModel.Refresh(newMainViewModel.CityName, true);
+            contextMenuStrip.Items[1].Click += (s, e) => newRefreshToolStripMenuItemAction();
         }
 
         private System.Windows.Forms.ContextMenuStrip PrepareContextMenu()

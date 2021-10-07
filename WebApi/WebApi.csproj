@@ -53,21 +53,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IWeatherApiCommands.cs" />
+    <Compile Include="IUpdateConfiguration.cs" />
     <Compile Include="IWeatherApi.cs" />
-    <Compile Include="Models\Converters\CurrentWeatherDataConverter.cs" />
-    <Compile Include="Models\Converters\FourDaysForecastDataConverter.cs" />
-    <Compile Include="Models\DataTransferObjects\DailyForecastTransferObject.cs" />
-    <Compile Include="Models\DataTransferObjects\FourDaysForecastTransferObject.cs" />
-    <Compile Include="Models\DataTransferObjects\HourlyForecastTransferObject.cs" />
-    <Compile Include="Models\Enums\CallType.cs" />
-    <Compile Include="Models\Enums\Units.cs" />
-    <Compile Include="Models\Enums\WeatherDataType.cs" />
-    <Compile Include="Models\Factories\WeatherDataFactory.cs" />
-    <Compile Include="Models\Interfaces\IDailyData.cs" />
-    <Compile Include="Models\Interfaces\IFourDaysData.cs" />
-    <Compile Include="Models\Interfaces\IHourlyData.cs" />
-    <Compile Include="Models\Interfaces\IWeatherData.cs" />
-    <Compile Include="Models\Utils.cs" />
+    <Compile Include="Model\Converters\CurrentWeatherDataConverter.cs" />
+    <Compile Include="Model\Converters\FourDaysForecastDataConverter.cs" />
+    <Compile Include="Model\DataTransferObjects\DailyForecastTransferObject.cs" />
+    <Compile Include="Model\DataTransferObjects\FourDaysForecastTransferObject.cs" />
+    <Compile Include="Model\DataTransferObjects\HourlyForecastTransferObject.cs" />
+    <Compile Include="Model\Enums\CallType.cs" />
+    <Compile Include="Model\Enums\Language.cs" />
+    <Compile Include="Model\Enums\Units.cs" />
+    <Compile Include="Model\Enums\WeatherDataType.cs" />
+    <Compile Include="Model\Factories\WeatherDataFactory.cs" />
+    <Compile Include="Model\Interfaces\IDailyData.cs" />
+    <Compile Include="Model\Interfaces\IFourDaysData.cs" />
+    <Compile Include="Model\Interfaces\IHourlyData.cs" />
+    <Compile Include="Model\Interfaces\IMultiLanguage.cs" />
+    <Compile Include="Model\Interfaces\IWeatherData.cs" />
+    <Compile Include="Model\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WeatherApi.cs" />
   </ItemGroup>
@@ -75,5 +79,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,1530 @@
+﻿<Page x:Class="WeatherBar.View.Pages.MainPanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WeatherBar.View.Pages"
+      xmlns:c="clr-namespace:WeatherBar.Controls"
+      mc:Ignorable="d"
+      SnapsToDevicePixels="True"
+      FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
+      d:DesignHeight="450" d:DesignWidth="450">
+    <Page.Resources>
+        <Style x:Key="ElementTypeComboBox" TargetType="ComboBox">
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid SnapsToDevicePixels="True">
+                            <ToggleButton Name="ToggleButton" Focusable="False" ClickMode="Press"
+                                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ToggleButton">
+                                                    <Border Name="Border" BorderThickness="0"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            CornerRadius="2,0,0,2"
+                                                            Background="Transparent"
+                                                            VerticalAlignment="Stretch" 
+                                                            HorizontalAlignment="Stretch">
+                                                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal"
+                                                                    Margin="2,0,0,0">
+                                                            <Border Width="20" Height="20"
+                                                                    Margin="0,0,14,0"/>
+                                                            <Viewbox Width="8" Height="8" Margin="0,2,0,0">
+                                                                <Grid Width="652" Height="652" Margin="-100">
+                                                                    <Grid Width="452" Height="452" x:Name="ExpandArrow">
+                                                                        <Path Fill="{Binding ElementName=Border, Path=BorderBrush}"
+                                                                              Data="M225.923,354.706c-8.098,0-16.195-3.092-22.369-9.263L9.27,151.157c-12.359-12.359-12.359-32.397,0-44.751
+		                                                                            c12.354-12.354,32.388-12.354,44.748,0l171.905,171.915l171.906-171.909c12.359-12.354,32.391-12.354,44.744,0
+		                                                                            c12.365,12.354,12.365,32.392,0,44.751L248.292,345.449C242.115,351.621,234.018,354.706,225.923,354.706z"/>
+                                                                        <Grid.LayoutTransform>
+                                                                            <RotateTransform Angle="0" CenterX="0.5" CenterY="0.5"/>
+                                                                        </Grid.LayoutTransform>
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Viewbox>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                                                            <Setter Property="Cursor" Value="Hand"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow"  
+                                                                                         Storyboard.TargetProperty="(LayoutTransform).(RotateTransform.Angle)"   
+                                                                                         From="0" To="-180" Duration="0:0:0.2"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                            <Trigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetName="ExpandArrow"  
+                                                                                         Storyboard.TargetProperty="(LayoutTransform).(RotateTransform.Angle)"   
+                                                                                         From="-180" To="0" Duration="0:0:0.1"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.ExitActions>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                            <Popup Name="Popup"
+                                   SnapsToDevicePixels="True"
+                                   Placement="Top"
+                                   VerticalOffset="0"
+                                   HorizontalOffset="0"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Slide">
+                                <Grid Name="DropDown"
+                                      MinWidth="{TemplateBinding ActualWidth}"
+                                      MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border Name="DropDownBorder"
+                                            CornerRadius="5"
+                                            Background="White"
+                                            BorderThickness="0"/>
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border Name="Border" SnapsToDevicePixels="True"
+                                CornerRadius="5" Background="White">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              Margin="8,0,0,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FF49d797"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ForecastButtonStyle" BasedOn="{StaticResource MenuBarControlButtonStyle}"
+               TargetType="Button">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="0"
+                                CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}"
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Stretch"
+                                Name="Panel">
+                            <StackPanel Name="ContentStackPanel"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center">
+                                <ContentPresenter VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"
+                                                  Content="{TemplateBinding Content}"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MouseOverColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{StaticResource UpdateInfoColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Viewbox x:Key="CalendarWhiteViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="White" 
+                      Data="M426.667,51.2h-51.2V17.067C375.467,7.641,367.826,0,358.4,0s-17.067,7.641-17.067,17.067V51.2h-204.8V17.067
+			                C136.533,7.641,128.892,0,119.467,0S102.4,7.641,102.4,17.067V51.2H51.2C22.923,51.2,0,74.123,0,102.4v324.267
+			                c0,28.277,22.923,51.2,51.2,51.2h375.467c28.277,0,51.2-22.923,51.2-51.2V102.4C477.867,74.123,454.944,51.2,426.667,51.2z
+			                M443.733,426.667c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V204.8h409.6V426.667z
+			                M443.733,170.667h-409.6V102.4c0-9.426,7.641-17.067,17.067-17.067h51.2v34.133c0,9.426,7.641,17.067,17.067,17.067
+			                s17.067-7.641,17.067-17.067V85.333h204.8v34.133c0,9.426,7.641,17.067,17.067,17.067s17.067-7.641,17.067-17.067V85.333h51.2
+			                c9.426,0,17.067,7.641,17.067,17.067V170.667z"/>
+                <Path Fill="White"
+                      Data="M352.98,243.934c-6.614-6.388-17.099-6.388-23.712,0L204.8,368.401l-56.201-56.201c-6.78-6.548-17.584-6.36-24.132,0.419
+			                c-6.388,6.614-6.388,17.099,0,23.713l68.267,68.267c6.665,6.662,17.468,6.662,24.132,0l136.533-136.533
+			                C359.947,261.286,359.759,250.482,352.98,243.934z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="CalendarViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}" 
+                      Data="M426.667,51.2h-51.2V17.067C375.467,7.641,367.826,0,358.4,0s-17.067,7.641-17.067,17.067V51.2h-204.8V17.067
+			                C136.533,7.641,128.892,0,119.467,0S102.4,7.641,102.4,17.067V51.2H51.2C22.923,51.2,0,74.123,0,102.4v324.267
+			                c0,28.277,22.923,51.2,51.2,51.2h375.467c28.277,0,51.2-22.923,51.2-51.2V102.4C477.867,74.123,454.944,51.2,426.667,51.2z
+			                M443.733,426.667c0,9.426-7.641,17.067-17.067,17.067H51.2c-9.426,0-17.067-7.641-17.067-17.067V204.8h409.6V426.667z
+			                M443.733,170.667h-409.6V102.4c0-9.426,7.641-17.067,17.067-17.067h51.2v34.133c0,9.426,7.641,17.067,17.067,17.067
+			                s17.067-7.641,17.067-17.067V85.333h204.8v34.133c0,9.426,7.641,17.067,17.067,17.067s17.067-7.641,17.067-17.067V85.333h51.2
+			                c9.426,0,17.067,7.641,17.067,17.067V170.667z"/>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}" 
+                      Data="M352.98,243.934c-6.614-6.388-17.099-6.388-23.712,0L204.8,368.401l-56.201-56.201c-6.78-6.548-17.584-6.36-24.132,0.419
+			                c-6.388,6.614-6.388,17.099,0,23.713l68.267,68.267c6.665,6.662,17.468,6.662,24.132,0l136.533-136.533
+			                C359.947,261.286,359.759,250.482,352.98,243.934z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ClockWhiteViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="White" 
+                      Data="M347.216,301.211l-71.387-53.54V138.609c0-10.966-8.864-19.83-19.83-19.83c-10.966,0-19.83,8.864-19.83,19.83v118.978
+			                c0,6.246,2.935,12.136,7.932,15.864l79.318,59.489c3.569,2.677,7.734,3.966,11.878,3.966c6.048,0,11.997-2.717,15.884-7.952
+			                C357.766,320.208,355.981,307.775,347.216,301.211z"/>
+                <Path Fill="White"
+                      Data="M256,0C114.833,0,0,114.833,0,256s114.833,256,256,256s256-114.833,256-256S397.167,0,256,0z M256,472.341
+			                c-119.275,0-216.341-97.066-216.341-216.341S136.725,39.659,256,39.659c119.295,0,216.341,97.066,216.341,216.341
+			                S375.275,472.341,256,472.341z"/>
+            </Grid>
+        </Viewbox>
+        <Viewbox x:Key="ClockViewbox" x:Shared ="False">
+            <Grid>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}"
+                      Data="M347.216,301.211l-71.387-53.54V138.609c0-10.966-8.864-19.83-19.83-19.83c-10.966,0-19.83,8.864-19.83,19.83v118.978
+			                c0,6.246,2.935,12.136,7.932,15.864l79.318,59.489c3.569,2.677,7.734,3.966,11.878,3.966c6.048,0,11.997-2.717,15.884-7.952
+			                C357.766,320.208,355.981,307.775,347.216,301.211z"/>
+                <Path Fill="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=Foreground}"
+                      Data="M256,0C114.833,0,0,114.833,0,256s114.833,256,256,256s256-114.833,256-256S397.167,0,256,0z M256,472.341
+			                c-119.275,0-216.341-97.066-216.341-216.341S136.725,39.659,256,39.659c119.295,0,216.341,97.066,216.341,216.341
+			                S375.275,472.341,256,472.341z"/>
+            </Grid>
+        </Viewbox>
+    </Page.Resources>
+    <Grid>
+        <Grid Margin="0,0,0,34">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Panel.ZIndex="1">
+                <c:SearchTextBox x:Name="SearchUserControl" Width="220" Height="32"
+                                 PreviewKeyDown="SearchUserControl_KeyDown"
+                                 SearchClick="SearchUserControl_SearchClick"
+                                 QueryResultSelected="SearchUserControl_SearchClick"
+                                 Command="{Binding SearchCommand}"
+                                 CommandParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
+                                 Query="{Binding QueryCommand}"
+                                 QueryParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
+                                 QueryResult="{Binding ResultCommand}"
+                                 ItemsSource="{Binding QueryResult}"/>
+            </Grid>
+            <Grid Grid.Row="1" HorizontalAlignment="Stretch">
+                <StackPanel Grid.Row="0" FlowDirection="RightToLeft" Orientation="Horizontal"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,12,24,0">
+                    <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Sunset}" Margin="0,0,20,0">
+                        <TextBlock Text="{Binding SunsetTime}" x:Name="SunsetTimeTextBlock"
+                                   FontSize="16" VerticalAlignment="Center" 
+                                   Foreground="White" Margin="0,0,6,0"/>
+                        <Viewbox Margin="0" Width="24">
+                            <Grid>
+                                <Path Fill="White" 
+                                            Data="m473.411 221.912h-59.926c-3.144-37.839-18.139-72.322-41.343-99.723l42.396-42.396-20.92-20.92-42.396 42.396c-27.4-23.204-61.883-38.199-99.722-41.343v-59.926h-29.588v59.926c-37.839 3.144-72.322 18.139-99.723 41.343l-42.396-42.396-20.92 20.92 42.396 42.396c-23.204 27.401-38.199 61.883-41.343 99.723h-59.926v29.588h60.493c1.345 15.368 4.056 30.349 9.04 44.382h31.772c-7.97-18.155-12.54-38.116-12.54-59.176 0-81.57 66.371-147.941 147.941-147.941s147.941 66.371 147.941 147.941c0 21.061-4.571 41.021-12.54 59.176h31.772c4.984-14.034 7.695-29.014 9.04-44.382h60.493z"/>
+                                <Path Fill="White"
+                                            Data="m251.5 416.778v-150.484h-29.588v150.484l-63.511-63.511-20.92 20.92 99.225 99.225 99.225-99.225-20.92-20.92z"/>
+                            </Grid>
+                        </Viewbox>
+                    </StackPanel>
+                    <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Sunrise}">
+                        <TextBlock Text="{Binding SunriseTime}" x:Name="SunriseTimeTextBlock"
+                               FontSize="16" VerticalAlignment="Center" 
+                               Foreground="White" Margin="0,0,6,0"/>
+                        <Viewbox Margin="0" Width="24">
+                            <Grid>
+                                <Path Fill="White" 
+                                      Data="m473.411 221.912h-59.926c-3.144-37.839-18.139-72.322-41.343-99.723l42.396-42.396-20.92-20.92-42.396 42.396c-27.4-23.204-61.883-38.199-99.722-41.343v-59.926h-29.588v59.926c-37.839 3.144-72.322 18.139-99.723 41.343l-42.396-42.396-20.92 20.92 42.396 42.396c-23.204 27.401-38.199 61.883-41.343 99.723h-59.926v29.588h60.493c1.345 15.368 4.056 30.349 9.04 44.382h31.772c-7.97-18.155-12.54-38.116-12.54-59.176 0-81.57 66.371-147.941 147.941-147.941s147.941 66.371 147.941 147.941c0 21.061-4.571 41.021-12.54 59.176h31.772c4.984-14.034 7.695-29.014 9.04-44.382h60.493z"/>
+                                <Path Fill="White"
+                                      Data="m236.706 266.294-99.225 99.225 20.92 20.92 63.511-63.511v150.484h29.588v-150.484l63.511 63.511 20.92-20.92z"/>
+                            </Grid>
+                        </Viewbox>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" Margin="12,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" FlowDirection="LeftToRight" Orientation="Horizontal"
+                            HorizontalAlignment="Left" Margin="0,28,0,-4">
+                        <TextBlock Text="{Binding AvgTemp}"
+                               FontSize="96" x:Name ="TempAvgTextBlock" 
+                               VerticalAlignment="Center" Foreground="White"
+                               FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
+                        <TextBlock Text="{DynamicResource TempUnit}" Margin="0,12,0,0" FontSize="48"
+                                   VerticalAlignment="Top" Foreground="White"
+                                   FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
+                    </StackPanel>
+                    <TabControl Grid.Row="0" Margin="0,65,80,0" Width="100" Height="100"
+                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                            Grid.RowSpan="3" BorderThickness="0"
+                            x:Name="WeahterIconTabControl" Background="Transparent">
+                        <TabItem Visibility="Collapsed" x:Name="ClearSkyDayTabItem"
+                             Content="{StaticResource ClearSkyDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ClearSkyNightTabItem"
+                             Content="{StaticResource ClearSkyNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="FewCloudsDayTabItem"
+                             Content="{StaticResource FewCloudsDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="FewCloudsNightTabItem"
+                             Content="{StaticResource FewCloudsNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsDayTabItem"
+                             Content="{StaticResource ScatteredCloudsDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ScatteredCloudsNightTabItem"
+                             Content="{StaticResource ScatteredCloudsNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="BrokenCloudsDayTabItem"
+                             Content="{StaticResource BrokenCloudsDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="BrokenCloudsNightTabItem"
+                             Content="{StaticResource BrokenCloudsNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ShowerRainTabItem"
+                             Content="{StaticResource ShowRainViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="RainDayTabItem"
+                             Content="{StaticResource RainDayViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="RainNightTabItem"
+                             Content="{StaticResource RainNightViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="ThunderstormTabItem"
+                             Content="{StaticResource ThunderstormViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="SnowTabItem"
+                             Content="{StaticResource SnowViewbox}"/>
+                        <TabItem Visibility="Collapsed" x:Name="MistTabItem"
+                             Content="{StaticResource MistViewbox}"/>
+                        <TabControl.Style>
+                            <Style TargetType="TabControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                        <Setter Property="SelectedIndex" Value="0"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                        <Setter Property="SelectedIndex" Value="1"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                        <Setter Property="SelectedIndex" Value="2"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                        <Setter Property="SelectedIndex" Value="3"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                        <Setter Property="SelectedIndex" Value="4"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                        <Setter Property="SelectedIndex" Value="5"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                        <Setter Property="SelectedIndex" Value="6"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                        <Setter Property="SelectedIndex" Value="7"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                        <Setter Property="SelectedIndex" Value="8"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                        <Setter Property="SelectedIndex" Value="8"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                        <Setter Property="SelectedIndex" Value="9"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                        <Setter Property="SelectedIndex" Value="10"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                        <Setter Property="SelectedIndex" Value="11"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                        <Setter Property="SelectedIndex" Value="11"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                        <Setter Property="SelectedIndex" Value="12"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                        <Setter Property="SelectedIndex" Value="12"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                        <Setter Property="SelectedIndex" Value="13"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                        <Setter Property="SelectedIndex" Value="13"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabControl.Style>
+                    </TabControl>
+                    <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal"
+                                HorizontalAlignment="Left">
+                        <TextBlock FontSize="16" VerticalAlignment="Center" 
+                                   Foreground="{StaticResource UpdateInfoColorBrush}">
+                            <Run Text="{DynamicResource FeelTemp}"/><Run Text="  "/>
+                        </TextBlock>
+                        <TextBlock Text="{Binding FeelTemp}"
+                               FontSize="16" x:Name ="TempFeelTextBlock" 
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                        <TextBlock Text="{DynamicResource Degress}" FontSize="16"
+                               VerticalAlignment="Top" 
+                               Foreground="{StaticResource UpdateInfoColorBrush}"
+                               FontFamily="/AppResources;Component/Fonts/#Roboto Thin"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Description}" Grid.Row="2" FontSize="20"
+                               HorizontalAlignment="Left" Foreground="White" Margin="0,0,0,5"/>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                 BeginTime="0:0:0.5"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+                <Grid Grid.Row="1" VerticalAlignment="Top" Margin="0,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"
+                           TextTrimming="CharacterEllipsis" MaxWidth="240"
+                           FontSize="32" x:Name ="CityTextBlock" Margin="0,0,0,4"
+                           VerticalAlignment="Center" Foreground="White"
+                           SizeChanged="CityTextBlock_SizeChanged"
+                           FontFamily="/AppResources;Component/Fonts/#Roboto Condensed">
+                        <Run Text="{Binding CityName, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding Country, Mode=OneWay}"/>
+                    </TextBlock>
+                    <WrapPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3"
+                               x:Name="WeatherDataWrapPanel">
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Pressure}" Margin="10,0,10,6">
+                            <Viewbox Width="18" Margin="0,0,6,0">
+                                <Grid>
+                                    <Path Fill="Transparent" 
+                                      Data="M 295.5 51.761719 C 160.886719 51.761719 51.757812 160.886719 51.757812 295.5 C 51.757812 430.113281 160.886719 539.242188 295.5 539.242188 C 430.113281 539.242188 539.238281 430.113281 539.238281 295.5 C 538.984375 160.988281 430.011719 52.015625 295.5 51.761719 Z M 295.5 51.761719 "/>
+                                    <Path Fill="White"
+                                      Data="M 315.511719 330.179688 C 299.28125 345.171875 271.902344 334.679688 260.820312 315.511719 C 249.738281 296.347656 254.300781 267.402344 275.488281 260.820312 L 447.976562 207.496094 Z M 315.511719 330.179688 "/>
+                                    <Path Fill="White"
+                                      Data="M 295.5 0 C 132.300781 0 0 132.300781 0 295.5 C 0 458.699219 132.300781 591 295.5 591 C 458.699219 591 591 458.699219 591 295.5 C 590.714844 132.417969 458.582031 0.285156 295.5 0 Z M 295.5 539.175781 C 164.835938 538.90625 57.527344 435.832031 52.019531 305.277344 L 78.097656 305.277344 C 83.492188 305.277344 87.875 300.898438 87.875 295.5 C 87.875 290.101562 83.496094 285.722656 78.097656 285.722656 L 52.019531 285.722656 C 53.441406 249.585938 62.957031 214.234375 79.855469 182.265625 L 102.671875 195.304688 C 107.351562 198.003906 113.335938 196.398438 116.035156 191.71875 C 118.734375 187.039062 117.132812 181.054688 112.449219 178.355469 L 89.765625 165.316406 C 109.046875 134.902344 134.769531 109.085938 165.125 89.699219 L 178.160156 112.382812 C 180.859375 117.0625 186.84375 118.667969 191.523438 115.96875 C 196.207031 113.269531 197.808594 107.285156 195.109375 102.605469 L 182.070312 79.921875 C 214.09375 62.972656 249.515625 53.433594 285.722656 52.019531 L 285.722656 78.097656 C 285.539062 83.492188 289.769531 88.015625 295.167969 88.195312 C 295.277344 88.199219 295.386719 88.199219 295.5 88.199219 C 300.894531 88.199219 305.277344 83.820312 305.277344 78.421875 L 305.277344 52.347656 C 341.410156 53.765625 376.761719 63.285156 408.730469 80.183594 L 395.695312 103 C 392.996094 107.679688 394.597656 113.664062 399.277344 116.363281 C 403.960938 119.0625 409.945312 117.457031 412.644531 112.777344 L 425.679688 90.089844 C 456.066406 109.277344 481.875 134.890625 501.300781 165.125 L 478.613281 178.160156 C 473.933594 180.859375 472.328125 186.84375 475.027344 191.523438 C 477.726562 196.207031 483.710938 197.808594 488.390625 195.109375 L 511.078125 182.074219 C 527.976562 214.039062 537.492188 249.394531 538.914062 285.527344 L 512.839844 285.527344 C 507.441406 285.527344 503.058594 289.90625 503.058594 295.304688 C 503.058594 300.703125 507.441406 305.085938 512.839844 305.085938 L 538.914062 305.085938 C 533.542969 435.707031 426.234375 538.933594 295.5 539.238281 C 295.5 539.238281 295.5 539.175781 295.5 539.175781 Z M 295.5 539.175781 "/>
+                                    <Path Fill="White"
+                                      Data="M 316.359375 295.5 C 316.359375 307.019531 307.019531 316.359375 295.5 316.359375 C 283.980469 316.359375 274.640625 307.019531 274.640625 295.5 C 274.640625 283.980469 283.980469 274.640625 295.5 274.640625 C 307.019531 274.640625 316.359375 283.980469 316.359375 295.5 Z M 316.359375 295.5 "/>
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding Pressure}" 
+                                   FontSize="16" x:Name ="PressureTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                            <TextBlock Text=" hPa" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        </StackPanel>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Humidity}" Margin="10,0,10,6">
+                            <Viewbox Width="16" Margin="0,1,6,0">
+                                <Grid>
+                                    <Path Fill="White" 
+                                      Data="m180 314.768c-33.084 0-60 26.916-60 60 3.296 79.598 116.716 79.575 120 0 0-33.084-26.916-60-60-60zm0 90c-16.542 0-30-13.458-30-30 1.648-39.799 58.358-39.788 60 0 0 16.542-13.458 30-30 30z"/>
+                                    <Path Fill="White"
+                                      Data="m240 253.808v-194.04c-3.305-79.618-116.724-79.556-120 0v194.04c-125.832 63.654-83.296 253.91 60.021 255.96 142.888-1.63 186.161-191.96 59.979-255.96zm-61.511 225.949c-113.805-3.603-143.367-158.311-37.86-202.354l9.371-3.793v-213.842c1.653-39.809 58.362-39.778 60 0v213.842l9.371 3.793c106.871 44.884 74.943 202.462-40.882 202.354z"/>
+                                    <Path Fill="White"
+                                      Data="m45 209.768h45v30h-45z"/>
+                                    <Path Fill="White"
+                                      Data="m15 149.768h75v30h-75z"/>
+                                    <Path Fill="White"
+                                      Data="m45 89.768h45v30h-45z"/>
+                                    <Path Fill="White"
+                                      Data="m15 29.768h75v30h-75z"/>
+                                    <Path Fill="White"
+                                      Data="m450 194.768v-150c-2.479-59.713-87.544-59.667-90 0v150c-59.713 2.479-59.667 87.544 0 90v180c2.479 59.713 87.544 59.667 90 0v-180c59.713-2.479 59.667-87.544 0-90zm-60-150c.826-19.904 29.181-19.889 30 0v150h-30zm30 420c-.826 19.904-29.181 19.889-30 0v-180h30zm30-210h-90c-19.904-.826-19.889-29.181 0-30h90c19.904.826 19.889 29.181 0 30z"/>
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding Humidity}" 
+                                   FontSize="16" x:Name ="HumidityTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                            <TextBlock Text="%" FontSize="16"
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                        </StackPanel>
+                        <Grid VerticalAlignment="Top" ToolTip="{DynamicResource Wind}" Margin="10,0,10,6">
+                            <Viewbox Width="18" Height="18" HorizontalAlignment="Left" Margin="0,0,0,0">
+                                <Grid Width="700" Height="700" Margin="-110">
+                                    <Grid Width="490" Height="490">
+                                        <Path Fill="White" 
+                                              Data="M260.884,10.5c-2.6-6.4-8.9-10.5-15.8-10.5s-13.2,4.2-15.8,10.5l-190.2,455.8c-2.7,6.4-1.2,13.7,3.6,18.7
+				                                    c4.9,4.9,12.2,6.4,18.6,3.9l183.8-74.2l183.7,74.1c2.1,0.8,4.3,1.2,6.4,1.2c4.5,0,8.9-1.8,12.2-5.1c4.9-4.9,6.3-12.3,3.6-18.7
+				                                    L260.884,10.5z M251.484,380.3c-2.1-0.8-4.2-1.2-6.4-1.2s-4.4,0.4-6.4,1.2l-152.1,61.3l158.5-379.9l158.5,380L251.484,380.3z"/>
+                                        <Grid.LayoutTransform>
+                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
+                                        </Grid.LayoutTransform>
+                                    </Grid>
+                                </Grid>
+                            </Viewbox>
+                            <Grid Margin="24,0,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
+                                       FontSize="16" x:Name ="WindSpeedTextBlock" 
+                                       VerticalAlignment="Top"
+                                       Foreground="White"/>
+                                <TextBlock FontSize="16"
+                                           Grid.Column="1"
+                                           VerticalAlignment="Top"
+                                           Foreground="White">
+                                    <Run Text=" "/><Run Text="{DynamicResource WindSpeed}"/>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Snow}" Margin="10,0,10,6">
+                            <Viewbox Width="18" Margin="0,0,6,0">
+                                <Grid>
+                                    <Path Fill="White" 
+                                      Data="M378.4,225.6L304,251.2L274,234v-27.6v-27.2l30-17.2l74.4,25.6c5.2,2,11.2-1.2,12.8-6.4c2-5.2-1.2-11.2-6.4-12.8
+			                                l-57.6-19.6l54-31.2c4.8-2.8,6.4-9.2,3.6-14c-2.8-4.8-9.2-6.4-14-3.6l-54,31.2l11.6-59.6c1.2-5.6-2.4-10.8-8-12
+			                                c-5.6-1.2-10.8,2.4-12,8l-15.2,77.2l-30,17.2l-22.8-13.2l-0.4-0.4l-23.2-13.6v-34.4L276,48.8c4.4-3.6,4.8-10,0.8-14.4
+			                                c-3.6-4.4-10-4.8-14.4-0.8l-45.6,40V10.4c0-5.6-4.4-10.4-10.4-10.4C200.8,0,196,4.4,196,10.4v62.4l-45.6-39.6
+			                                C146,29.6,139.6,30,136,34c-3.6,4.4-3.2,10.8,0.8,14.4L196,100v34.4L172.8,148l-23.2,13.6l-30-17.2l-15.2-77.2
+			                                c-1.2-5.6-6.4-9.2-12-8c-5.6,1.2-9.2,6.4-8,12L96,130.8L42,99.6c-4.8-2.8-11.2-1.2-14,3.6s-1.2,11.2,3.6,14l54,31.2L28,168
+			                                c-5.2,2-8.4,7.6-6.4,12.8s7.6,8.4,12.8,6.4l74.4-25.6l30,17.2v27.6v27.2h0.4l-30,17.2l-74.4-25.6c-5.2-2-11.2,1.2-12.8,6.4
+			                                c-2,5.2,1.2,11.2,6.4,12.8L86,264l-54,31.2c-4.8,2.8-6.4,9.2-3.6,14c2.8,4.8,9.2,6.4,14,3.6l54-31.2l-11.6,59.6
+			                                c-1.2,5.6,2.4,10.8,8,12c5.6,1.2,10.8-2.4,12-8L120,268l30-17.2l23.6,13.6l23.2,13.6v34.4L137.6,364c-4.4,3.6-4.8,10-0.8,14.4
+			                                c3.6,4.4,10,4.8,14.4,0.8l45.6-40v63.2c0,5.6,4.4,10.4,10.4,10.4c5.6,0,10.4-4.4,10.4-10.4V340l45.6,40c4.4,3.6,10.8,3.2,14.4-0.8
+			                                c3.6-4.4,3.2-10.8-0.8-14.4l-60-52v-34.4l23.2-13.6l23.2-13.6l30,17.2l15.2,77.2c1.2,5.6,6.4,9.2,12,8c5.6-1.2,9.2-6.4,8-12
+			                                L316.8,282l54,31.2c4.8,2.8,11.2,1.2,14-3.6c2.8-4.8,1.2-11.2-3.6-14l-54-31.2l57.6-19.6c5.2-2,8.4-7.6,6.4-12.8
+			                                C389.2,226.8,383.6,223.6,378.4,225.6z M252.4,206.4v27.2l-23.2,13.6l-22.8,13.2l-23.6-13.6l-23.2-13.6v-26.8v-27.2l23.2-13.6
+			                                L206,152l23.2,13.6l0.4,0.4l22.8,13.2V206.4z"/>
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding SnowFall}" 
+                                   FontSize="16" x:Name ="SnowFallTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                            <TextBlock FontSize="16"
+                                       VerticalAlignment="Top"
+                                       Foreground="White">
+                                <Run Text=" "/><Run Text="{DynamicResource SnowRainFall}"/>
+                            </TextBlock>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SnowFall}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                        </StackPanel>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal" VerticalAlignment="Top"
+                                ToolTip="{DynamicResource Rain}" Margin="10,0,10,6">
+                            <Viewbox Width="18" Margin="-2,0,6,0">
+                                <Grid>
+                                    <Path Fill="White" 
+                                          Data="M349.413,130.314c-40.321-62.959-81.228-114.885-81.636-115.403L255.998,0L244.22,14.912
+			                                    c-0.408,0.517-41.315,52.443-81.636,115.403c-55.171,86.144-83.144,151.371-83.144,193.867
+			                                    c0,103.562,79.204,187.816,176.56,187.816s176.56-84.254,176.56-187.816C432.559,281.687,404.585,216.46,349.413,130.314z
+			                                     M255.998,481.981c-80.803,0-146.541-70.788-146.541-157.798c0-36.115,27.067-97.485,78.274-177.474
+			                                    c26.571-41.505,53.406-78.125,68.267-97.829c14.861,19.703,41.695,56.324,68.267,97.829
+			                                    c51.207,79.989,78.274,141.359,78.274,177.474C402.54,411.193,336.801,481.981,255.998,481.981z"/>
+                                </Grid>
+                            </Viewbox>
+                            <TextBlock Text="{Binding RainFall}" 
+                                   FontSize="16" x:Name ="RainFallTextBlock" 
+                                   VerticalAlignment="Top"
+                                   Foreground="White"/>
+                            <TextBlock FontSize="16"
+                                       VerticalAlignment="Top"
+                                       Foreground="White">
+                                <Run Text=" "/><Run Text="{DynamicResource SnowRainFall}"/>
+                            </TextBlock>
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RainFall}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                        </StackPanel>
+                        <WrapPanel.Style>
+                            <Style TargetType="WrapPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.2" Storyboard.TargetProperty="(Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                     BeginTime="0:0:0.6"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                        <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                    </ObjectAnimationUsingKeyFrames>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </WrapPanel.Style>
+                    </WrapPanel>
+                    <StackPanel Grid.Row="1" FlowDirection="LeftToRight" Orientation="Horizontal"
+                                Margin="0,0.5">
+                        <Button Style="{StaticResource FunctionalButtonStyle}" Margin="0,0,6,0"
+                                Background="Transparent" ToolTip="{DynamicResource Map}"
+                                Command="{Binding ShowMapCommand}">
+                            <Viewbox Margin="0" Width="12">
+                                <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
+                                      Data="m216.210938 0c-122.664063 0-222.460938 99.796875-222.460938 222.460938 0 154.175781 222.679688 417.539062 222.679688 417.539062s222.242187-270.945312 222.242187-417.539062c0-122.664063-99.792969-222.460938-222.460937-222.460938zm67.121093 287.597656c-18.507812 18.503906-42.8125 27.757813-67.121093 27.757813-24.304688 0-48.617188-9.253907-67.117188-27.757813-37.011719-37.007812-37.011719-97.226562 0-134.238281 17.921875-17.929687 41.761719-27.804687 67.117188-27.804687 25.355468 0 49.191406 9.878906 67.121093 27.804687 37.011719 37.011719 37.011719 97.230469 0 134.238281zm0 0"/>
+                            </Viewbox>
+                        </Button>
+                        <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
+                            <TextBlock Text="{Binding Latitude}" 
+                                       ToolTip="{DynamicResource Latitiude}"
+                                       FontSize="16" x:Name ="LatitudeTextBlock" 
+                                       VerticalAlignment="Center"
+                                       Foreground="White"/>
+                            <TextBlock Text="  " Margin="0,2,0,0" FontSize="16"
+                                       VerticalAlignment="Top"
+                                       Foreground="White"/>
+                            <TextBlock Text="{Binding Longitude}" 
+                                       ToolTip="{DynamicResource Longtitiude}"
+                                       x:Name="LongitudeTextBlock"
+                                       FontSize="16" VerticalAlignment="Center" 
+                                       Foreground="White"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" FlowDirection="LeftToRight" Orientation="Horizontal">
+                        <TextBlock FontSize="13" VerticalAlignment="Center" 
+                                   Foreground="{StaticResource UpdateInfoColorBrush}">
+                            <Run Text="{DynamicResource Update}"/><Run Text=" "/>
+                        </TextBlock>
+                        <TextBlock Text="{Binding UpdateTime}"
+                                   FontSize="13" x:Name ="UpdateTimeTextBlock" 
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                    </StackPanel>
+                    <Grid Grid.Column="1" Background="{StaticResource UpdateInfoColorBrush}"
+                          Width="0.8" Grid.RowSpan="3" Margin="20,0,10,0" x:Name="SplitGrid">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard TargetProperty="Opacity">
+                                                    <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                     BeginTime="0:0:0.6"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="2" Margin="-12,12,0,11">
+                    <Border CornerRadius="2.0" Panel.ZIndex="-1" Margin="12,0">
+                        <Border.Background>
+                            <SolidColorBrush Color="LightGray" Opacity="0.14"/>
+                        </Border.Background>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight"
+                                HorizontalAlignment="Left" Margin="12,0,0,0">
+                        <Grid>
+                            <c:CommandComboBox Style="{StaticResource ElementTypeComboBox}"
+                                               ToolTip="{DynamicResource ForecastType}" 
+                                               Width="80" Margin="0,0,1,0"
+                                               SelectedIndex="0" Panel.ZIndex="1"
+                                               Foreground="White"
+                                               x:Name="ForecastTypeComboBox">
+                                <ComboBox.Items>
+                                    <ComboBoxItem Height="36" Width="140" VerticalContentAlignment="Stretch">
+                                        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                            <ContentPresenter Width="20" Height="20" Content="{DynamicResource ClockViewbox}"
+                                                              Margin="0,0,5,0"/>
+                                            <TextBlock Text="{DynamicResource Hourly}" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                    <ComboBoxItem Height="36" Width="140">
+                                        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                            <ContentPresenter Width="20" Height="20" Content="{DynamicResource CalendarViewbox}"
+                                                              Margin="0,-2,5,2"/>
+                                            <TextBlock Text="{DynamicResource Daily}" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                    </ComboBoxItem>
+                                </ComboBox.Items>
+                            </c:CommandComboBox>
+                            <ContentPresenter Margin="0,0,16,0" Width="20" Height="20">
+                                <ContentPresenter.Style>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Content" Value="{StaticResource CalendarWhiteViewbox}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="0">
+                                                <Setter Property="Content" Value="{StaticResource ClockWhiteViewbox}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentPresenter.Style>
+                            </ContentPresenter>
+                        </Grid>
+                        <Grid Width="0.8" Margin="0,7" HorizontalAlignment="Left">
+                            <Grid.Background>
+                                <SolidColorBrush Color="LightGray" Opacity="0.25"/>
+                            </Grid.Background>
+                        </Grid>
+                        <Grid>
+                            <c:CommandListBox x:Name="ForecastListBox" BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                  VerticalAlignment="Bottom" Height="69.6"
+                                  Command="{Binding ShowForecastCommand}"
+                                  CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedIndex}"
+                                  ItemsSource="{Binding FourDaysForecast}"
+                                  Background="Transparent" SelectionChanged="ForecastListBox_SelectionChanged"
+                                  PreviewMouseRightButtonDown="ListBox_PreviewMouseButtonDown"
+                                  KeyboardNavigation.TabNavigation="None">
+                                <c:CommandListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </c:CommandListBox.ItemsPanel>
+                                <c:CommandListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Width="65">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0" VerticalAlignment="Center"
+                                                       HorizontalAlignment="Center" FontSize="12.5"/>
+                                            <ContentControl Grid.Row="1" Height="24" Margin="0,3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                            Focusable="False">
+                                                <ContentControl.Style>
+                                                    <Style TargetType="ContentControl">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                                                <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                                                <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                                                <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                                                <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                                                <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                                                <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                                                <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                                                <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                                                <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ContentControl.Style>
+                                            </ContentControl>
+                                            <TextBlock Grid.Row="2" FontSize="12.5" VerticalAlignment="Center" 
+                                                       HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </c:CommandListBox.ItemTemplate>
+                                <c:CommandListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Margin" Value="10,0"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="ToolTip" Value="{Binding Description}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Grid>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0" VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Center"
+                                                                       Text="{Binding Date}" FontSize="12.5"/>
+                                                            <Grid Grid.Row="1" Height="24" Margin="0,2,0,4"/>
+                                                            <TextBlock Grid.Row="2" FontSize="12.5" VerticalAlignment="Center" 
+                                                                       HorizontalAlignment="Center">
+                                                                <Run Text="{Binding MaxTemp, Mode=OneWay}" FontSize="17"/><Run Text="{DynamicResource Degress}" FontSize="17"/><Run Text=" /  "/><Run Text="{Binding MinTemp, Mode=OneWay}" Foreground="{StaticResource UpdateInfoColorBrush}"/><Run Text="{DynamicResource Degress}" Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                                                            </TextBlock>
+                                                        </Grid>
+                                                        <Grid x:Name="Bd" VerticalAlignment="Center"
+                                                              HorizontalAlignment="Center">
+                                                            <Grid Background="Transparent">
+                                                                <ContentPresenter VerticalAlignment="Stretch"
+                                                                          Height="{Binding ElementName=Bd, Path=Height}"
+                                                                          HorizontalAlignment="Stretch"/>
+                                                            </Grid>
+                                                            <Grid.LayoutTransform>
+                                                                <ScaleTransform/>
+                                                            </Grid.LayoutTransform>
+                                                            <Grid.Triggers>
+                                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                                    <EventTrigger.Actions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" 
+                                                                                                 To="1.25" Duration="0:0:0.1"/>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" 
+                                                                                                 To="1.25" Duration="0:0:0.1"/>
+                                                                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                                    To="-8.125" Duration="0:0:0.1"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger.Actions>
+                                                                </EventTrigger>
+                                                                <EventTrigger RoutedEvent="MouseLeave">
+                                                                    <EventTrigger.Actions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleX" 
+                                                                                                 To="1" Duration="0:0:0.1"/>
+                                                                                <DoubleAnimation Storyboard.TargetProperty="LayoutTransform.ScaleY" 
+                                                                                                 To="1" Duration="0:0:0.1"/>
+                                                                                <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                                    To="0" Duration="0:0:0.1"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger.Actions>
+                                                                </EventTrigger>
+                                                            </Grid.Triggers>
+                                                        </Grid>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="LayoutTransform">
+                                            <Setter.Value>
+                                                <ScaleTransform/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Trigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetProperty="Foreground.Color"
+                                                                            From="White" To="#FFE5E5E5" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.EnterActions>
+                                                <Trigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ColorAnimation Storyboard.TargetProperty="Foreground.Color"
+                                                                            From="#FFE5E5E5" To="White" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </Trigger.ExitActions>
+                                            </Trigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="True"/>
+                                                </MultiTrigger.Conditions>
+                                            </MultiTrigger>
+                                            <MultiTrigger>
+                                                <MultiTrigger.Conditions>
+                                                    <Condition Property="IsSelected" Value="False"/>
+                                                </MultiTrigger.Conditions>
+                                            </MultiTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </c:CommandListBox.ItemContainerStyle>
+                                <c:CommandListBox.Style>
+                                    <Style TargetType="c:CommandListBox">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="0">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,0,0,0" To="0,0,0,75" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,0,0,75" To="0,0,0,0" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </c:CommandListBox.Style>
+                            </c:CommandListBox>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="15"/>
+                                    <ColumnDefinition Width="315"/>
+                                    <ColumnDefinition Width="15"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0" Height="16">
+                                    <Button Style="{StaticResource FunctionalButtonStyle}" Background="Transparent"
+                                            IsEnabled="False" x:Name="PreviousButton" Click="Button_Click"
+                                            ToolTip="{DynamicResource Previous}">
+                                        <Viewbox Margin="0" Width="12" Height="12">
+                                            <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
+                                                  Data="M57.633,129.007L165.93,237.268c4.752,4.74,12.451,4.74,17.215,0c4.752-4.74,4.752-12.439,0-17.179
+		                                                l-99.707-99.671l99.695-99.671c4.752-4.74,4.752-12.439,0-17.191c-4.752-4.74-12.463-4.74-17.215,0L57.621,111.816
+		                                                C52.942,116.507,52.942,124.327,57.633,129.007z"/>
+                                        </Viewbox>
+                                        <Button.Triggers>
+                                            <EventTrigger RoutedEvent="Button.Click">
+                                                <BeginStoryboard>
+                                                    <Storyboard TargetName="HourlyListBoxLeft" TargetProperty="Padding">
+                                                        <ThicknessAnimation From="-315,0,0,0" To="0" Duration="0:0:0.4"
+                                                                            AccelerationRatio="0.8" DecelerationRatio="0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                                <BeginStoryboard>
+                                                    <Storyboard TargetName="HourlyListBoxRight" TargetProperty="Padding">
+                                                        <ThicknessAnimation From="-315,0,0,0" To="0" Duration="0:0:0.4"
+                                                                            AccelerationRatio="0.8" DecelerationRatio="0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Button.Triggers>
+                                    </Button>
+                                </Grid>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                            FlowDirection="LeftToRight">
+                                    <c:CommandListBox x:Name="HourlyListBoxLeft" BorderThickness="0"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                                  VerticalAlignment="Center" Height="69.6"
+                                                  ItemsSource="{Binding HourlyForecast.Item1}"
+                                                  Background="Transparent" Margin="0,0,0,0" Width="315">
+                                        <c:CommandListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
+                                            </ItemsPanelTemplate>
+                                        </c:CommandListBox.ItemsPanel>
+                                        <c:CommandListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Width="62.5" VerticalAlignment="Center">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ContentControl Grid.Row="0" Focusable="False"
+                                                                Height="18" Margin="0,2,0,1" HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center">
+                                                        <ContentControl.Style>
+                                                            <Style TargetType="ContentControl">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                                                        <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                                                        <Setter Property="Content" Value="{StaticResource ClearSkyNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                                                        <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                                                        <Setter Property="Content" Value="{StaticResource FewCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                                                        <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                                                        <Setter Property="Content" Value="{StaticResource ScatteredCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                                                        <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                                                        <Setter Property="Content" Value="{StaticResource BrokenCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                                                        <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                                                        <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                                                        <Setter Property="Content" Value="{StaticResource RainNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                                                        <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                                                        <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                                                        <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                                                        <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                                                        <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                                                        <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                                                        <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ContentControl.Style>
+                                                    </ContentControl>
+                                                    <TextBlock Grid.Row="1" FontSize="13.5" VerticalAlignment="Center" 
+                                                           HorizontalAlignment="Center" Foreground="White"
+                                                           Margin="0,0,0,0">
+                                                        <Run Text="{Binding AvgTemp, Mode=OneWay}"/><Run Text="{DynamicResource Degress}"/>
+                                                    </TextBlock>
+                                                    <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0.5">
+                                                        <Viewbox Width="7" Height="7" HorizontalAlignment="Left">
+                                                            <Grid Width="700" Height="700" Margin="-110">
+                                                                <Grid Width="490" Height="490">
+                                                                    <Path Fill="LightGray" 
+                                                                      Data="M409.49,485.75l-165-80.9l-165,80.9c-25.3,12.4-52.4-13.1-41.6-39.1l178.5-427.9c10.4-25,45.8-25,56.3,0l178.4,427.9
+			                                                                C461.89,472.55,434.79,498.15,409.49,485.75z"/>
+                                                                    <Grid.LayoutTransform>
+                                                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
+                                                                    </Grid.LayoutTransform>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Viewbox>
+                                                        <Grid Margin="10,0,0,0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
+                                                                   FontSize="9.5"
+                                                                   VerticalAlignment="Top"
+                                                                   Foreground="LightGray"/>
+                                                            <TextBlock Text=" km/h" FontSize="9.5"
+                                                                   Grid.Column="1"
+                                                                   VerticalAlignment="Top"
+                                                                   Foreground="LightGray"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <TextBlock Grid.Row="3" VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center" Foreground="{StaticResource UpdateInfoColorBrush}"
+                                                               Text="{Binding DayTime}" FontSize="11"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </c:CommandListBox.ItemTemplate>
+                                        <c:CommandListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Focusable" Value="False"/>
+                                                <Setter Property="ToolTip">
+                                                    <Setter.Value>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0">
+                                                                <Run Text="{Binding Description, Mode=OneWay}"/>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="1">
+                                                                <Run Text="{DynamicResource FeelTempDescription}"/><Run Text="{Binding FeelTemp, Mode=OneTime}"/><Run Text="{DynamicResource Degress}"/>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="2">
+                                                            <Run Text="Wielkość opadów deszczu: "/><Run Text="{Binding RainFall, Mode=OneTime}"/><Run Text="mm"/>
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding RainFall}" Value="0">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="3">
+                                                            <Run Text="Wielkość opadów śniegu: "/><Run Text="{Binding SnowFall, Mode=OneTime}"/><Run Text="mm"/>
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding SnowFall}" Value="0">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </Grid>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                            <Border x:Name="Bd" VerticalAlignment="Stretch"
+                                                                    HorizontalAlignment="Stretch" Background="Transparent">
+                                                                <ContentPresenter VerticalAlignment="Stretch"
+                                                                                  HorizontalAlignment="Stretch"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                        </MultiTrigger.Conditions>
+                                                    </MultiTrigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="False"/>
+                                                        </MultiTrigger.Conditions>
+                                                    </MultiTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </c:CommandListBox.ItemContainerStyle>
+                                    </c:CommandListBox>
+                                    <c:CommandListBox x:Name="HourlyListBoxRight" BorderThickness="0"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                                  VerticalAlignment="Center" Height="69.6"
+                                                  ItemsSource="{Binding HourlyForecast.Item2}"
+                                                  Background="Transparent" Margin="0,0,0,0" Width="315">
+                                        <c:CommandListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel IsItemsHost="True" VerticalAlignment="Center"/>
+                                            </ItemsPanelTemplate>
+                                        </c:CommandListBox.ItemsPanel>
+                                        <c:CommandListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Width="62.5" VerticalAlignment="Center">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ContentControl Grid.Row="0" Focusable="False"
+                                                                Height="18" Margin="0,2,0,1" HorizontalAlignment="Center" 
+                                                                VerticalAlignment="Center">
+                                                        <ContentControl.Style>
+                                                            <Style TargetType="ContentControl">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="01d">
+                                                                        <Setter Property="Content" Value="{StaticResource ClearSkyDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="01n">
+                                                                        <Setter Property="Content" Value="{StaticResource ClearSkyNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="02d">
+                                                                        <Setter Property="Content" Value="{StaticResource FewCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="02n">
+                                                                        <Setter Property="Content" Value="{StaticResource FewCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="03d">
+                                                                        <Setter Property="Content" Value="{StaticResource ScatteredCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="03n">
+                                                                        <Setter Property="Content" Value="{StaticResource ScatteredCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="04d">
+                                                                        <Setter Property="Content" Value="{StaticResource BrokenCloudsDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="04n">
+                                                                        <Setter Property="Content" Value="{StaticResource BrokenCloudsNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="09d">
+                                                                        <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="09n">
+                                                                        <Setter Property="Content" Value="{StaticResource ShowRainViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="10n">
+                                                                        <Setter Property="Content" Value="{StaticResource RainNightViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="10d">
+                                                                        <Setter Property="Content" Value="{StaticResource RainDayViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="11d">
+                                                                        <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="11n">
+                                                                        <Setter Property="Content" Value="{StaticResource ThunderstormViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="13d">
+                                                                        <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="13n">
+                                                                        <Setter Property="Content" Value="{StaticResource SnowViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="50d">
+                                                                        <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Icon}" Value="50n">
+                                                                        <Setter Property="Content" Value="{StaticResource MistViewbox}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </ContentControl.Style>
+                                                    </ContentControl>
+                                                    <TextBlock Grid.Row="1" FontSize="13.5" VerticalAlignment="Center" 
+                                                           HorizontalAlignment="Center" Foreground="White"
+                                                           Margin="0,0,0,0">
+                                                    <Run Text="{Binding AvgTemp, Mode=OneWay}"/><Run Text="{DynamicResource Degress}"/>
+                                                    </TextBlock>
+                                                    <Grid Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0.5">
+                                                        <Viewbox Width="7" Height="7" HorizontalAlignment="Left">
+                                                            <Grid Width="700" Height="700" Margin="-110">
+                                                                <Grid Width="490" Height="490">
+                                                                    <Path Fill="LightGray" 
+                                                                      Data="M409.49,485.75l-165-80.9l-165,80.9c-25.3,12.4-52.4-13.1-41.6-39.1l178.5-427.9c10.4-25,45.8-25,56.3,0l178.4,427.9
+			                                                                C461.89,472.55,434.79,498.15,409.49,485.75z"/>
+                                                                    <Grid.LayoutTransform>
+                                                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding WindAngle}"/>
+                                                                    </Grid.LayoutTransform>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Viewbox>
+                                                        <Grid Margin="10,0,0,0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
+                                                                   FontSize="9.5"
+                                                                   VerticalAlignment="Top"
+                                                                   Foreground="LightGray"/>
+                                                            <TextBlock Text=" km/h" FontSize="9.5"
+                                                                   Grid.Column="1"
+                                                                   VerticalAlignment="Top"
+                                                                   Foreground="LightGray"/>
+                                                        </Grid>
+                                                    </Grid>
+                                                    <TextBlock Grid.Row="3" VerticalAlignment="Center"
+                                                           HorizontalAlignment="Center" Foreground="{StaticResource UpdateInfoColorBrush}"
+                                                           Text="{Binding DayTime}" FontSize="11"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </c:CommandListBox.ItemTemplate>
+                                        <c:CommandListBox.ItemContainerStyle>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Focusable" Value="False"/>
+                                                <Setter Property="ToolTip">
+                                                    <Setter.Value>
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                                <RowDefinition/>
+                                                            </Grid.RowDefinitions>
+                                                            <TextBlock Grid.Row="0">
+                                                            <Run Text="{Binding Description, Mode=OneWay}"/>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="1">
+                                                             <Run Text="{DynamicResource FeelTempDescription}"/><Run Text="{Binding FeelTemp, Mode=OneTime}"/><Run Text="{DynamicResource Degress}"/>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="2">
+                                                            <Run Text="Wielkość opadów deszczu: "/><Run Text="{Binding RainFall, Mode=OneTime}"/><Run Text="mm"/>
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding RainFall}" Value="0">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                            <TextBlock Grid.Row="3">
+                                                            <Run Text="Wielkość opadów śniegu: "/><Run Text="{Binding SnowFall, Mode=OneTime}"/><Run Text="mm"/>
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding SnowFall}" Value="0">
+                                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </Grid>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ListBoxItem">
+                                                            <Border x:Name="Bd" VerticalAlignment="Stretch"
+                                                                HorizontalAlignment="Stretch" Background="Transparent">
+                                                                <ContentPresenter VerticalAlignment="Stretch"
+                                                                              HorizontalAlignment="Stretch"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="True"/>
+                                                        </MultiTrigger.Conditions>
+                                                    </MultiTrigger>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsSelected" Value="False"/>
+                                                        </MultiTrigger.Conditions>
+                                                    </MultiTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </c:CommandListBox.ItemContainerStyle>
+                                    </c:CommandListBox>
+                                </StackPanel>
+                                <Grid Grid.Column="2" Height="16" Margin="0,0,0,0">
+                                    <Button Style="{StaticResource FunctionalButtonStyle}" Background="Transparent"
+                                            Click="Button_Click" x:Name="NextButton"
+                                            ToolTip="{DynamicResource Next}">
+                                        <Viewbox Margin="-3,0,3,0" Width="12" Height="12">
+                                            <Path Fill="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}, Path=BorderBrush}" 
+                                                  Data="M183.189,111.816L74.892,3.555c-4.752-4.74-12.451-4.74-17.215,0c-4.752,4.74-4.752,12.439,0,17.179
+		                                                l99.707,99.671l-99.695,99.671c-4.752,4.74-4.752,12.439,0,17.191c4.752,4.74,12.463,4.74,17.215,0l108.297-108.261
+		                                                C187.881,124.315,187.881,116.495,183.189,111.816z"/>
+                                        </Viewbox>
+                                        <Button.Triggers>
+                                            <EventTrigger RoutedEvent="Button.Click">
+                                                <BeginStoryboard>
+                                                    <Storyboard TargetName="HourlyListBoxLeft" TargetProperty="Padding">
+                                                        <ThicknessAnimation From="0" To="-315,0,0,0" Duration="0:0:0.4"
+                                                                            AccelerationRatio="0.8" DecelerationRatio="0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                                <BeginStoryboard>
+                                                    <Storyboard TargetName="HourlyListBoxRight" TargetProperty="Padding">
+                                                        <ThicknessAnimation From="0" To="-315,0,0,0" Duration="0:0:0.4"
+                                                                            AccelerationRatio="0.8" DecelerationRatio="0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Button.Triggers>
+                                    </Button>
+                                </Grid>
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=ForecastTypeComboBox, Path=SelectedIndex}" Value="1">
+                                                <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,0,0,0" To="0,75,0,0" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <ThicknessAnimation Storyboard.TargetProperty="Margin"
+                                                                                AccelerationRatio="0.66" DecelerationRatio="0.33"
+                                                                                From="0,75,0,0" To="0,0,0,0" Duration="0:0:0.2"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="1" To="0" Duration="0:0:0.1"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.2" Storyboard.TargetProperty="(Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard TargetProperty="Opacity">
+                                                <DoubleAnimation From="0" To="1" Duration="0:0:0.1"
+                                                                 BeginTime="0:0:0.6"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.5" Storyboard.TargetProperty="(Visibility)">
+                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                </Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsForecastPanelVisible}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard TargetProperty="Margin">
+                                            <ThicknessAnimation From="12,0,0,0" To="12,-193,0,0" AccelerationRatio="0.66"
+                                                                DecelerationRatio="0.33"
+                                                                Duration="0:0:0.5" BeginTime="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard TargetProperty="Margin">
+                                            <ThicknessAnimation From="12,-193,0,0" To="12,0,0,0" AccelerationRatio="0.66"
+                                                                DecelerationRatio="0.33"
+                                                                Duration="0:0:0.5" BeginTime="0:0:0.1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+        </Grid>
+    </Grid>
+</Page>

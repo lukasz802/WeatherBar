@@ -15,8 +15,6 @@ namespace WeatherBar.Controls
     {
         #region Fields
 
-        private static bool isResultLoading = false;
-
         private RoutedEventArgs args;
 
         private Popup popup;
@@ -49,6 +47,16 @@ namespace WeatherBar.Controls
 
         public static readonly RoutedEvent SearchClickEvent =
             EventManager.RegisterRoutedEvent("SearchClick",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchTextBox));
+
+        public event RoutedEventHandler QueryResultSelected
+        {
+            add { AddHandler(QueryResultSelectedEvent, value); }
+            remove { RemoveHandler(QueryResultSelectedEvent, value); }
+        }
+
+        public static readonly RoutedEvent QueryResultSelectedEvent =
+            EventManager.RegisterRoutedEvent("QueryResultSelected",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchTextBox));
 
         public static readonly RoutedEvent RemoveResultsClickEvent =
@@ -194,55 +202,65 @@ namespace WeatherBar.Controls
         {
             SearchTextBox searchTextBox = (SearchTextBox)sender;
 
-            if (searchTextBox.Popup != null && !isResultLoading)
+            if (searchTextBox.Popup != null)
             {
                 searchTextBox.Popup.IsOpen = ((IEnumerable)e.NewValue).GetEnumerator().MoveNext();
             }
-
-            isResultLoading = false;
         }
 
         private void InitializeEventDispatcher()
         {
             eventDispatcher = new EventDispatcher(() =>
             {
-                if (Query != null)
+                if (Query != null && Query.CanExecute(QueryParameter))
                 {
-                    ICommand command = Query;
-
-                    if (command.CanExecute(QueryParameter))
-                    {
-                        command.Execute(QueryParameter);
-                    }
+                    Query.Execute(QueryParameter);
                 }
             }, 400);
         }
 
         private void ItemList_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.OriginalSource is ListBoxItem && e.Key == Key.Enter)
+            switch (e.Key)
             {
-                Popup.IsOpen = false;
-                e.Handled = true;
+                case Key.Enter:
+                    if (e.OriginalSource is ListBoxItem)
+                    {
+                        e.Handled = true;
+                        Popup.IsOpen = false;
 
-                if (QueryResult != null && ItemList.SelectedItem != null)
-                {
-                    QueryResult.Execute(ItemList.SelectedItem);
-                    Query.Execute(string.Empty);
-                }
+                        if (QueryResult != null && ItemList.SelectedItem != null)
+                        {
+                            QueryResult.Execute(ItemList.SelectedItem);
+                            args = new RoutedEventArgs(QueryResultSelectedEvent);
+                            RaiseEvent(args);
+                            SearchTextBoxControl.Clear();
+                        }
+                    }
+                    break;
+                case Key.Up:
+                case Key.Down:
+                    break;
+                default:
+                    e.Handled = true;
+                    break;
             }
         }
 
         private void ItemList_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && ItemList.SelectedItem != null
+                && ((ListBoxItem)ItemList.ItemContainerGenerator.ContainerFromIndex(ItemList.SelectedIndex)).IsMouseOver)
             {
                 Popup.IsOpen = false;
                 e.Handled = true;
 
-                if (QueryResult != null && ItemList.SelectedItem != null)
+                if (QueryResult != null)
                 {
                     QueryResult.Execute(ItemList.SelectedItem);
+                    args = new RoutedEventArgs(QueryResultSelectedEvent);
+                    RaiseEvent(args);
+                    SearchTextBoxControl.Clear();
                 }
             }
         }
@@ -298,26 +316,20 @@ namespace WeatherBar.Controls
         private void OnSearchClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            isResultLoading = true;
 
-            if (Command != null)
+            if (Command != null && Command.CanExecute(CommandParameter))
             {
-                ICommand command = Command;
-
-                if (command.CanExecute(CommandParameter))
-                {
-                    command.Execute(CommandParameter);
-                }
+                Command.Execute(CommandParameter);
             }
 
             args = new RoutedEventArgs(SearchClickEvent);
             RaiseEvent(args);
+            SearchTextBoxControl.Clear();
         }
 
         private void OnRemoveResultsClick(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
-            Query.Execute(string.Empty);
             args = new RoutedEventArgs(RemoveResultsClickEvent);
             RaiseEvent(args);
         }
@@ -327,7 +339,7 @@ namespace WeatherBar.Controls
             e.Handled = true;
             Text = SearchTextBoxControl.Text;
             Popup.IsOpen = false;
-
+     
             eventDispatcher.Restart();
 
             args = new RoutedEventArgs(TextChangedEvent);
@@ -370,7 +382,7 @@ namespace WeatherBar.Controls
 
         private void SearchTextBoxControl_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (Popup != null)
+            if (Popup != null && !Popup.IsMouseOver)
             {
                 Popup.IsOpen = false;
             }

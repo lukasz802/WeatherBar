@@ -109,39 +109,46 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\CommandComboBox.cs" />
+    <Compile Include="Controls\NonTopmostPopup.cs" />
     <Compile Include="Converters\LatitudeFormatConverter.cs" />
     <Compile Include="Converters\LongtitudeFormatConverter.cs" />
     <Compile Include="Core\EventDispatcher.cs" />
-    <Compile Include="Models\City.cs" />
+    <Compile Include="Model\City.cs" />
     <Compile Include="Controls\CommandListBox.cs" />
     <Compile Include="Controls\SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Repositories\CityRepository.cs" />
-    <Compile Include="Pages\ConnectionFailedPage.xaml.cs">
+    <Compile Include="Model\DataTransferObjects\GetWeatherDataEventTransferObject.cs" />
+    <Compile Include="Model\DataTransferObjects\QueryExecutionTransferObject.cs" />
+    <Compile Include="Model\Repositories\CityRepository.cs" />
+    <Compile Include="Utils\ApplicationUtils.cs" />
+    <Compile Include="View\Pages\ConnectionFailedPage.xaml.cs">
       <DependentUpon>ConnectionFailedPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ForecastPage.xaml.cs">
+    <Compile Include="View\Pages\ForecastPage.xaml.cs">
       <DependentUpon>ForecastPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\LoadingPage.xaml.cs">
+    <Compile Include="View\Pages\LoadingPage.xaml.cs">
       <DependentUpon>LoadingPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\MainPanelPage.xaml.cs">
+    <Compile Include="View\Pages\MainPanelPage.xaml.cs">
       <DependentUpon>MainPanelPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\NotFoundPage.xaml.cs">
+    <Compile Include="View\Pages\NotFoundPage.xaml.cs">
       <DependentUpon>NotFoundPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Core\RelayCommand.cs" />
-    <Compile Include="Core\Utils.cs" />
+    <Compile Include="Utils\ViewModelUtils.cs" />
     <Compile Include="Controls\WinForms\TrayNotifyIcon.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="View\Pages\OptionsPage.xaml.cs">
+      <DependentUpon>OptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\AppViewModel.cs" />
     <Page Include="Controls\SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -149,27 +156,31 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\ConnectionFailedPage.xaml">
+    <Page Include="View\Pages\ConnectionFailedPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\ForecastPage.xaml">
+    <Page Include="View\Pages\ForecastPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\LoadingPage.xaml">
+    <Page Include="View\Pages\LoadingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MainPanelPage.xaml">
+    <Page Include="View\Pages\MainPanelPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\NotFoundPage.xaml">
+    <Page Include="View\Pages\NotFoundPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Pages\OptionsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -231,6 +242,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

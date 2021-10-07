@@ -19,6 +19,10 @@ namespace WeatherBar.Core
         {
         }
 
+        public RelayCommand(Action execute) : this((o) => execute() , null)
+        {
+        }
+
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             executeAction = execute ?? throw new ArgumentNullException(nameof(execute));

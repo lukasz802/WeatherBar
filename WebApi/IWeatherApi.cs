@@ -1,44 +1,28 @@
 ﻿using System;
-using WebApi.Models.Enums;
-using WebApi.Models.Interfaces;
+using WebApi.Model.Enums;
 
 namespace WebApi
 {
-    public interface IWeatherApi : IDisposable
+    public interface IWeatherApi : IDisposable, IUpdateConfiguration, IWeatherApiCommands
     {
-        /// <summary>
-        /// Gets current weather data by city name.
-        /// </summary>
-        IHourlyData GetCurrentWeatherDataByCityName(string cityName);
-
-        /// <summary>
-        /// Gets current weather data by city ID.
-        /// </summary>
-        IHourlyData GetCurrentWeatherDataByCityId(string cityId);
-
-        /// <summary>
-        /// Gets 4 days weather forecast data by city name.
-        /// </summary>
-        IFourDaysData GetFourDaysForecastDataByCityName(string cityName);
-
-        /// <summary>
-        /// Gets 4 days weather forecast data by city ID.
-        /// </summary>
-        IFourDaysData GetFourDaysForecastDataByCityId(string cityId);
-
         /// <summary>
         /// Gets unique API key.
         /// </summary>
         string ApiKey { get; }
 
         /// <summary>
-        /// Gets or sets units of measurement.
+        /// Gets units of measurement.
         /// </summary>
-        Units Units { get; set; }
+        Units Units { get; }
 
         /// <summary>
-        /// Gets or sets refresh interval in minutes.
+        /// Gets refresh interval in minutes.
         /// </summary>
-        int Interval { get; set; }
+        int Interval { get; }
+
+        /// <summary>
+        /// Gets city ID.
+        /// </summary>
+        string CityId { get; }
     }
 }
