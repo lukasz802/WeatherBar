@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Timers;
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Linq;
@@ -9,8 +8,6 @@ using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
 using WeatherBar.Core;
 using System.Diagnostics;
-using WebApi.Model.Interfaces;
-using WebApi.Model.Factories;
 using Microsoft.Rest;
 using System.Collections.ObjectModel;
 using WeatherBar.Model;
@@ -18,7 +15,9 @@ using WebApi.Model.Enums;
 using WeatherBar.Utils;
 using WeatherBar.Model.DataTransferObjects;
 using AppResources;
-using WebApi;
+using WeatherBar.Model.Enums;
+using WeatherBar.Model.Interfaces;
+using WeatherBar.Model.Services;
 
 namespace WeatherBar.ViewModel
 {
@@ -26,17 +25,25 @@ namespace WeatherBar.ViewModel
     {
         #region Fields
 
-        private readonly Timer autoUpdateTimer = new Timer();
+        private readonly ICityDataService cityDataService;
 
-        private readonly IWeatherApiCommands apiCommands;
+        private readonly IWeatherDataService weatherDataService;
 
-        private IHourlyData currentWeatherData = WeatherDataFactory.GetEmptyHourlyDataTransferObject();
+        private EventDispatcher autoUpdateEvent;
+
+        private IHourlyData currentWeatherData;
 
         private IFourDaysData weatherForecastData;
 
         private CallType refreshCallTypeMethod;
 
         private Language appLanguage;
+
+        private Units appUnits;
+
+        private RefreshTime refreshTime;
+
+        private City startingLocation;
 
         private bool isReady;
 
@@ -49,6 +56,8 @@ namespace WeatherBar.ViewModel
         private bool isForecastPanelVisible;
 
         private bool isOptionsPanelVisible;
+
+        private bool updateConfiguration = false;
 
         private string searchText;
 
@@ -63,6 +72,8 @@ namespace WeatherBar.ViewModel
         #endregion
 
         #region Properties
+
+        public ICommand CloseCommand { get; private set; }
 
         public ICommand ShowMapCommand { get; private set; }
 
@@ -84,6 +95,10 @@ namespace WeatherBar.ViewModel
 
         public ICommand SelectLanguageCommand { get; private set; }
 
+        public ICommand SelectUnitsCommand { get; private set; }
+
+        public ICommand RefreshTimeCommand { get; private set; }
+
         public Language ApplicationLanguage
         {
             get => appLanguage;
@@ -91,6 +106,36 @@ namespace WeatherBar.ViewModel
             {
                 appLanguage = value;
                 OnApplicationLanguageChanged(value);
+            }
+        }
+
+        public RefreshTime RefreshTime
+        {
+            get => refreshTime;
+            private set
+            {
+                refreshTime = value;
+                OnRefreshTimeChanged(value);
+            }
+        }
+
+        public Units ApplicationUnits
+        {
+            get => appUnits;
+            private set
+            {
+                appUnits = value;
+                OnApplicationUnitsChanged(value);
+            }
+        }
+
+        public City StartingLocation
+        {
+            get => startingLocation;
+            private set
+            {
+                startingLocation = value;
+                OnPropertyChanged();
             }
         }
 
@@ -156,7 +201,7 @@ namespace WeatherBar.ViewModel
 
         public string CityName => currentWeatherData.CityName;
 
-        public string CityId => currentWeatherData.CityId.ToString();
+        public string CityId => currentWeatherData.CityId?.ToString();
 
         public string Description => currentWeatherData.Description;
 
@@ -223,10 +268,11 @@ namespace WeatherBar.ViewModel
 
         #region Constructors
 
-        public AppViewModel(IWeatherApiCommands weatherApiCommands)
+        public AppViewModel()
         {
-            this.apiCommands = weatherApiCommands;
-            this.ApplicationLanguage = App.Language;
+            this.ApplicationLanguage = App.AppSettings.Language;
+            this.ApplicationUnits = App.AppSettings.Units;
+            this.RefreshTime = (RefreshTime)App.AppSettings.Interval;
             this.ResourceFounded = true;
             this.IsReady = false;
             this.HasStarted = false;
@@ -243,6 +289,12 @@ namespace WeatherBar.ViewModel
             this.ResultCommand = new RelayCommand(ShowResult);
             this.ShowOptionsCommand = new RelayCommand(ShowOptions);
             this.SelectLanguageCommand = new RelayCommand(SelectLanguage, (o) => HasStarted);
+            this.SelectUnitsCommand = new RelayCommand(SelectUnits, (o) => HasStarted);
+            this.RefreshTimeCommand = new RelayCommand(ModifyRefreshTime);
+            this.CloseCommand = new RelayCommand(SaveConfiguration);
+            this.cityDataService = new CityDataService();
+            this.weatherDataService = new WeatherDataService();
+            this.currentWeatherData = weatherDataService.GetEmptyHourlyData();
 
             Refresh();
             StartAutoUpdateEvent();
@@ -254,25 +306,70 @@ namespace WeatherBar.ViewModel
 
         public void Refresh()
         {
-            GetAndUpdateWeatherData(!HasStarted ? App.CityId : CityId, true, CallType.ByCityID);
+            GetAndUpdateWeatherData((!HasStarted || CityId == null) ? App.AppSettings.CityId : CityId, true, CallType.ByCityID);
         }
 
         #endregion
 
         #region Private methods
 
+        private void SaveConfiguration()
+        {
+            App.UpdateAndSaveConfiguration();
+        }
+
         private void SelectLanguage(object obj)
         {
-            ApplicationLanguage = (int)obj == 0 ? Language.Polish : Language.English;
+            ApplicationLanguage = (Language)(int)obj;
+        }
+
+        private void SelectUnits(object obj)
+        {
+            ApplicationUnits = (Units)(int)obj;
+        }
+
+        private void ModifyRefreshTime(object obj)
+        {
+            RefreshTime = (RefreshTime)(((int)obj + 1) * 15);
+        }
+
+        private void OnRefreshTimeChanged(RefreshTime refreshTime)
+        {
+            App.AppSettings.Interval = (int)refreshTime;
+            UpdateAutoUpdateEvent();
+            SetUpdateConfigurationFlag();
         }
 
         private void OnApplicationLanguageChanged(Language language)
         {
-            App.Language = language;
+            App.AppSettings.Language = language;
 
             ApplicationUtils.TranslateResources(language);
             ChangeLanguage();
-            Task.Run(() => App.UpdateAndSaveConfiguration());
+            SetUpdateConfigurationFlag();
+        }
+
+        private void OnApplicationUnitsChanged(Units units)
+        {
+            App.AppSettings.Units = units;
+
+            ApplicationUtils.SwapUnits(units);
+            ChangeUnits();
+            SetUpdateConfigurationFlag();
+        }
+
+        private void ChangeUnits()
+        {
+            currentWeatherData?.ChangeUnits(ApplicationUnits);
+            weatherForecastData?.ChangeUnits(ApplicationUnits);
+
+            OnPropertyChanged("AvgTemp");
+            OnPropertyChanged("FeelTemp");
+            OnPropertyChanged("WindSpeed");
+            OnPropertyChanged("FourDaysForecast");
+            OnPropertyChanged("HourlyForecast");
+            OnPropertyChanged("DailyForecast");
+            OnPropertyChanged("ApplicationUnits");
         }
 
         private void ChangeLanguage()
@@ -292,7 +389,7 @@ namespace WeatherBar.ViewModel
             refreshCallTypeMethod = CallType.ByCityName;
         }
 
-        private void AutoRefresh(object sender, ElapsedEventArgs e)
+        private void AutoRefresh()
         {
             GetAndUpdateWeatherData(refreshCallTypeMethod == CallType.ByCityName ? CityName : CityId, false, refreshCallTypeMethod);
         }
@@ -321,8 +418,7 @@ namespace WeatherBar.ViewModel
                 refreshWorker.RunWorkerAsync(arg);
             }
 
-            autoUpdateTimer.Stop();
-            autoUpdateTimer.Start();
+            autoUpdateEvent.Restart();
         }
 
         private void ExecuteQuery(object obj)
@@ -343,7 +439,7 @@ namespace WeatherBar.ViewModel
             var query = new QueryExecutionTransferObject()
             {
                 Argument = arg,
-                Result = new ObservableCollection<City>(ViewModelUtils.GetCityList(arg))
+                Result = new ObservableCollection<City>(cityDataService.GetCityListByName(arg))
             };
 
             e.Result = query;
@@ -389,14 +485,22 @@ namespace WeatherBar.ViewModel
 
         private void StartAutoUpdateEvent()
         {
-            autoUpdateTimer.AutoReset = true;
-            autoUpdateTimer.Interval = (int)TimeSpan.FromMinutes(App.Interval).TotalMilliseconds;
-            autoUpdateTimer.Elapsed += AutoRefresh;
-            autoUpdateTimer.Start();
+            autoUpdateEvent.Start();
+        }
+
+        private void UpdateAutoUpdateEvent()
+        {
+            if (autoUpdateEvent == null)
+            {
+                autoUpdateEvent = new EventDispatcher(AutoRefresh, RefreshTime, true);
+            }
+
+            autoUpdateEvent.UpdateInterval(RefreshTime);
         }
 
         private void UpdateWeatherData(object sender, RunWorkerCompletedEventArgs e)
         {
+            GetAndSetStartingLocation();
             SetHasStartedFlag();
 
             if (e.Cancelled)
@@ -405,8 +509,9 @@ namespace WeatherBar.ViewModel
                 return;
             }
 
-            ChangeLanguage();
             UpdateProperties();
+            ChangeUnits();
+            ChangeLanguage();
             IsReady = true;
         }
 
@@ -419,16 +524,8 @@ namespace WeatherBar.ViewModel
                 string oldIcon = currentWeatherData.Icon;
                 var arg = (GetWeatherDataEventTransferObject)e.Argument;
 
-                if (arg.CallType == CallType.ByCityName)
-                {
-                    weatherForecastData = apiCommands.GetFourDaysForecastDataByCityName(arg.Argument);
-                    currentWeatherData = apiCommands.GetCurrentWeatherDataByCityName(arg.Argument);
-                }
-                else
-                {
-                    weatherForecastData = apiCommands.GetFourDaysForecastDataByCityId(arg.Argument);
-                    currentWeatherData = apiCommands.GetCurrentWeatherDataByCityId(arg.Argument);
-                }
+                weatherForecastData = weatherDataService.GetFourDaysData(arg.CallType, arg.Argument);
+                currentWeatherData = weatherDataService.GetHourlyData(arg.CallType, arg.Argument);
 
                 if (!arg.IsRefreshIndicatorVisible && oldIcon != currentWeatherData.Icon)
                 {
@@ -455,9 +552,9 @@ namespace WeatherBar.ViewModel
         {
             var propertiesToUpdate = new List<string>()
                 {
+                    "Humidity",
+                    "Pressure",
                     "CityName",
-                    "AvgTemp",
-                    "FeelTemp",
                     "Description",
                     "UpdateTime",
                     "SunsetTime",
@@ -465,9 +562,6 @@ namespace WeatherBar.ViewModel
                     "Country",
                     "Longitude",
                     "Latitude",
-                    "Pressure",
-                    "Humidity",
-                    "WindSpeed",
                     "WindAngle",
                     "SnowFall",
                     "RainFall",
@@ -484,6 +578,22 @@ namespace WeatherBar.ViewModel
             if (!HasStarted)
             {
                 HasStarted = true;
+            }
+        }
+
+        private void SetUpdateConfigurationFlag()
+        {
+            if (!updateConfiguration)
+            {
+                updateConfiguration = true;
+            }
+        }
+
+        private void GetAndSetStartingLocation()
+        {
+            if (!HasStarted)
+            {
+                StartingLocation = cityDataService.GetCityById(App.AppSettings.CityId);
             }
         }
 

@@ -1,19 +1,13 @@
 ﻿using System;
-using WebApi.Model.Enums;
 
 namespace WebApi
 {
-    public interface IWeatherApi : IDisposable, IUpdateConfiguration, IWeatherApiCommands
+    public interface IWeatherApi : IDisposable, IUpdateConfiguration, IWeatherApiClient
     {
         /// <summary>
         /// Gets unique API key.
         /// </summary>
         string ApiKey { get; }
-
-        /// <summary>
-        /// Gets units of measurement.
-        /// </summary>
-        Units Units { get; }
 
         /// <summary>
         /// Gets refresh interval in minutes.

@@ -30,7 +30,7 @@
                                                     <Border Name="Border" BorderThickness="0"
                                                             BorderBrush="{TemplateBinding BorderBrush}"
                                                             CornerRadius="5"
-                                                            Background="#FF4F4768"
+                                                            Background="{StaticResource InativeOptionBackgroundColorBrush}"
                                                             VerticalAlignment="Stretch" 
                                                             HorizontalAlignment="Stretch">
                                                         <TextBlock Margin="10,0,0,0" FontSize="14" Foreground="White" VerticalAlignment="Center"
@@ -39,26 +39,14 @@
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="Border" Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="#5e5379"/>
-                                                                </Setter.Value>
-                                                            </Setter>
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveOptionBackgroundColorBrush}"/>
                                                             <Setter Property="Cursor" Value="Hand"/>
                                                         </Trigger>
                                                         <Trigger Property="IsPressed" Value="True">
-                                                            <Setter TargetName="Border" Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="#5e5379"/>
-                                                                </Setter.Value>
-                                                            </Setter>
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveOptionBackgroundColorBrush}"/>
                                                         </Trigger>
                                                         <Trigger Property="IsChecked" Value="True">
-                                                            <Setter TargetName="Border" Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="#5e5379"/>
-                                                                </Setter.Value>
-                                                            </Setter>
+                                                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveOptionBackgroundColorBrush}"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -138,7 +126,7 @@
                                 <Grid>
                                     <Path Data="m19.5 24h-4c-.276 0-.5-.224-.5-.5v-7c0-.276-.224-.5-.5-.5h-5c-.276 0-.5.224-.5.5v7c0 .276-.224.5-.5.5h-4c-.827 0-1.5-.673-1.5-1.5v-9.5h-2c-.551 0-1-.449-1-1 0-.265.108-.525.296-.713l11.354-11.144c.194-.19.505-.19.701 0l3.649 3.585v-2.228c0-.276.224-.5.5-.5h4c.276 0 .5.224.5.5v7.13l2.701 2.653c.191.192.299.452.299.717 0 .551-.449 1-1 1h-2v9.5c0 .827-.673 1.5-1.5 1.5zm-3.5-1h3.5c.276 0 .5-.224.5-.5v-10c0-.276.224-.5.5-.5h2.5l-2.851-2.804c-.095-.093-.149-.222-.149-.356v-6.84h-3v2.92c0 .202-.121.383-.307.461-.185.079-.399.037-.544-.104l-4.149-4.076-11 10.796 2.5.003c.276 0 .5.224.5.5v10c0 .276.224.5.5.5h3.5v-6.5c0-.827.673-1.5 1.5-1.5h5c.827 0 1.5.673 1.5 1.5z">
                                         <Path.Fill>
-                                            <SolidColorBrush Color="White" Opacity="0.03"/>
+                                            <SolidColorBrush Color="White" Opacity="0.06"/>
                                         </Path.Fill>
                                     </Path>
                                 </Grid>
@@ -154,6 +142,16 @@
                                        FontSize="20" Foreground="White"/>
                             <TextBlock Grid.Row="1" Text="{DynamicResource LocationDescription}" TextWrapping="Wrap"
                                        FontSize="14" Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                            <c:CityPopupTextBox ToolTip="{DynamicResource StartingLocationTextBox}"
+                                                CityName="{Binding StartingLocation.Name}"
+                                                Latitude="{Binding StartingLocation.Latitude}"
+                                                Longtitude="{Binding StartingLocation.Longtitude}"
+                                                Country="{Binding StartingLocation.Country}"
+                                                Width="180" Height="72" Grid.Row="2"
+                                                Margin="0,10,0,0"
+                                                VerticalAlignment="Top" HorizontalAlignment="Left"
+                                                Foreground="White"/>
+
                         </Grid>
                     </Grid>
                 </Grid>
@@ -174,7 +172,7 @@
 				                            c0.4,0,0.4,0.4,0.8,0.4c0,0,0.4,0,0.4,0.4c0.4,0,0.4,0,0.8,0.4h0.4c0.4,0,0.8,0,0.8,0h0.4h82.4c4,0,7.6-3.2,7.6-7.6
 				                            C362.4,310,359.2,306.4,354.8,306.4z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="M193.2,162.4c-3.2-3.2-7.2-5.6-11.6-6.8V81.2c0-4-3.6-7.2-7.6-7.2s-7.6,3.2-7.6,7.6v74c-4.4,1.2-8.4,3.6-11.6,6.8
@@ -183,7 +181,7 @@
 				                            s-6.4-1.2-8.4-3.6c-2-2-3.6-5.2-3.6-8.4c0-3.2,1.2-6.4,3.6-8.4c2-2,5.2-3.6,8.4-3.6s6.4,1.6,8.8,4c2,2,3.2,4.8,3.2,8
 				                            S184.8,187.6,182.4,189.6z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                             </Grid>
@@ -199,6 +197,44 @@
                                    FontSize="20" Foreground="White"/>
                         <TextBlock Grid.Row="1" Text="{DynamicResource RefreshTimeDescription}" TextWrapping="Wrap"
                                    FontSize="14" Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                        <c:CommandComboBox ToolTip="{DynamicResource RefreshTimeComboBox}"
+                                           Command="{Binding RefreshTimeCommand}"
+                                           CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedIndex}"
+                                           Width="140" Height="36" Grid.Row="2"
+                                           Margin="0,10,0,0"
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                                           Foreground="White">
+                            <ComboBox.Items>
+                                <ComboBoxItem Height="36" Width="140" VerticalContentAlignment="Stretch">
+                                    <TextBlock Text="{DynamicResource Minutes15RefreshTime}"/>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="36" Width="140">
+                                    <TextBlock Text="{DynamicResource Minutes30RefreshTime}"/>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="36" Width="140">
+                                    <TextBlock Text="{DynamicResource Minutes45RefreshTime}"/>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="36" Width="140">
+                                    <TextBlock Text="{DynamicResource Hour1RefreshTime}"/>
+                                </ComboBoxItem>
+                            </ComboBox.Items>
+                            <c:CommandComboBox.Style>
+                                <Style BasedOn="{StaticResource ElementTypeComboBox}" TargetType="c:CommandComboBox">
+                                    <Setter Property="SelectedIndex" Value="0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RefreshTime}" Value="30">
+                                            <Setter Property="SelectedIndex" Value="1"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RefreshTime}" Value="45">
+                                            <Setter Property="SelectedIndex" Value="2"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RefreshTime}" Value="60">
+                                            <Setter Property="SelectedIndex" Value="3"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </c:CommandComboBox.Style>
+                        </c:CommandComboBox>
                     </Grid>
                 </Grid>
             </Border>
@@ -210,32 +246,32 @@
                             <Grid>
                                 <Path Data="m207.386 280.048c0-4.142-3.358-7.5-7.5-7.5h-168.338c-9.125 0-16.548-7.423-16.548-16.548v-224.452c0-9.125 7.423-16.548 16.548-16.548h224.452c9.125 0 16.548 7.423 16.548 16.548v168.338c0 4.142 3.358 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-168.338c0-17.396-14.152-31.548-31.548-31.548h-224.452c-17.396 0-31.548 14.152-31.548 31.548v224.452c0 17.396 14.152 31.548 31.548 31.548h168.338c4.142 0 7.5-3.358 7.5-7.5z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="m480.452 224.452h-64.129c-4.142 0-7.5 3.358-7.5 7.5s3.358 7.5 7.5 7.5h64.129c9.125 0 16.548 7.423 16.548 16.548v224.452c0 9.125-7.423 16.548-16.548 16.548h-224.452c-9.125 0-16.548-7.423-16.548-16.548v-224.452c0-9.125 7.423-16.548 16.548-16.548h128.259c4.142 0 7.5-3.358 7.5-7.5s-3.358-7.5-7.5-7.5h-128.259c-17.396 0-31.548 14.152-31.548 31.548v224.452c0 17.396 14.152 31.548 31.548 31.548h224.452c17.396 0 31.548-14.152 31.548-31.548v-224.452c0-17.396-14.152-31.548-31.548-31.548z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="m215.919 80.161h-64.645v-8.532c0-4.142-3.358-7.5-7.5-7.5s-7.5 3.358-7.5 7.5v8.532h-64.645c-4.142 0-7.5 3.358-7.5 7.5s3.358 7.5 7.5 7.5h110.446c-4.319 13.874-15.141 41.853-38.337 69.779-14.166-17.038-23.762-34.166-30.118-48.323-1.697-3.778-6.133-5.467-9.914-3.771-3.779 1.697-5.467 6.135-3.771 9.914 7.021 15.639 17.728 34.661 33.696 53.479-11.383 11.809-25.167 23.259-41.814 33.248-3.552 2.131-4.704 6.738-2.572 10.29 1.406 2.344 3.89 3.642 6.438 3.642 1.313 0 2.644-.345 3.852-1.07 17.648-10.589 32.225-22.703 44.2-35.007 12.11 12.434 26.701 24.462 44.276 35.007 1.208.725 2.539 1.07 3.852 1.07 2.548 0 5.032-1.298 6.438-3.642 2.131-3.552.979-8.159-2.572-10.29-16.676-10.005-30.473-21.447-41.88-33.265 11.789-13.878 20.436-27.488 26.589-38.914 9.956-18.49 15.043-34.033 17.292-42.148h18.189c4.142 0 7.5-3.358 7.5-7.5s-3.357-7.499-7.5-7.499z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="m378.434 295.254c-1.668-4.055-5.577-6.674-9.961-6.674-.003 0-.007 0-.011 0-4.388.004-8.297 2.631-9.958 6.693-.023.056-.045.113-.067.169l-54.181 142.258c-1.474 3.871.468 8.204 4.339 9.678.879.335 1.781.493 2.668.493 3.022 0 5.871-1.84 7.01-4.833l11.654-30.599h76.701l11.54 30.578c1.463 3.875 5.788 5.832 9.665 4.369 3.875-1.462 5.832-5.79 4.369-9.665l-53.688-142.264c-.025-.067-.052-.135-.08-.203zm-42.793 102.187 32.813-86.156 32.514 86.156z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="m204.387 410.323-32.064-24.048c-3.313-2.485-8.015-1.813-10.5 1.5s-1.813 8.015 1.5 10.5l14.064 10.548h-25.597c-26.806 0-48.613-21.808-48.613-48.613v-48.093c0-4.142-3.358-7.5-7.5-7.5s-7.5 3.358-7.5 7.5v48.093c0 35.077 28.537 63.613 63.613 63.613h25.597l-14.064 10.548c-3.313 2.485-3.985 7.187-1.5 10.5 1.474 1.965 3.726 3 6.006 3 1.566 0 3.145-.489 4.494-1.5l32.064-24.048c1.889-1.417 3-3.639 3-6s-1.111-4.584-3-6z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="m307.613 101.677 32.064 24.048c1.349 1.012 2.928 1.5 4.494 1.5 2.28 0 4.533-1.036 6.006-3 2.485-3.313 1.813-8.015-1.5-10.5l-14.064-10.548h25.597c26.806 0 48.613 21.808 48.613 48.613v48.093c0 4.142 3.358 7.5 7.5 7.5s7.5-3.358 7.5-7.5v-48.093c0-35.077-28.537-63.613-63.613-63.613h-25.597l14.064-10.548c3.313-2.485 3.985-7.187 1.5-10.5-2.486-3.314-7.186-3.985-10.5-1.5l-32.064 24.048c-1.889 1.417-3 3.639-3 6s1.111 4.584 3 6z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                             </Grid>
@@ -280,7 +316,7 @@
                     </Grid>
                 </Grid>
             </Border>
-            <Border Margin="4,4,10,10" Grid.Row="1" Grid.Column="1" Background="{StaticResource CornerOptionBackgroundColorBrush}"
+            <Border Margin="4,4,10,10" Grid.Row="1" Grid.Column="1" Background="{DynamicResource CornerOptionBackgroundColorBrush}"
                     CornerRadius="5">
                 <Grid Margin="12,12,10,10">
                     <Grid>
@@ -288,12 +324,12 @@
                             <Grid>
                                 <Path Data="m84.894 38.313a1.749 1.749 0 0 0 -2.475 0l-44.107 44.105a1.752 1.752 0 0 0 0 2.475l4.8 4.8a1.752 1.752 0 0 0 2.475 0l44.1-44.111a1.749 1.749 0 0 0 0-2.475zm-40.55 47.662-2.319-2.319 41.631-41.631 2.32 2.319z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                                 <Path Data="m126.429 15.415a1.749 1.749 0 0 0 -2.877-.626l-16.373 16.374-7.992-2.349-2.349-7.993 16.373-16.373a1.749 1.749 0 0 0 -.626-2.877 24.963 24.963 0 0 0 -26.314 5.729l-1.085 1.081a24.349 24.349 0 0 0 -6.416 23.086l-47.3 47.3a24.348 24.348 0 0 0 -23.09 6.418l-1.08 1.086a24.962 24.962 0 0 0 -5.725 26.314 1.749 1.749 0 0 0 2.877.626l16.369-16.374 7.993 2.349 2.349 7.993-16.374 16.373a1.749 1.749 0 0 0 .626 2.877 24.951 24.951 0 0 0 26.314-5.724l1.086-1.086a24.351 24.351 0 0 0 6.415-23.086l47.3-47.3a24.353 24.353 0 0 0 23.086-6.415l1.085-1.086a24.966 24.966 0 0 0 5.728-26.317zm-8.2 23.84-1.084 1.085a20.862 20.862 0 0 1 -20.64 5.26 1.751 1.751 0 0 0 -1.731.442l-48.735 48.732a1.751 1.751 0 0 0 -.442 1.731 20.854 20.854 0 0 1 -5.257 20.639l-1.085 1.085a21.467 21.467 0 0 1 -19.922 5.728l15.039-15.038a1.75 1.75 0 0 0 .441-1.731l-2.913-9.905a1.752 1.752 0 0 0 -1.183-1.183l-9.9-2.91a1.753 1.753 0 0 0 -1.731.441l-15.043 15.036a21.467 21.467 0 0 1 5.728-19.922l1.084-1.085a20.858 20.858 0 0 1 20.645-5.26 1.756 1.756 0 0 0 1.731-.442l48.73-48.732a1.749 1.749 0 0 0 .439-1.726 20.859 20.859 0 0 1 5.258-20.64l1.085-1.084a21.471 21.471 0 0 1 19.921-5.728l-15.035 15.033a1.751 1.751 0 0 0 -.442 1.731l2.911 9.9a1.751 1.751 0 0 0 1.185 1.188l9.905 2.91a1.758 1.758 0 0 0 1.731-.441l15.037-15.038a21.465 21.465 0 0 1 -5.727 19.924z">
                                     <Path.Fill>
-                                        <SolidColorBrush Color="White" Opacity="0.03"/>
+                                        <SolidColorBrush Color="White" Opacity="0.06"/>
                                     </Path.Fill>
                                 </Path>
                             </Grid>
@@ -309,6 +345,38 @@
                                    FontSize="20" Foreground="White"/>
                         <TextBlock Grid.Row="1" Text="{DynamicResource UnitsDescription}" TextWrapping="Wrap"
                                    FontSize="14" Foreground="{StaticResource UpdateInfoColorBrush}"/>
+                        <c:CommandComboBox ToolTip="{DynamicResource UnitsComboBox}"
+                                           Command="{Binding SelectUnitsCommand}"
+                                           CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedIndex}"
+                                           Width="140" Height="36" Grid.Row="2"
+                                           Margin="0,10,0,0"
+                                           VerticalAlignment="Top" HorizontalAlignment="Left"
+                                           Foreground="White">
+                            <ComboBox.Items>
+                                <ComboBoxItem Height="36" Width="140" VerticalContentAlignment="Stretch">
+                                    <TextBlock Text="{DynamicResource StandardUnits}"/>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="36" Width="140">
+                                    <TextBlock Text="{DynamicResource ImperialUnits}"/>
+                                </ComboBoxItem>
+                                <ComboBoxItem Height="36" Width="140">
+                                    <TextBlock Text="{DynamicResource MetricUnits}"/>
+                                </ComboBoxItem>
+                            </ComboBox.Items>
+                            <c:CommandComboBox.Style>
+                                <Style BasedOn="{StaticResource ElementTypeComboBox}" TargetType="c:CommandComboBox">
+                                    <Setter Property="SelectedIndex" Value="0"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ApplicationUnits}" Value="1">
+                                            <Setter Property="SelectedIndex" Value="1"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ApplicationUnits}" Value="2">
+                                            <Setter Property="SelectedIndex" Value="2"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </c:CommandComboBox.Style>
+                        </c:CommandComboBox>
                     </Grid>
                 </Grid>
             </Border>

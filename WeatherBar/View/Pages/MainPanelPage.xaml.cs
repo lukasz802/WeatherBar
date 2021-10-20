@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Controls;
 using WeatherBar.Core;
+using WeatherBar.Model.Enums;
 
 namespace WeatherBar.View.Pages
 {
@@ -26,11 +27,20 @@ namespace WeatherBar.View.Pages
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == "ApplicationUnits")
+            {
+                EventDispatcher.RaiseEventWithDelay(() =>
+                {
+                    Resources["MaxTempFontSize"] = App.ViewModel.ApplicationUnits != Units.Standard ? 17D : 14D;
+                    Resources["MinTempFontSize"] = App.ViewModel.ApplicationUnits != Units.Standard ? 12D : 11D;
+                });
+            }
+
             if (App.ViewModel.HasStarted && e.PropertyName == "IsReady")
             {
                 if (!App.ViewModel.IsReady)
                 {
-                    SearchUserControl.SearchTextBoxControl.Clear();
+                    EventDispatcher.RaiseEventWithDelay(() => SearchUserControl.SearchTextBoxControl.Clear());
                 }
                 else
                 {

@@ -1,6 +1,6 @@
-﻿using WebApi.Model.Enums;
+﻿using WeatherBar.Model.Enums;
 
-namespace WebApi.Model.Interfaces
+namespace WeatherBar.Model.Interfaces
 {
     public interface IMultiLanguage
     {

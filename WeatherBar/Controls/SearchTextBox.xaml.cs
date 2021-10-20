@@ -185,7 +185,6 @@ namespace WeatherBar.Controls
             this.GotFocus += SearchTxtBox_Focus;
             this.LostFocus += SearchTxtBox_Focus;
             this.KeyDown += SearchTxtBox_KeyDown;
-            this.Loaded += (s, e) => AutoRepositionPopupBehavior();
             SearchTextBoxControl.LostFocus += SearchTextBoxControl_LostFocus;
             SearchTextBoxControl.GotFocus += SearchTextBoxControl_GotFocus;
             SearchButtonControl.Click += OnSearchClick;
@@ -344,24 +343,6 @@ namespace WeatherBar.Controls
 
             args = new RoutedEventArgs(TextChangedEvent);
             RaiseEvent(args);
-        }
-
-        private void AutoRepositionPopupBehavior()
-        {
-            Window window = Window.GetWindow(SearchTextBoxControl);
-
-            if (window != null || Popup == null)
-            {
-                window.LocationChanged += (s, t) =>
-                {
-                    var offset = Popup.HorizontalOffset;
-
-                    Popup.HorizontalOffset = offset + 1;
-                    Popup.HorizontalOffset = offset;
-                };
-            }
-
-            Popup.PlacementTarget = SearchTextBoxControl;
         }
 
         private void SearchTxtBox_KeyDown(object sender, KeyEventArgs e)

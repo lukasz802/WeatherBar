@@ -1,4 +1,4 @@
-﻿namespace WebApi.Model.Enums
+﻿namespace WeatherBar.Model.Enums
 {
     public enum Units
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using WeatherBar.Model.Enums;
 
 namespace WeatherBar.Controls.WinForms
 {
@@ -103,9 +104,21 @@ namespace WeatherBar.Controls.WinForms
 
         public void Update()
         {
-            var text = !App.ViewModel.IsReady ? "Aktualizowanie..." : App.ViewModel.IsConnected ?
-                       $"{App.ViewModel.CityName}, {App.ViewModel.Country}\n{App.ViewModel.Description}\nTemperatura: " + $"{App.ViewModel.AvgTemp}/{App.ViewModel.FeelTemp}°C\n" +
+            string units = App.AppSettings.Units == Units.Metric ? "°C" : App.AppSettings.Units == Units.Imperial ? "°F" : " K";
+            string text;
+
+            if (App.AppSettings.Language == Language.Polish)
+            {
+                text = !App.ViewModel.IsReady ? "Aktualizowanie..." : App.ViewModel.IsConnected ?
+                       $"{App.ViewModel.CityName}, {App.ViewModel.Country}\n{App.ViewModel.Description}\nTemperatura: " + $"{App.ViewModel.AvgTemp}/{App.ViewModel.FeelTemp}{units}\n" +
                        $"Zaktualizowano o: {App.ViewModel.UpdateTime}" : "Brak połączenia z serwerem Openweather.org";
+            }
+            else
+            {
+                text = !App.ViewModel.IsReady ? "Updating..." : App.ViewModel.IsConnected ?
+                       $"{App.ViewModel.CityName}, {App.ViewModel.Country}\n{App.ViewModel.Description}\nTemperature: " + $"{App.ViewModel.AvgTemp}/{App.ViewModel.FeelTemp}{units}\n" +
+                       $"Updated at: {App.ViewModel.UpdateTime}" : "No connection to the Openweather.org server";
+            }
 
             SetNotifyIconText(text);
             trayNotifyIcon.Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon(!App.ViewModel.IsReady ? "Update" : App.ViewModel.IsConnected ? App.ViewModel.Icon : string.Empty));

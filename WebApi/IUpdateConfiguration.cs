@@ -1,5 +1,4 @@
-﻿using WebApi.Model.Enums;
-
+﻿
 namespace WebApi
 {
     public interface IUpdateConfiguration
@@ -7,6 +6,6 @@ namespace WebApi
         /// <summary>
         /// Update WeatherAPI configuration.
         /// </summary>
-        void UpdateConfiguration(string cityId, Units units, int interval);
+        void UpdateConfiguration(string cityId, int interval);
     }
 }

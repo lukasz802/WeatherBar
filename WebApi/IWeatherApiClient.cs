@@ -1,27 +1,27 @@
-﻿using WebApi.Model.Interfaces;
+﻿using WebApi.Model.DataTransferObjects;
 
 namespace WebApi
 {
-    public interface IWeatherApiCommands
+    public interface IWeatherApiClient
     {
         /// <summary>
         /// Gets current weather data by city name.
         /// </summary>
-        IHourlyData GetCurrentWeatherDataByCityName(string cityName);
+        HourlyForecastTransferObject GetCurrentWeatherDataByCityName(string cityName);
 
         /// <summary>
         /// Gets current weather data by city ID.
         /// </summary>
-        IHourlyData GetCurrentWeatherDataByCityId(string cityId);
+        HourlyForecastTransferObject GetCurrentWeatherDataByCityId(string cityId);
 
         /// <summary>
         /// Gets 4 days weather forecast data by city name.
         /// </summary>
-        IFourDaysData GetFourDaysForecastDataByCityName(string cityName);
+        FourDaysForecastTransferObject GetFourDaysForecastDataByCityName(string cityName);
 
         /// <summary>
         /// Gets 4 days weather forecast data by city ID.
         /// </summary>
-        IFourDaysData GetFourDaysForecastDataByCityId(string cityId);
+        FourDaysForecastTransferObject GetFourDaysForecastDataByCityId(string cityId);
     }
 }

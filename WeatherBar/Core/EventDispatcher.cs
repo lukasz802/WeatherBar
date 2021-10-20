@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
+using WeatherBar.Model.Enums;
 
 namespace WeatherBar.Core
 {
@@ -13,14 +14,23 @@ namespace WeatherBar.Core
 
         #region Constructors
 
-        public EventDispatcher(Action action, int interval)
+        public EventDispatcher(Action action, int interval, bool autoReset = false)
         {
             timer.Interval = TimeSpan.FromMilliseconds(interval);
             timer.Tick += (s, a) =>
             {
-                timer.Stop();
+                if (!autoReset)
+                {
+                    timer.Stop();
+                }
+
                 action.Invoke();
             };
+        }
+
+        public EventDispatcher(Action action, RefreshTime interval, bool autoReset = false) 
+            : this(action, (int)interval * 60 * 1000, autoReset)
+        {
         }
 
         #endregion
@@ -55,6 +65,13 @@ namespace WeatherBar.Core
         public void Restart()
         {
             timer.Stop();
+            timer.Start();
+        }
+
+        public void UpdateInterval(RefreshTime interval)
+        {
+            timer.Stop();
+            timer.Interval = TimeSpan.FromMinutes((int)interval);
             timer.Start();
         }
 

@@ -1,7 +1,8 @@
-﻿
-namespace WebApi.Model.Interfaces
+﻿using System.ComponentModel;
+
+namespace WeatherBar.Model.Interfaces
 {
-    public interface IHourlyData : IWeatherData
+    public interface IHourlyData : INotifyPropertyChanged, IMultiLanguage, IUnits
     {
         string CityName { get; }
 

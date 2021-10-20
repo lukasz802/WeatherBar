@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using WebApi.Model.Factories;
-using WebApi.Model.Interfaces;
+using WebApi.Model.DataTransferObjects;
 
 namespace WebApi.Model.Converters
 {
@@ -21,7 +20,7 @@ namespace WebApi.Model.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(IFourDaysData).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
+            return typeof(FourDaysForecastTransferObject).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -30,9 +29,11 @@ namespace WebApi.Model.Converters
             {
                 JObject item = JObject.Load(reader);
 
-                return WeatherDataFactory.GetFourDaysDataTransferObject(
-                        hourlyData: PrepareHourlyForecastData(item),
-                        dailyData: PrepareDailyForecastData(item));
+                return new FourDaysForecastTransferObject()
+                {
+                    HourlyData = PrepareHourlyForecastData(item),
+                    DailyData = PrepareDailyForecastData(item),
+                };
             }
             catch
             {
@@ -44,34 +45,36 @@ namespace WebApi.Model.Converters
 
         #region Methods
 
-        private IEnumerable<IHourlyData> PrepareHourlyForecastData(JObject weatherForecastData)
+        private IEnumerable<HourlyForecastTransferObject> PrepareHourlyForecastData(JObject weatherForecastData)
         {
-            var result = new List<IHourlyData>();
+            var result = new List<HourlyForecastTransferObject>();
 
             foreach (var item in ((JArray)weatherForecastData["list"]).Take(40))
             {
-                result.Add(WeatherDataFactory.GetHourlyDataTransferObject(
-                    description: ((JArray)item["weather"])[0]["description"].ToObject<string>(),
-                    feelTemp: item["main"]["feels_like"].ToObject<double>(),
-                    avgTemp: item["main"]["temp"].ToObject<double>(),
-                    pressure: item["main"]["pressure"].ToObject<int>(),
-                    humidity: item["main"]["humidity"].ToObject<int>(),
-                    rainFall: item["rain"] != null ? item["rain"].Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>() : 0,
-                    snowFall: item["snow"] != null ? item["snow"].Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>() : 0,
-                    windAngle: item["wind"]["deg"].ToObject<int>(),
-                    windSpeed: item["wind"]["speed"].ToObject<double>(),
-                    icon: ((JArray)item["weather"])[0]["icon"].ToObject<string>(),
-                    descriptionId: ((JArray)item["weather"])[0]["id"].ToObject<string>(),
-                    date: item["dt_txt"].ToObject<DateTime>(),
-                    dayTime: item["dt"].ToObject<long>()));
+                result.Add(new HourlyForecastTransferObject()
+                {
+                    Description = ((JArray)item["weather"])[0]["description"].ToObject<string>(),
+                    FeelTemp = item["main"]["feels_like"].ToObject<double>(),
+                    AvgTemp = item["main"]["temp"].ToObject<double>(),
+                    Pressure = item["main"]["pressure"].ToObject<int>(),
+                    Humidity = item["main"]["humidity"].ToObject<int>(),
+                    RainFall = item["rain"] != null ? item["rain"].Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>() : 0,
+                    SnowFall = item["snow"] != null ? item["snow"].Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>() : 0,
+                    WindAngle = item["wind"]["deg"].ToObject<int>(),
+                    WindSpeed = item["wind"]["speed"].ToObject<double>(),
+                    Icon = ((JArray)item["weather"])[0]["icon"].ToObject<string>(),
+                    DescriptionId = ((JArray)item["weather"])[0]["id"].ToObject<string>(),
+                    Date = item["dt_txt"].ToObject<DateTime>(),
+                    DayTime = item["dt"].ToObject<long>()
+                });
             }
 
             return result;
         }
 
-        private IEnumerable<IDailyData> PrepareDailyForecastData(JObject weatherForecastData)
+        private IEnumerable<DailyForecastTransferObject> PrepareDailyForecastData(JObject weatherForecastData)
         {
-            var result = new List<IDailyData>();
+            var result = new List<DailyForecastTransferObject>();
             var tempList = ((JArray)weatherForecastData["list"]).Where(x => !x["dt_txt"].ToObject<string>().Contains(DateTime.Now.ToString("yyyy-MM-dd")))
                                                                 .GroupBy(x => Regex.Match(x["dt_txt"].ToObject<string>(), @"\d{4}-\d{1,2}-\d{1,2}").Value)
                                                                 .Select(x => new
@@ -89,16 +92,18 @@ namespace WebApi.Model.Converters
                                                              orderby t.Count() descending
                                                              select t).FirstOrDefault();
 
-                result.Add(WeatherDataFactory.GetDailyDataTransferObject(
-                    maxTemp: (from value in item.Values
+                result.Add(new DailyForecastTransferObject()
+                {
+                    MaxTemp = (from value in item.Values
                               select value["main"]["temp"].ToObject<double>()).Max(),
-                    minTemp: (from value in item.Values
+                    MinTemp = (from value in item.Values
                               select value["main"]["temp"].ToObject<double>()).Min(),
-                    icon: groupingElement.Key + "d",
-                    weekDay: DateTime.Now.AddDays(counter).DayOfWeek,
-                    description: ((JArray)groupingElement.FirstOrDefault()["weather"])[0]["description"].ToObject<string>(),
-                    date: item.Keyword,
-                    descriptionId: ((JArray)groupingElement.FirstOrDefault()["weather"])[0]["id"].ToObject<string>()));
+                    Icon = groupingElement.Key + "d",
+                    WeekDay = DateTime.Now.AddDays(counter).DayOfWeek,
+                    Description = ((JArray)groupingElement.FirstOrDefault()["weather"])[0]["description"].ToObject<string>(),
+                    Date = item.Keyword,
+                    DescriptionId = ((JArray)groupingElement.FirstOrDefault()["weather"])[0]["id"].ToObject<string>()
+                });
 
                 counter++;
             }

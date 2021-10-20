@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using WeatherBar.Utils;
 
 namespace WeatherBar.Converters
 {
@@ -8,7 +9,7 @@ namespace WeatherBar.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return WebApi.Model.Utils.ConvertCoordinatesFromDecToDeg(System.Convert.ToDouble(value), false);
+            return ApplicationUtils.ConvertCoordinatesFromDecToDeg(System.Convert.ToDouble(value?.ToString().Replace(",", "."), CultureInfo.InvariantCulture), false);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
