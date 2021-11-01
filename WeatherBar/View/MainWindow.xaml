@@ -178,6 +178,9 @@
                         <DataTrigger Binding="{Binding ResourceFounded}" Value="False">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsOptionsPanelVisible}" Value="True">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsConneted}" Value="True"/>
