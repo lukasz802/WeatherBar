@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Row>
+		<Key>Close</Key>
+		<Value>Close</Value>
+	</Row>
+	<Row>
+		<Key>Minimalize</Key>
+		<Value>Minimalize</Value>
+	</Row>
+	<Row>
+		<Key>SearchClick</Key>
+		<Value>Search</Value>
+	</Row>
+	<Row>
+		<Key>Refresh</Key>
+		<Value>Refresh</Value>
+	</Row>
+	<Row>
+		<Key>RemovePhrase</Key>
+		<Value>Remove the phrase</Value>
+	</Row>
+	<Row>
+		<Key>Options</Key>
+		<Value>Options</Value>
+	</Row>
+	<Row>
+		<Key>ForecastType</Key>
+		<Value>Forecast type</Value>
+	</Row>
+	<Row>
+		<Key>Map</Key>
+		<Value>Show on the map</Value>
+	</Row>
+	<Row>
+		<Key>Pressure</Key>
+		<Value>Atmospheric pressure</Value>
+	</Row>
+	<Row>
+		<Key>Humidiy</Key>
+		<Value>Humidity</Value>
+	</Row>
+	<Row>
+		<Key>Wind</Key>
+		<Value>Wind speed and direction</Value>
+	</Row>
+	<Row>
+		<Key>Return</Key>
+		<Value>Return to the main panel</Value>
+	</Row>
+	<Row>
+		<Key>Update</Key>
+		<Value>Updated at:</Value>
+	</Row>
+	<Row>
+		<Key>Sunrise</Key>
+		<Value>Sunrise</Value>
+	</Row>
+	<Row>
+		<Key>Sunset</Key>
+		<Value>Sunset</Value>
+	</Row>
+	<Row>
+		<Key>Latitiude</Key>
+		<Value>Latitiude</Value>
+	</Row>
+	<Row>
+		<Key>Longtitiude</Key>
+		<Value>Longtitiude</Value>
+	</Row>
+	<Row>
+		<Key>Rain</Key>
+		<Value>The amount of rainfall in the last 24 hours</Value>
+	</Row>
+	<Row>
+		<Key>Snow</Key>
+		<Value>The amount of snowfall in the last 24 hours</Value>
+	</Row>
+	<Row>
+		<Key>FeelTemp</Key>
+		<Value>Feel</Value>
+	</Row>
+	<Row>
+		<Key>FeelTempDescription</Key>
+		<Value>Feel temperature: </Value>
+	</Row>
+	<Row>
+		<Key>EmptySearchText</Key>
+		<Value>Search</Value>
+	</Row>
+	<Row>
+		<Key>Next</Key>
+		<Value>Next</Value>
+	</Row>
+	<Row>
+		<Key>Previous</Key>
+		<Value>Previous</Value>
+	</Row>
+	<Row>
+		<Key>Language</Key>
+		<Value>Language</Value>
+	</Row>
+	<Row>
+		<Key>LanguageDescription</Key>
+		<Value>Default application language</Value>
+	</Row>
+	<Row>
+		<Key>LanguageComboBox</Key>
+		<Value>Select language</Value>
+	</Row>
+	<Row>
+		<Key>UnitsDescription</Key>
+		<Value>Units of measurement of physical quantities</Value>
+	</Row>
+	<Row>
+		<Key>Units</Key>
+		<Value>Units</Value>
+	</Row>
+	<Row>
+		<Key>Location</Key>
+		<Value>Starting location</Value>
+	</Row>
+	<Row>
+		<Key>LocationDescription</Key>
+		<Value>Application startup location settings</Value>
+	</Row>
+	<Row>
+		<Key>RefreshTime</Key>
+		<Value>Refresh time</Value>
+	</Row>
+	<Row>
+		<Key>RefreshTimeDescription</Key>
+		<Value>Częstotliwość odświeżania danych pogodowych</Value>
+	</Row>
+	<Row>
+		<Key>PolishLanguage</Key>
+		<Value>Polish</Value>
+	</Row>
+	<Row>
+		<Key>EnglishLanguage</Key>
+		<Value>English</Value>
+	</Row>
+	<Row>
+		<Key>Hourly</Key>
+		<Value>Hourly</Value>
+	</Row>
+	<Row>
+		<Key>Daily</Key>
+		<Value>Daily</Value>
+	</Row>
+	<Row>
+		<Key>NotFound</Key>
+		<Value>Unfortunately, the city with the given name could not be found</Value>
+	</Row>
+	<Row>
+		<Key>BackDescription</Key>
+		<Value>Go back to the previous panel</Value>
+	</Row>
+	<Row>
+		<Key>Back</Key>
+		<Value>Back</Value>
+	</Row>
+	<Row>
+		<Key>TryAgain</Key>
+		<Value>Try again</Value>
+	</Row>
+	<Row>
+		<Key>ConnectionFailed</Key>
+		<Value>An error occurred while trying to connect to the Openweathermap.org server</Value>
+	</Row>
+	<Row>
+		<Key>StandardUnits</Key>
+		<Value>Standard</Value>
+	</Row>
+	<Row>
+		<Key>ImperialUnits</Key>
+		<Value>Imperial</Value>
+	</Row>
+	<Row>
+		<Key>MetricUnits</Key>
+		<Value>Metric</Value>
+	</Row>
+	<Row>
+		<Key>UnitsComboBox</Key>
+		<Value>Select units</Value>
+	</Row>
+	<Row>
+		<Key>Minutes15RefreshTime</Key>
+		<Value>15 minutes</Value>
+	</Row>
+	<Row>
+		<Key>Minutes30RefreshTime</Key>
+		<Value>30 minutes</Value>
+	</Row>
+	<Row>
+		<Key>Minutes45RefreshTime</Key>
+		<Value>45 minutes</Value>
+	</Row>
+	<Row>
+		<Key>Hour1RefreshTime</Key>
+		<Value>1 hour</Value>
+	</Row>
+	<Row>
+		<Key>RefreshTimeComboBox</Key>
+		<Value>Select refresh time</Value>
+	</Row>
+	<Row>
+		<Key>StartingLocationTextBox</Key>
+		<Value>Select starting location</Value>
+	</Row>
+	<Row>
+		<Key>NoResults</Key>
+		<Value>No results</Value>
+	</Row>
+	<Row>
+		<Key>NoConnectionServer</Key>
+		<Value>No connection to the Openweather.org server</Value>
+	</Row>
+	<Row>
+		<Key>Updating</Key>
+		<Value>Updating...</Value>
+	</Row>
+	<Row>
+		<Key>Temperature</Key>
+		<Value>Temperature:</Value>
+	</Row>
+	<Row>
+		<Key>Searching</Key>
+		<Value>Searching...</Value>
+	</Row>
+</Root>

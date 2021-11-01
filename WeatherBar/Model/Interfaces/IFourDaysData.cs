@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 
-namespace WebApi.Model.Interfaces
+namespace WeatherBar.Model.Interfaces
 {
-    public interface IFourDaysData : IWeatherData
+    public interface IFourDaysData : INotifyPropertyChanged, IMultiLanguage, IUnits
     {
         IEnumerable<IHourlyData> HourlyData { get; }
 

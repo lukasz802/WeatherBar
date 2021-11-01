@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Row>
+		<Key>Close</Key>
+		<Value>Zamknij</Value>
+	</Row>
+	<Row>
+		<Key>Minimalize</Key>
+		<Value>Minimalizuj</Value>
+	</Row>
+	<Row>
+		<Key>SearchClick</Key>
+		<Value>Szukaj</Value>
+	</Row>
+	<Row>
+		<Key>Refresh</Key>
+		<Value>Odśwież</Value>
+	</Row>
+	<Row>
+		<Key>RemovePhrase</Key>
+		<Value>Usuń frazę</Value>
+	</Row>
+	<Row>
+		<Key>Options</Key>
+		<Value>Opcje</Value>
+	</Row>
+	<Row>
+		<Key>ForecastType</Key>
+		<Value>Typ prognozy</Value>
+	</Row>
+	<Row>
+		<Key>Map</Key>
+		<Value>Pokaż na mapie</Value>
+	</Row>
+	<Row>
+		<Key>Pressure</Key>
+		<Value>Ciśnienie atmosferyczne</Value>
+	</Row>
+	<Row>
+		<Key>Humidiy</Key>
+		<Value>Wilgotność</Value>
+	</Row>
+	<Row>
+		<Key>Wind</Key>
+		<Value>Prędkość i kierunek wiatru</Value>
+	</Row>
+	<Row>
+		<Key>Return</Key>
+		<Value>Wróć do panel głównego</Value>
+	</Row>
+	<Row>
+		<Key>Update</Key>
+		<Value>Zaktualizowano o:</Value>
+	</Row>
+	<Row>
+		<Key>Sunrise</Key>
+		<Value>Wschód słońca</Value>
+	</Row>
+	<Row>
+		<Key>Sunset</Key>
+		<Value>Zachód słońca</Value>
+	</Row>
+	<Row>
+		<Key>Latitiude</Key>
+		<Value>Szerokość geograficzna</Value>
+	</Row>
+	<Row>
+		<Key>Longtitiude</Key>
+		<Value>Długość geograficzna</Value>
+	</Row>
+	<Row>
+		<Key>Rain</Key>
+		<Value>Wielkość opadów deszczu w ciągu ostatniej doby</Value>
+	</Row>
+	<Row>
+		<Key>Snow</Key>
+		<Value>Wielkość opadów śniegu w ciągu ostatniej doby</Value>
+	</Row>
+	<Row>
+		<Key>FeelTemp</Key>
+		<Value>Odczuwalna</Value>
+	</Row>
+	<Row>
+		<Key>FeelTempDescription</Key>
+		<Value>Temperatura odczuwalna: </Value>
+	</Row>
+	<Row>
+		<Key>EmptySearchText</Key>
+		<Value>Wyszukaj</Value>
+	</Row>
+	<Row>
+		<Key>Next</Key>
+		<Value>Następny</Value>
+	</Row>
+	<Row>
+		<Key>Previous</Key>
+		<Value>Poprzedni</Value>
+	</Row>
+	<Row>
+		<Key>Language</Key>
+		<Value>Język</Value>
+	</Row>
+	<Row>
+		<Key>LanguageDescription</Key>
+		<Value>Domyślny język aplikacji</Value>
+	</Row>
+	<Row>
+		<Key>LanguageComboBox</Key>
+		<Value>Wybierz język</Value>
+	</Row>
+	<Row>
+		<Key>UnitsDescription</Key>
+		<Value>Jednostki miary wielkości fizycznych</Value>
+	</Row>
+	<Row>
+		<Key>Units</Key>
+		<Value>Jednostki</Value>
+	</Row>
+	<Row>
+		<Key>Location</Key>
+		<Value>Lokalizacja startowa</Value>
+	</Row>
+	<Row>
+		<Key>LocationDescription</Key>
+		<Value>Ustawienia lokalizacji startowej aplikacji</Value>
+	</Row>
+	<Row>
+		<Key>RefreshTime</Key>
+		<Value>Czas odświeżania</Value>
+	</Row>
+	<Row>
+		<Key>RefreshTimeDescription</Key>
+		<Value>Częstotliwość odświeżania danych pogodowych</Value>
+	</Row>
+	<Row>
+		<Key>PolishLanguage</Key>
+		<Value>Polski</Value>
+	</Row>
+	<Row>
+		<Key>EnglishLanguage</Key>
+		<Value>Angielski</Value>
+	</Row>
+	<Row>
+		<Key>Hourly</Key>
+		<Value>Godzinowa</Value>
+	</Row>
+	<Row>
+		<Key>Daily</Key>
+		<Value>Dzienna</Value>
+	</Row>
+	<Row>
+		<Key>NotFound</Key>
+		<Value>Niestety, nie udało się odnaleźć miasta o podanej nazwie</Value>
+	</Row>
+	<Row>
+		<Key>BackDescription</Key>
+		<Value>Wróć do poprzedniego panelu</Value>
+	</Row>
+	<Row>
+		<Key>Back</Key>
+		<Value>Wróć</Value>
+	</Row>
+	<Row>
+		<Key>TryAgain</Key>
+		<Value>Spróbuj ponownie</Value>
+	</Row>
+	<Row>
+		<Key>ConnectionFailed</Key>
+		<Value>Wystąpił błąd przy próbie połączenia z serwerem Openweathermap.org</Value>
+	</Row>
+	<Row>
+		<Key>StandardUnits</Key>
+		<Value>Standardowe</Value>
+	</Row>
+	<Row>
+		<Key>ImperialUnits</Key>
+		<Value>Imperialne</Value>
+	</Row>
+	<Row>
+		<Key>MetricUnits</Key>
+		<Value>Metryczne</Value>
+	</Row>
+	<Row>
+		<Key>UnitsComboBox</Key>
+		<Value>Wybierz jednostki</Value>
+	</Row>
+	<Row>
+		<Key>Minutes15RefreshTime</Key>
+		<Value>15 minut</Value>
+	</Row>
+	<Row>
+		<Key>Minutes30RefreshTime</Key>
+		<Value>30 minut</Value>
+	</Row>
+	<Row>
+		<Key>Minutes45RefreshTime</Key>
+		<Value>45 minut</Value>
+	</Row>
+	<Row>
+		<Key>Hour1RefreshTime</Key>
+		<Value>1 godzina</Value>
+	</Row>
+	<Row>
+		<Key>RefreshTimeComboBox</Key>
+		<Value>Wybierz częstotliwość odświeżania</Value>
+	</Row>
+	<Row>
+		<Key>StartingLocationTextBox</Key>
+		<Value>Wybierz lokalizację startową</Value>
+	</Row>
+	<Row>
+		<Key>NoResults</Key>
+		<Value>Brak wyników</Value>
+	</Row>
+	<Row>
+		<Key>NoConnectionServer</Key>
+		<Value>Brak połączenia z serwerem Openweather.org</Value>
+	</Row>
+	<Row>
+		<Key>Updating</Key>
+		<Value>Aktualizowanie...</Value>
+	</Row>
+	<Row>
+		<Key>Temperature</Key>
+		<Value>Temperatura:</Value>
+	</Row>
+	<Row>
+		<Key>Searching</Key>
+		<Value>Szukanie...</Value>
+	</Row>
+</Root>

@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace WeatherBar.Model.DataTransferObjects
 {
@@ -8,7 +8,9 @@ namespace WeatherBar.Model.DataTransferObjects
 
         public string Argument { get; set; }
 
-        public ObservableCollection<City> Result { get; set; }
+        public bool IsStartingLocationQuery { get; set; }
+
+        public IEnumerable<City> Result { get; set; }
 
         #endregion
     }

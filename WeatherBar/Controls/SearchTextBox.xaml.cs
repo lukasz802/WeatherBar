@@ -1,17 +1,18 @@
 ﻿using System.Collections;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using WeatherBar.Core;
+using WeatherBar.Controls.Templates;
 
 namespace WeatherBar.Controls
 {
     /// <summary>
     /// Logika interakcji dla klasy SearchTextBox.xaml
     /// </summary>
-    public partial class SearchTextBox : UserControl
+    public partial class SearchTextBox : SearchTextBoxBase
     {
         #region Fields
 
@@ -21,116 +22,41 @@ namespace WeatherBar.Controls
 
         private ListBox itemList;
 
-        private EventDispatcher eventDispatcher;
+        #endregion
+
+        #region Private properties
+
+        protected override Popup Popup
+        {
+            get
+            {
+                if (popup == null)
+                {
+                    popup = SearchTextBoxControl.Template.FindName("PART_Popup", SearchTextBoxControl) as Popup;
+                }
+
+                return popup;
+            }
+        }
+
+        protected override ListBox ItemList
+        {
+            get
+            {
+                if (itemList == null)
+                {
+                    itemList = SearchTextBoxControl.Template.FindName("PART_ItemList", SearchTextBoxControl) as ListBox;
+                }
+
+                return itemList;
+            }
+        }
 
         #endregion
 
-        #region Events implementation
+        #region Public properties
 
-        public event RoutedEventHandler RemoveResultsClick
-        {
-            add { AddHandler(RemoveResultsClickEvent, value); }
-            remove { RemoveHandler(RemoveResultsClickEvent, value); }
-        }
-
-        public event RoutedEventHandler TextChanged
-        {
-            add { AddHandler(TextChangedEvent, value); }
-            remove { RemoveHandler(TextChangedEvent, value); }
-        }
-
-        public event RoutedEventHandler SearchClick
-        {
-            add { AddHandler(SearchClickEvent, value); }
-            remove { RemoveHandler(SearchClickEvent, value); }
-        }
-
-        public static readonly RoutedEvent SearchClickEvent =
-            EventManager.RegisterRoutedEvent("SearchClick",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchTextBox));
-
-        public event RoutedEventHandler QueryResultSelected
-        {
-            add { AddHandler(QueryResultSelectedEvent, value); }
-            remove { RemoveHandler(QueryResultSelectedEvent, value); }
-        }
-
-        public static readonly RoutedEvent QueryResultSelectedEvent =
-            EventManager.RegisterRoutedEvent("QueryResultSelected",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchTextBox));
-
-        public static readonly RoutedEvent RemoveResultsClickEvent =
-            EventManager.RegisterRoutedEvent("RemoveResultsClick",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchTextBox));
-
-        public static readonly RoutedEvent TextChangedEvent =
-            EventManager.RegisterRoutedEvent("TextChanged",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchTextBox));
-
-        #endregion
-
-        #region Properties implementation
-
-        public IEnumerable ItemsSource
-        {
-            get { return (IEnumerable)GetValue(ItemsSourceProperty); }
-            set { SetValue(ItemsSourceProperty, value); }
-        }
-
-        public static readonly DependencyProperty ItemsSourceProperty =
-            DependencyProperty.Register("ItemsSource", typeof(IEnumerable), typeof(SearchTextBox),
-            new FrameworkPropertyMetadata(propertyChangedCallback: OnItemsSourceChanged));
-
-
-        public static readonly DependencyProperty QueryProperty =
-            DependencyProperty.Register("Query", typeof(ICommand), typeof(SearchTextBox));
-
-        public ICommand Query
-        {
-            get { return (ICommand)GetValue(QueryProperty); }
-            set { SetValue(QueryProperty, value); }
-        }
-
-        public static readonly DependencyProperty QueryParameterProperty =
-            DependencyProperty.Register("QueryParameter", typeof(object), typeof(SearchTextBox));
-
-        public object QueryParameter
-        {
-            get { return (object)GetValue(QueryParameterProperty); }
-            set { SetValue(QueryParameterProperty, value); }
-        }
-
-        public static readonly DependencyProperty CommandProperty =
-            DependencyProperty.Register("Command", typeof(ICommand), typeof(SearchTextBox));
-
-        public ICommand Command
-        {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        public static readonly DependencyProperty CommandParameterProperty =
-            DependencyProperty.Register("CommandParameter", typeof(object), typeof(SearchTextBox));
-
-        public object CommandParameter
-        {
-            get { return (object)GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
-        }
-
-        public static readonly DependencyProperty QueryResultProperty =
-            DependencyProperty.Register("QueryResult", typeof(ICommand), typeof(SearchTextBox));
-
-        public ICommand QueryResult
-        {
-            get { return (ICommand)GetValue(QueryResultProperty); }
-            set { SetValue(QueryResultProperty, value); }
-        }
-
-        public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(SearchTextBox));
-
-        public string Text
+        public override string Text
         {
             get
             {
@@ -147,77 +73,24 @@ namespace WeatherBar.Controls
 
         #endregion
 
-        #region Private properties
-
-        private Popup Popup
-        {
-            get
-            {
-                if (popup == null)
-                {
-                    popup = SearchTextBoxControl.Template.FindName("PART_Popup", SearchTextBoxControl) as Popup;
-                }
-
-                return popup;
-            }
-        }
-
-        private ListBox ItemList
-        {
-            get
-            {
-                if (itemList == null)
-                {
-                    itemList = SearchTextBoxControl.Template.FindName("PART_ItemList", SearchTextBoxControl) as ListBox;
-                }
-
-                return itemList;
-            }
-        }
-
-        #endregion
-
         #region Constructors
 
-        public SearchTextBox()
+        public SearchTextBox() : base()
         {
             InitializeComponent();
             this.GotFocus += SearchTxtBox_Focus;
             this.LostFocus += SearchTxtBox_Focus;
             this.KeyDown += SearchTxtBox_KeyDown;
-            this.Loaded += (s, e) => AutoRepositionPopupBehavior();
             SearchTextBoxControl.LostFocus += SearchTextBoxControl_LostFocus;
             SearchTextBoxControl.GotFocus += SearchTextBoxControl_GotFocus;
             SearchButtonControl.Click += OnSearchClick;
             ClearButtonControl.Click += OnRemoveResultsClick;
             SearchTextBoxControl.TextChanged += OnTextChanged;
-            InitializeEventDispatcher();
         }
 
         #endregion
 
         #region Private methods
-
-        private static void OnItemsSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            SearchTextBox searchTextBox = (SearchTextBox)sender;
-
-            if (searchTextBox.Popup != null)
-            {
-                searchTextBox.Popup.IsOpen = ((IEnumerable)e.NewValue).GetEnumerator().MoveNext();
-            }
-        }
-
-        private void InitializeEventDispatcher()
-        {
-            eventDispatcher = new EventDispatcher(() =>
-            {
-                if (Query != null && Query.CanExecute(QueryParameter))
-                {
-                    Query.Execute(QueryParameter);
-                }
-            }, 400);
-        }
 
         private void ItemList_KeyDown(object sender, KeyEventArgs e)
         {
@@ -339,29 +212,11 @@ namespace WeatherBar.Controls
             e.Handled = true;
             Text = SearchTextBoxControl.Text;
             Popup.IsOpen = false;
-     
-            eventDispatcher.Restart();
+           
+            EventDispatcher.Restart();
 
             args = new RoutedEventArgs(TextChangedEvent);
             RaiseEvent(args);
-        }
-
-        private void AutoRepositionPopupBehavior()
-        {
-            Window window = Window.GetWindow(SearchTextBoxControl);
-
-            if (window != null || Popup == null)
-            {
-                window.LocationChanged += (s, t) =>
-                {
-                    var offset = Popup.HorizontalOffset;
-
-                    Popup.HorizontalOffset = offset + 1;
-                    Popup.HorizontalOffset = offset;
-                };
-            }
-
-            Popup.PlacementTarget = SearchTextBoxControl;
         }
 
         private void SearchTxtBox_KeyDown(object sender, KeyEventArgs e)

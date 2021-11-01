@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using WeatherBar.Controls.WinForms;
 using WeatherBar.Core;
+using WeatherBar.ViewModel;
 
 namespace WeatherBar.View
 {
@@ -18,9 +18,9 @@ namespace WeatherBar.View
         public MainWindow()
         {
             InitializeComponent();
-            this.Loaded += (s, e) => this.DataContext = App.ViewModel;
+            this.Loaded += (s, e) => this.DataContext = AppViewModel.Instance;
             InitializeTrayIcon();
-            App.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            AppViewModel.Instance.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         #endregion
@@ -29,7 +29,7 @@ namespace WeatherBar.View
 
         private void InitializeTrayIcon()
         {
-            TrayNotifyIcon.TrayNotifyIconInstance.RefreshToolStripMenuItemAction = App.ViewModel.Refresh;
+            TrayNotifyIcon.TrayNotifyIconInstance.RefreshToolStripMenuItemAction = AppViewModel.Instance.Refresh;
             TrayNotifyIcon.TrayNotifyIconInstance.OpenToolStripMenuItemMouseEventHandler = TrayNotifyIcon_MouseClick;
             TrayNotifyIcon.TrayNotifyIconInstance.CloseToolStripMenuItemMouseEventHandler = (s, e) => MenuBarButton_Click(CloseButton, null);
         }
@@ -37,30 +37,6 @@ namespace WeatherBar.View
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             TrayNotifyIcon.TrayNotifyIconInstance.Update();
-
-            if (e.PropertyName == "HasStarted" && App.ViewModel.HasStarted)
-            {
-                EventDispatcher.RaiseEventWithDelay(this.LoadingFrameVisibilityVerification, 1000);
-            }
-        }
-
-        private void LoadingFrameVisibilityVerification()
-        {
-            if (LoadingFrame.Visibility == Visibility.Visible)
-            {
-                DoubleAnimation animation = new DoubleAnimation
-                {
-                    From = 1,
-                    To = 0,
-                    Duration = new Duration(TimeSpan.Parse("0:0:0.2"))
-                };
-
-                LoadingFrame.BeginAnimation(OpacityProperty, animation);
-                EventDispatcher.RaiseEventWithDelay(() =>
-                {
-                    LoadingFrame.Visibility = Visibility.Hidden;
-                }, 300);
-            }
         }
 
         private void TrayNotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -122,8 +98,16 @@ namespace WeatherBar.View
         {
             EventDispatcher.RaiseEventWithDelay(() =>
             {
-                RefreshButton.IsEnabled = OpenSiteButton.IsEnabled = !App.ViewModel.IsOptionsPanelVisible;
-            }, App.ViewModel.IsOptionsPanelVisible ? 350 : 0);
+                RefreshButton.IsEnabled = OpenSiteButton.IsEnabled = !AppViewModel.Instance.IsOptionsPanelVisible;
+            }, AppViewModel.Instance.IsOptionsPanelVisible ? 350 : 0);
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.System && e.SystemKey == Key.F4)
+            {
+                this.Close();
+            }
         }
 
         #endregion

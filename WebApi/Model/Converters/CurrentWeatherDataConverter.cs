@@ -3,8 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Reflection;
-using WebApi.Model.Factories;
-using WebApi.Model.Interfaces;
+using WebApi.Model.DataTransferObjects;
 
 namespace WebApi.Model.Converters
 {
@@ -19,7 +18,7 @@ namespace WebApi.Model.Converters
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(IHourlyData).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
+            return typeof(HourlyForecastTransferObject).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo());
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -27,25 +26,28 @@ namespace WebApi.Model.Converters
             try
             {
                 JObject item = JObject.Load(reader);
-                return WeatherDataFactory.GetHourlyDataTransferObject(
-                    description: ((JArray)item["weather"])[0]["description"].ToObject<string>(),
-                    descriptionId: ((JArray)item["weather"])[0]["id"].ToObject<string>(),
-                    cityId: item["id"].ToObject<string>(),
-                    cityName: item["name"].ToObject<string>(),
-                    snowFall: item["snow"] != null ? item["snow"].Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>() : 0,
-                    rainFall: item["rain"] != null ? item["rain"].Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>() : 0,
-                    sunriseTime: item["sys"]["sunrise"].ToObject<int>(),
-                    sunsetTime: item["sys"]["sunset"].ToObject<int>(),
-                    country: item["sys"]["country"].ToObject<string>(),
-                    longitude: item["coord"]["lon"].ToObject<double>(),
-                    latitude: item["coord"]["lat"].ToObject<double>(),
-                    pressure: item["main"]["pressure"].ToObject<int>(),
-                    humidity: item["main"]["humidity"].ToObject<int>(),
-                    avgTemp: item["main"]["temp"].ToObject<double>(),
-                    feelTemp: item["main"]["feels_like"].ToObject<double>(),
-                    windAngle: item["wind"]["deg"].ToObject<int>(),
-                    windSpeed: item["wind"]["speed"].ToObject<double>(),
-                    icon: ((JArray)item["weather"])[0]["icon"].ToObject<string>());
+
+                return new HourlyForecastTransferObject
+                {
+                    Description = ((JArray)item["weather"])[0]["description"].ToObject<string>(),
+                    DescriptionId = ((JArray)item["weather"])[0]["id"].ToObject<string>(),
+                    CityId = item["id"].ToObject<string>(),
+                    CityName = item["name"].ToObject<string>(),
+                    SnowFall = item["snow"] != null ? item["snow"].Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>() : 0,
+                    RainFall = item["rain"] != null ? item["rain"].Where(x => x.Path.Contains("1h")).FirstOrDefault().ToObject<double>() : 0,
+                    SunriseTime = item["sys"]["sunrise"].ToObject<int>(),
+                    SunsetTime = item["sys"]["sunset"].ToObject<int>(),
+                    Country = item["sys"]["country"].ToObject<string>(),
+                    Longitude = item["coord"]["lon"].ToObject<double>(),
+                    Latitude = item["coord"]["lat"].ToObject<double>(),
+                    Pressure = item["main"]["pressure"].ToObject<int>(),
+                    Humidity = item["main"]["humidity"].ToObject<int>(),
+                    AvgTemp = item["main"]["temp"].ToObject<double>(),
+                    FeelTemp = item["main"]["feels_like"].ToObject<double>(),
+                    WindAngle = item["wind"]["deg"].ToObject<int>(),
+                    WindSpeed = item["wind"]["speed"].ToObject<double>(),
+                    Icon = ((JArray)item["weather"])[0]["icon"].ToObject<string>()
+                };
             }
             catch
             {

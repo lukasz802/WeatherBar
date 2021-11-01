@@ -3,6 +3,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Controls;
 using WeatherBar.Core;
+using WeatherBar.Model.Enums;
+using WeatherBar.ViewModel;
 
 namespace WeatherBar.View.Pages
 {
@@ -17,7 +19,7 @@ namespace WeatherBar.View.Pages
         {
             InitializeComponent();
             ForecastTypeComboBox.SelectionChanged += ForecastTypeComboBox_Selected;
-            this.Loaded += (s, e) => App.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            this.Loaded += (s, e) => AppViewModel.Instance.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         #endregion
@@ -26,11 +28,20 @@ namespace WeatherBar.View.Pages
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (App.ViewModel.HasStarted && e.PropertyName == "IsReady")
+            if (e.PropertyName == "ApplicationUnits")
             {
-                if (!App.ViewModel.IsReady)
+                EventDispatcher.RaiseEventWithDelay(() =>
                 {
-                    SearchUserControl.SearchTextBoxControl.Clear();
+                    Resources["MaxTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 17D : 14D;
+                    Resources["MinTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 12D : 11D;
+                });
+            }
+
+            if (AppViewModel.Instance.HasStarted && e.PropertyName == "IsReady")
+            {
+                if (!AppViewModel.Instance.IsReady)
+                {
+                    EventDispatcher.RaiseEventWithDelay(() => SearchUserControl.SearchTextBoxControl.Clear());
                 }
                 else
                 {
@@ -81,7 +92,7 @@ namespace WeatherBar.View.Pages
             if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
             {
                 EventDispatcher.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
-                EventDispatcher.RaiseEventWithDelay(() => App.ViewModel.IsForecastPanelVisible = false, 50);
+                EventDispatcher.RaiseEventWithDelay(() => AppViewModel.Instance.IsForecastPanelVisible = false, 50);
             }
         }
 

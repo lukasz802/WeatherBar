@@ -1,7 +1,8 @@
-﻿
-namespace WebApi.Model.Interfaces
+﻿using System.ComponentModel;
+
+namespace WeatherBar.Model.Interfaces
 {
-    public interface IDailyData : IWeatherData
+    public interface IDailyData : INotifyPropertyChanged, IMultiLanguage, IUnits
     {
         int MaxTemp { get; }
 

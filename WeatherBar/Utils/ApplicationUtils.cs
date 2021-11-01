@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
-using WebApi.Model.Enums;
-using WebApi.Model.Interfaces;
+using System.Windows.Media;
 
 namespace WeatherBar.Utils
 {
@@ -9,219 +10,183 @@ namespace WeatherBar.Utils
     {
         #region Public methods
 
-        public static void SetUnits(Units toUnits, Units fromUnits, IHourlyData currentWeatherData, IFourDaysData weatherForecastData)
+        public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
         {
-            switch (toUnits)
-            {
-                case Units.Metric:
-                    Application.Current.Resources["WindSpeed"] = "km/h";
-                    Application.Current.Resources["Degress"] = "°";
-                    Application.Current.Resources["TempUnit"] = "°C";
-
-                    if (fromUnits == Units.Imperial)
-                    {
-                        CalculateFromMetricToImperial(currentWeatherData, weatherForecastData);
-                    }
-                    else if (fromUnits == Units.Standard)
-                    {
-                        CalculateFromMetricToStandard(currentWeatherData, weatherForecastData);
-                    }
-                    break;
-                case Units.Imperial:
-                    Application.Current.Resources["WindSpeed"] = "mph";
-                    Application.Current.Resources["Degress"] = "°";
-                    Application.Current.Resources["TempUnit"] = "°F";
-
-                    if (fromUnits == Units.Metric)
-                    {
-                        CalculateFromImperialToMetric(currentWeatherData, weatherForecastData);
-                    }
-                    else if (fromUnits == Units.Standard)
-                    {
-                        CalculateFromImperialToMetric(currentWeatherData, weatherForecastData);
-                        CalculateFromMetricToStandard(currentWeatherData, weatherForecastData);
-                    }
-                    break;
-                case Units.Standard:
-                    Application.Current.Resources["WindSpeed"] = "km/h";
-                    Application.Current.Resources["Degress"] = "K";
-                    Application.Current.Resources["TempUnit"] = "K";
-
-                    if (fromUnits == Units.Metric)
-                    {
-                        CalculateFromStandardToMetric(currentWeatherData, weatherForecastData);
-                    }
-                    else if (fromUnits == Units.Imperial)
-                    {
-                        CalculateFromStandardToMetric(currentWeatherData, weatherForecastData);
-                        CalculateFromMetricToStandard(currentWeatherData, weatherForecastData);
-                    }
-                    break;
-            }
+            return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(unixTimeStamp);
         }
 
-        public static void TranslateResources(Language language)
+        public static string ConvertCoordinatesFromDecToDeg(double decValue, bool isLongitude)
         {
-            if (language == Language.English)
+            string direction = decValue > 0 ? isLongitude ? "E" : "N" : isLongitude ? "W" : "S";
+            string[] temp = Math.Round(decValue > 0 ? decValue : -decValue, 2).ToString().Split('.', ',');
+            string minutesValue = Math.Round(double.Parse(temp.Last()) * 60 / 100).ToString();
+
+            return string.Concat(temp.First(), "° ", minutesValue.Length != 1 ? minutesValue : $"0{minutesValue}", $"' {direction}");
+        }
+
+        public static T FindVisualParent<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
             {
-                Application.Current.Resources["Close"] = "Close";
-                Application.Current.Resources["Minimalize"] = "Minimalize";
-                Application.Current.Resources["SearchClick"] = "Search";
-                Application.Current.Resources["Refresh"] = "Refresh";
-                Application.Current.Resources["RemovePhrase"] = "Remove the phrase";
-                Application.Current.Resources["Options"] = "Options";
-                Application.Current.Resources["ForecastType"] = "Forecast type";
-                Application.Current.Resources["Map"] = "Show on the map";
-                Application.Current.Resources["Pressure"] = "Atmospheric pressure";
-                Application.Current.Resources["Humidity"] = "Humidity";
-                Application.Current.Resources["Wind"] = "Wind speed and direction";
-                Application.Current.Resources["Return"] = "Return to the main panel";
-                Application.Current.Resources["Update"] = "Updated at:";
-                Application.Current.Resources["Sunrise"] = "Sunrise";
-                Application.Current.Resources["Sunset"] = "Sunset";
-                Application.Current.Resources["Latitiude"] = "Latitiude";
-                Application.Current.Resources["Longtitiude"] = "Longtitiude";
-                Application.Current.Resources["Rain"] = "The amount of rainfall in the last 24 hours";
-                Application.Current.Resources["Snow"] = "The amount of snowfall in the last 24 hours";
-                Application.Current.Resources["FeelTemp"] = "Feel";
-                Application.Current.Resources["EmptySearchText"] = "Search";
-                Application.Current.Resources["Next"] = "Next";
-                Application.Current.Resources["Previous"] = "Prevoius";
-                Application.Current.Resources["RefreshTime"] = "Refresh time";
-                Application.Current.Resources["Language"] = "Language";
-                Application.Current.Resources["Units"] = "Units";
-                Application.Current.Resources["Location"] = "Starting location";
-                Application.Current.Resources["LanguageDescription"] = "Default application language";
-                Application.Current.Resources["LanguageComboBox"] = "Select language";
-                Application.Current.Resources["UnitsDescription"] = "Units of measurement of physical quantities";
-                Application.Current.Resources["RefreshTimeDescription"] = "Frequency of refreshing the weather data";
-                Application.Current.Resources["LocationDescription"] = "Application startup location settings";
-                Application.Current.Resources["PolishLanguage"] = "Polish";
-                Application.Current.Resources["EnglishLanguage"] = "Language";
-                Application.Current.Resources["Daily"] = "Daily";
-                Application.Current.Resources["Hourly"] = "Hourly";
-                Application.Current.Resources["FeelTempDescription"] = "Feel temperature: ";
+                DependencyObject parent = VisualTreeHelper.GetParent(depObj);
+
+                if (parent == null)
+                {
+                    return null;
+                }
+                else if (parent is T)
+                {
+                    return (T)parent;
+                }
+                else
+                {
+                    return FindVisualParent<T>(parent);
+                }
             }
             else
             {
-                Application.Current.Resources["Close"] = "Zamknij";
-                Application.Current.Resources["Minimalize"] = "Minimalizuj";
-                Application.Current.Resources["SearchClick"] = "Szukaj";
-                Application.Current.Resources["Refresh"] = "Odśwież";
-                Application.Current.Resources["RemovePhrase"] = "Usuń frazę";
-                Application.Current.Resources["Options"] = "Opcje";
-                Application.Current.Resources["ForecastType"] = "Typ prognozy";
-                Application.Current.Resources["Map"] = "Pokaż na mapie";
-                Application.Current.Resources["Pressure"] = "Ciśnienie atmosferyczne";
-                Application.Current.Resources["Humidity"] = "Wilgotność";
-                Application.Current.Resources["Wind"] = "Prędkość i kierunek wiatru";
-                Application.Current.Resources["Return"] = "Wróc do panel głownego";
-                Application.Current.Resources["Update"] = "Zaktualizowano o:";
-                Application.Current.Resources["Sunrise"] = "Wschód słońca";
-                Application.Current.Resources["Sunset"] = "Zachód słońca";
-                Application.Current.Resources["Latitiude"] = "Szerokość geograficzna";
-                Application.Current.Resources["Longtitiude"] = "Długość geograficzna";
-                Application.Current.Resources["Rain"] = "Wielkość opadów deszczu w ciągu ostatniej doby";
-                Application.Current.Resources["Snow"] = "Wielkość opadów śniegu w ciągu ostatniej doby";
-                Application.Current.Resources["FeelTemp"] = "Odczuwalna";
-                Application.Current.Resources["EmptySearchText"] = "Wyszukaj";
-                Application.Current.Resources["Next"] = "Następny";
-                Application.Current.Resources["Previous"] = "Poprzedni";
-                Application.Current.Resources["RefreshTime"] = "Czas odświeżania";
-                Application.Current.Resources["Language"] = "Język";
-                Application.Current.Resources["Units"] = "Jednostki";
-                Application.Current.Resources["Location"] = "Lokalizacja startowa";
-                Application.Current.Resources["LanguageDescription"] = "Domyślny język aplikacji";
-                Application.Current.Resources["LanguageComboBox"] = "Wybierz język";
-                Application.Current.Resources["UnitsDescription"] = "Jednostki miary wielkości fizycznych";
-                Application.Current.Resources["LocationDescription"] = "Ustawienia lokalizacji startowej aplikacji";
-                Application.Current.Resources["RefreshTimeDescription"] = "Częstotliwość odświeżania danych pogodowych";
-                Application.Current.Resources["PolishLanguage"] = "Polski";
-                Application.Current.Resources["EnglishLanguage"] = "Angielski";
-                Application.Current.Resources["Daily"] = "Dzienna";
-                Application.Current.Resources["Hourly"] = "Godzinowa";
-                Application.Current.Resources["FeelTempDescription"] = "Temperatura odczuwalna: ";
+                return null;
             }
         }
 
-        #endregion
-
-        #region Private methods
-
-        private static void CalculateFromMetricToImperial(IHourlyData currentWeatherData, IFourDaysData weatherForecastData)
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
-            //currentWeatherData.WindSpeed = Convert.ToInt32(Math.Round(0.621371192 * currentWeatherData.WindSpeed, MidpointRounding.AwayFromZero));
-            //currentWeatherData.AvgTemp = Convert.ToInt32(Math.Round((currentWeatherData.AvgTemp * 9 / 5) + 32D, MidpointRounding.AwayFromZero));
-            //currentWeatherData.FeelTemp = Convert.ToInt32(Math.Round((currentWeatherData.FeelTemp * 9 / 5) + 32D, MidpointRounding.AwayFromZero));
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
 
-            //foreach (var data in weatherForecastData.HourlyData)
-            //{
-            //    data.AvgTemp = Convert.ToInt32(Math.Round((data.AvgTemp * 9 / 5) + 32D, MidpointRounding.AwayFromZero));
-            //    data.FeelTemp = Convert.ToInt32(Math.Round((data.FeelTemp * 9 / 5) + 32D, MidpointRounding.AwayFromZero));
-            //    data.WindSpeed = Convert.ToInt32(Math.Round(0.621371192 * data.WindSpeed, MidpointRounding.AwayFromZero));
-            //}
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
 
-            //foreach (var data in weatherForecastData.DailyData)
-            //{
-            //    data.MaxTemp = Convert.ToInt32(Math.Round((data.MaxTemp * 9 / 5) + 32D, MidpointRounding.AwayFromZero));
-            //    data.MinTemp = Convert.ToInt32(Math.Round((data.MinTemp * 9 / 5) + 32D, MidpointRounding.AwayFromZero));
-            //}
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
 
-        private static void CalculateFromImperialToMetric(IHourlyData currentWeatherData, IFourDaysData weatherForecastData)
+        public static string GetDescriptionFromId(string descriptionId)
         {
-            //currentWeatherData.WindSpeed = Convert.ToInt32(Math.Round(1.609344 * currentWeatherData.WindSpeed, MidpointRounding.AwayFromZero));
-            //currentWeatherData.AvgTemp = Convert.ToInt32(Math.Round((currentWeatherData.AvgTemp - 32) * 5 / 9D, MidpointRounding.AwayFromZero));
-            //currentWeatherData.FeelTemp = Convert.ToInt32(Math.Round((currentWeatherData.FeelTemp - 32) * 5 / 9D, MidpointRounding.AwayFromZero));
-
-            //foreach (var data in weatherForecastData.HourlyData)
-            //{
-            //    data.AvgTemp = Convert.ToInt32(Math.Round((data.AvgTemp - 32) * 5 / 9D, MidpointRounding.AwayFromZero));
-            //    data.FeelTemp = Convert.ToInt32(Math.Round((data.FeelTemp - 32) * 5 / 9D, MidpointRounding.AwayFromZero));
-            //    data.WindSpeed = Convert.ToInt32(Math.Round(1.609344 * data.WindSpeed, MidpointRounding.AwayFromZero));
-            //}
-
-            //foreach (var data in weatherForecastData.DailyData)
-            //{
-            //    data.MaxTemp = Convert.ToInt32(Math.Round((data.MaxTemp - 32) * 5 / 9D, MidpointRounding.AwayFromZero));
-            //    data.MinTemp = Convert.ToInt32(Math.Round((data.MinTemp - 32) * 5 / 9D, MidpointRounding.AwayFromZero));
-            //}
-        }
-
-        private static void CalculateFromMetricToStandard(IHourlyData currentWeatherData, IFourDaysData weatherForecastData)
-        {
-            //currentWeatherData.AvgTemp += 273;
-            //currentWeatherData.FeelTemp += 273;
-
-            //foreach (var data in weatherForecastData.HourlyData)
-            //{
-            //    data.AvgTemp += 273;
-            //    data.FeelTemp += 273;
-            //}
-
-            //foreach (var data in weatherForecastData.DailyData)
-            //{
-            //    data.MaxTemp += 273;
-            //    data.MinTemp += 273;
-            //}
-        }
-
-        private static void CalculateFromStandardToMetric(IHourlyData currentWeatherData, IFourDaysData weatherForecastData)
-        {
-            //currentWeatherData.AvgTemp -= 273;
-            //currentWeatherData.FeelTemp -= 273;
-
-            //foreach (var data in weatherForecastData.HourlyData)
-            //{
-            //    data.AvgTemp -= 273;
-            //    data.FeelTemp -= 273;
-            //}
-
-            //foreach (var data in weatherForecastData.DailyData)
-            //{
-            //    data.MaxTemp -= 273;
-            //    data.MinTemp -= 273;
-            //}
+            switch (descriptionId)
+            {
+                case "200":
+                    return "Thunderstorm with light rain";
+                case "201":
+                    return "Thunderstorm with rain";
+                case "202":
+                    return "Thunderstorm with heavy rain";
+                case "210":
+                    return "Light thunderstorm";
+                case "211":
+                    return "Thunderstorm";
+                case "212":
+                    return "Heavy thunderstorm";
+                case "221":
+                    return "Ragged thunderstorm";
+                case "230":
+                    return "Thunderstorm with light drizzle";
+                case "231":
+                    return "Thunderstorm with drizzle";
+                case "232":
+                    return "Thunderstorm with heavy drizzle";
+                case "300":
+                    return "Light intensity drizzle";
+                case "301":
+                    return "Drizzle";
+                case "302":
+                    return "Heavy intensity drizzle";
+                case "310":
+                    return "Light intensity drizzle rain";
+                case "311":
+                    return "Drizzle rain";
+                case "312":
+                    return "Heavy intensity drizzle rain";
+                case "313":
+                    return "Shower rain and drizzle";
+                case "314":
+                    return "Heavy shower rain and drizzle";
+                case "321":
+                    return "Shower drizzle";
+                case "500":
+                    return "Light rain";
+                case "501":
+                    return "Moderate rain";
+                case "502":
+                    return "Heavy intensity rain";
+                case "503":
+                    return "Very heavy rain";
+                case "504":
+                    return "Extreme rain";
+                case "511":
+                    return "Freezing rain";
+                case "520":
+                    return "Light intensity shower rain";
+                case "521":
+                    return "Shower rain";
+                case "522":
+                    return "Heavy intensity shower rain";
+                case "531":
+                    return "Ragged shower rain";
+                case "600":
+                    return "Light snow";
+                case "601":
+                    return "Snow";
+                case "602":
+                    return "Heavy snow";
+                case "611":
+                    return "Sleet";
+                case "612":
+                    return "Light shower sleet";
+                case "613":
+                    return "Shower sleet";
+                case "615":
+                    return "Light rain and snow";
+                case "616":
+                    return "Rain and snow";
+                case "620":
+                    return "Light shower snow";
+                case "621":
+                    return "Shower snow";
+                case "622":
+                    return "Heavy shower snow";
+                case "701":
+                    return "Mist";
+                case "711":
+                    return "Smoke";
+                case "721":
+                    return "Haze";
+                case "731":
+                    return "Dust whirls";
+                case "741":
+                    return "Fog";
+                case "751":
+                    return "Sand";
+                case "761":
+                    return "Dust";
+                case "762":
+                    return "Volcanic ash";
+                case "771":
+                    return "Squalls";
+                case "781":
+                    return "Tornado";
+                case "800":
+                    return "Clear sky";
+                case "801":
+                    return "Few clouds";
+                case "802":
+                    return "Scattered clouds";
+                case "803":
+                    return "Broken clouds";
+                case "804":
+                    return "Overcast clouds";
+                default:
+                    throw new ArgumentException($"Invalid input data. There is no appropriate content for Id: {descriptionId}");
+            }
         }
 
         #endregion

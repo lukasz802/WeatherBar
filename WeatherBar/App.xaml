@@ -46,6 +46,26 @@
         <s:String x:Key="EnglishLanguage">Angielski</s:String>
         <s:String x:Key="Hourly">Godzinowa</s:String>
         <s:String x:Key="Daily">Dzienna</s:String>
+        <s:String x:Key="NotFound">Niestety, nie udało się odnaleźć miasta o podanej nazwie</s:String>
+        <s:String x:Key="BackDescription">Wróć do poprzedniego panelu</s:String>
+        <s:String x:Key="Back">Wróć</s:String>
+        <s:String x:Key="TryAgain">Spróbuj ponownie</s:String>
+        <s:String x:Key="ConnectionFailed">Wystąpił błąd przy próbie połączenia z serwerem Openweathermap.org</s:String>
+        <s:String x:Key="StandardUnits">Standardowe</s:String>
+        <s:String x:Key="MetricUnits">Metryczne</s:String>
+        <s:String x:Key="ImperialUnits">Imperialne</s:String>
+        <s:String x:Key="UnitsComboBox">Wybierz jednostki</s:String>
+        <s:String x:Key="Minutes15RefreshTime">15 minut</s:String>
+        <s:String x:Key="Minutes30RefreshTime">30 minut</s:String>
+        <s:String x:Key="Minutes45RefreshTime">45 minut</s:String>
+        <s:String x:Key="Hour1RefreshTime">1 godzina</s:String>
+        <s:String x:Key="RefreshTimeComboBox">Wybierz częstotliwość</s:String>
+        <s:String x:Key="StartingLocationTextBox">Wybierz lokalizację startową</s:String>
+        <s:String x:Key="NoResults">Brak wyników</s:String>
+        <s:String x:Key="NoConnectionServer">Brak połączenia z serwerem Openweather.org</s:String>
+        <s:String x:Key="Updating">"Aktualizowanie..."</s:String>
+        <s:String x:Key="Temperature">"Temperatura:"</s:String>
+        <s:String x:Key="Searching">"Szukanie..."</s:String>
         <SolidColorBrush x:Key="MenuBackgroundColorBrush" Color="#FFE5E5E5"/>
         <SolidColorBrush x:Key="MenuBarBackgroundColorBrush" Color="#FF2F69DC"/>
         <SolidColorBrush x:Key="MenuBarActiveControlColorBrush" Color="#FF6087D7"/>
@@ -57,10 +77,12 @@
         <SolidColorBrush x:Key="EnabledUserControlBorderColorBrush" Color="#FFCACACA"/>
         <SolidColorBrush x:Key="UpdateInfoColorBrush" Color="White" Opacity="0.5"/>
         <SolidColorBrush x:Key="MouseOverColorBrush" Color="White" Opacity="0.15"/>
-        <SolidColorBrush x:Key="SingleOptionBackgroundColorBrush" Color="#6a6085"/>
+        <SolidColorBrush x:Key="SingleOptionBackgroundColorBrush" Color="#3c5c94"/>
+        <SolidColorBrush x:Key="ActiveOptionBackgroundColorBrush" Color="#1f4e7a"/>
+        <SolidColorBrush x:Key="InativeOptionBackgroundColorBrush" Color="#123962"/>
         <LinearGradientBrush x:Key="CornerOptionBackgroundColorBrush" StartPoint="0,0" EndPoint="1,1" >
-            <GradientStop Offset="0.0" Color="#6a6085"/>
-            <GradientStop Offset="1.0" Color="#6f6f90"/>
+            <GradientStop Offset="0.0" Color="#3c5c94"/>
+            <GradientStop Offset="1.0" Color="#3c5c94"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="ConnectionFailBackgroundColorBrush" StartPoint="0,0" EndPoint="0.5,1" >
             <GradientStop Offset="0.0" Color="#FF0e2a47"/>
@@ -71,8 +93,8 @@
             <GradientStop Offset="1.0" Color="#FF8deba6"/>
         </LinearGradientBrush>
         <LinearGradientBrush x:Key="OptionsBackgroundColorBrush" StartPoint="0,0" EndPoint="1,1" >
-            <GradientStop Offset="0.0" Color="#483969"/>
-            <GradientStop Offset="1.0" Color="#5c5c78"/>
+            <GradientStop Offset="0.0" Color="#143464"/>
+            <GradientStop Offset="1.0" Color="#18487c"/>
         </LinearGradientBrush>
         <Style x:Key="MenuBarControlButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0"/>
@@ -152,6 +174,33 @@
                         </Setter.Value>
                     </Setter>
                     <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="Panel" BorderThickness="0"
+                                Background="Transparent">
+                            <Grid Name="ContentGrid">
+                                <ContentPresenter VerticalAlignment="Stretch"
+                                                  HorizontalAlignment="Stretch"
+                                                  Content="{TemplateBinding Content}"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource MenuBackgroundColorBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource MenuBackgroundColorBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

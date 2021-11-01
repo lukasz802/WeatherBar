@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using WeatherBar.Model.Interfaces;
 
 namespace WeatherBar.Model.Repositories
 {
-    public class CityRepository : IDisposable
+    public class CityRepository : ICityRepository, IDisposable
     {
         #region Fields
-
-        private const string databaseName = "CityList.db";
-
-        private readonly string databaseConnection = $"Data Source = {Path.Combine(Directory.GetCurrentDirectory(), databaseName)}";
 
         private readonly SQLiteConnection sqliteConnection;
 
@@ -21,7 +17,7 @@ namespace WeatherBar.Model.Repositories
 
         #region Constructor
 
-        public CityRepository()
+        public CityRepository(string databaseConnection)
         {
             sqliteConnection = new SQLiteConnection(databaseConnection);
             sqliteConnection.Open();
@@ -39,6 +35,16 @@ namespace WeatherBar.Model.Repositories
         public async Task<IEnumerable<City>> GetAllAsync()
         {
             return await Task.Run(() => GetSqliteCommandResult("SELECT * FROM CITYLIST"));
+        }
+
+        public City GetAllWithId(string cityId)
+        {
+            return GetSqliteCommandResult($"SELECT * FROM CITYLIST WHERE id = {cityId}").FirstOrDefault();
+        }
+
+        public async Task<City> GetAllWithIdAsync(string cityId)
+        {
+            return await Task.Run(() => GetSqliteCommandResult($"SELECT * FROM CITYLIST WHERE id = {cityId}").FirstOrDefault());
         }
 
         public IEnumerable<City> GetAllWithName(string cityName)

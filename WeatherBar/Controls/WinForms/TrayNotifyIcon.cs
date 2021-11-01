@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows;
+using WeatherBar.ViewModel;
 
 namespace WeatherBar.Controls.WinForms
 {
@@ -103,12 +105,13 @@ namespace WeatherBar.Controls.WinForms
 
         public void Update()
         {
-            var text = !App.ViewModel.IsReady ? "Aktualizowanie..." : App.ViewModel.IsConnected ?
-                       $"{App.ViewModel.CityName}, {App.ViewModel.Country}\n{App.ViewModel.Description}\nTemperatura: " + $"{App.ViewModel.AvgTemp}/{App.ViewModel.FeelTemp}°C\n" +
-                       $"Zaktualizowano o: {App.ViewModel.UpdateTime}" : "Brak połączenia z serwerem Openweather.org";
+            var text = !AppViewModel.Instance.IsReady ? (string)Application.Current.Resources["Updating"] : AppViewModel.Instance.IsConnected ?
+                        $"{AppViewModel.Instance.CityName}, {AppViewModel.Instance.Country}\n{AppViewModel.Instance.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
+                        $"{AppViewModel.Instance.AvgTemp}/{AppViewModel.Instance.FeelTemp}{(string)Application.Current.Resources["TempUnit"]}\n" +
+                        $"{(string)Application.Current.Resources["Update"]} {AppViewModel.Instance.UpdateTime}" : (string)Application.Current.Resources["NoConnectionServer"];
 
             SetNotifyIconText(text);
-            trayNotifyIcon.Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon(!App.ViewModel.IsReady ? "Update" : App.ViewModel.IsConnected ? App.ViewModel.Icon : string.Empty));
+            trayNotifyIcon.Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon(!AppViewModel.Instance.IsReady ? "Update" : AppViewModel.Instance.IsConnected ? AppViewModel.Instance.Icon : string.Empty));
         }
 
         #endregion

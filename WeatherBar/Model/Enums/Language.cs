@@ -1,5 +1,4 @@
-﻿
-namespace WebApi.Model.Enums
+﻿namespace WeatherBar.Model.Enums
 {
     public enum Language
     {

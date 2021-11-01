@@ -15,6 +15,9 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,11 +30,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -102,25 +102,50 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\CityPopupTextBox.xaml.cs">
+      <DependentUpon>CityPopupTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CommandComboBox.cs" />
     <Compile Include="Controls\NonTopmostPopup.cs" />
+    <Compile Include="Controls\Templates\SearchTextBoxBase.cs" />
     <Compile Include="Converters\LatitudeFormatConverter.cs" />
     <Compile Include="Converters\LongtitudeFormatConverter.cs" />
+    <Compile Include="Core\AppResource.cs" />
+    <Compile Include="Core\AppSettings.cs" />
     <Compile Include="Core\EventDispatcher.cs" />
+    <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Model\City.cs" />
     <Compile Include="Controls\CommandListBox.cs" />
     <Compile Include="Controls\SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\DailyForecast.cs" />
     <Compile Include="Model\DataTransferObjects\GetWeatherDataEventTransferObject.cs" />
     <Compile Include="Model\DataTransferObjects\QueryExecutionTransferObject.cs" />
+    <Compile Include="Model\Enums\Language.cs" />
+    <Compile Include="Controls\Enums\QueryStatus.cs" />
+    <Compile Include="Model\Enums\RefreshTime.cs" />
+    <Compile Include="Model\Enums\Units.cs" />
+    <Compile Include="Model\Interfaces\ICityDataService.cs" />
+    <Compile Include="Model\Interfaces\ICityRepository.cs" />
+    <Compile Include="Model\Interfaces\IWeatherDataService.cs" />
+    <Compile Include="Model\Services\WeatherDataService.cs" />
+    <Compile Include="Model\FourDaysForecast.cs" />
+    <Compile Include="Model\HourlyForecast.cs" />
+    <Compile Include="Model\Interfaces\IDailyData.cs" />
+    <Compile Include="Model\Interfaces\IFourDaysData.cs" />
+    <Compile Include="Model\Interfaces\IHourlyData.cs" />
+    <Compile Include="Model\Interfaces\IMultiLanguage.cs" />
+    <Compile Include="Model\Interfaces\IUnits.cs" />
     <Compile Include="Model\Repositories\CityRepository.cs" />
+    <Compile Include="Model\Services\CityDataService.cs" />
     <Compile Include="Utils\ApplicationUtils.cs" />
     <Compile Include="View\Pages\ConnectionFailedPage.xaml.cs">
       <DependentUpon>ConnectionFailedPage.xaml</DependentUpon>
@@ -144,6 +169,10 @@
       <DependentUpon>OptionsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\AppViewModel.cs" />
+    <Page Include="Controls\CityPopupTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

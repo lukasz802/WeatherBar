@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
+using WeatherBar.Utils;
 
 namespace WeatherBar.Controls
 {
@@ -22,6 +24,7 @@ namespace WeatherBar.Controls
         public NonTopmostPopup()
         {
             Loaded += OnPopupLoaded;
+            Loaded += (s, e) => AutoRepositionPopupBehavior();
             Unloaded += OnPopupUnloaded;
         }
 
@@ -38,6 +41,25 @@ namespace WeatherBar.Controls
         #endregion
 
         #region Private methods
+
+        private void AutoRepositionPopupBehavior()
+        {
+            UserControl parent = ApplicationUtils.FindVisualParent<UserControl>(this);
+            Window window = Window.GetWindow(parent);
+
+            if (window != null || this == null)
+            {
+                window.LocationChanged += (s, t) =>
+                {
+                    var offset = HorizontalOffset;
+
+                    HorizontalOffset = offset + 1;
+                    HorizontalOffset = offset;
+                };
+            }
+
+            PlacementTarget = parent;
+        }
 
         private void OnPopupLoaded(object sender, RoutedEventArgs e)
         {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Row>
+		<Key>WindSpeed</Key>
+		<Value>km/h</Value>
+	</Row>
+	<Row>
+		<Key>Degress</Key>
+		<Value> K</Value>
+	</Row>
+	<Row>
+		<Key>TempUnit</Key>
+		<Value>K</Value>
+	</Row>
+</Root>

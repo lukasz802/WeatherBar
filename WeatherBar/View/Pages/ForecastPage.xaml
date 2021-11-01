@@ -272,9 +272,11 @@
                                 <TextBlock Text="{Binding WindSpeed}" Grid.Column="0"
                                        FontSize="11.5" Foreground="White"
                                        VerticalAlignment="Center"/>
-                                <TextBlock Text=" km/h" FontSize="11.5"
-                                       Grid.Column="1" Foreground="White"
-                                       VerticalAlignment="Center"/>
+                                <TextBlock FontSize="11.5"
+                                           Grid.Column="1" Foreground="White"
+                                           VerticalAlignment="Center">
+                                    <Run Text=" "/><Run Text="{DynamicResource WindSpeed}"/>
+                                </TextBlock>
                             </Grid>
                         </StackPanel>
                         <Grid Margin="0,9,0,3" Grid.Row="5"

@@ -223,5 +223,50 @@ namespace AppResources
 
             return asm.GetManifestResourceStream($"AppResources.Icons.{iconPath}");
         }
+
+        public static Stream GetLanguage(string languageName)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string languagePath;
+
+            switch (languageName.ToLower())
+            {
+                case "polish":
+                case "pl":
+                    languagePath = "Polish.xml";
+                    break;
+                case "english":
+                case "en":
+                    languagePath = "English.xml";
+                    break;
+                default:
+                    throw new ArgumentException($"Invalid input data. There is no appropriate content for language: {languageName}");
+            }
+
+            return assembly.GetManifestResourceStream($"AppResources.Languages.{languagePath}");
+        }
+
+        public static Stream GetUnits(string unitsName)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string unitsPath;
+
+            switch (unitsName.ToLower())
+            {
+                case "standard":
+                    unitsPath = "Standard.xml";
+                    break;
+                case "metric":
+                    unitsPath = "Metric.xml";
+                    break;
+                case "imperial":
+                    unitsPath = "Imperial.xml";
+                    break;
+                default:
+                    throw new ArgumentException($"Invalid input data. There is no appropriate content for units: {unitsName}");
+            }
+
+            return assembly.GetManifestResourceStream($"AppResources.Units.{unitsPath}");
+        }
     }
 }

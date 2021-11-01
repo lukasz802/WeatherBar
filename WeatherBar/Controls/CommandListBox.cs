@@ -6,15 +6,6 @@ namespace WeatherBar.Controls
 {
     public class CommandListBox : ListBox
     {
-        #region Constructors
-
-        public CommandListBox()
-        {
-            base.SelectionChanged += OnSelectionChanged;
-        }
-
-        #endregion
-
         #region Properties implementation
 
         public static readonly DependencyProperty CommandProperty =
@@ -33,6 +24,15 @@ namespace WeatherBar.Controls
         {
             get { return (object)GetValue(CommandParameterProperty); }
             set { SetValue(CommandParameterProperty, value); }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public CommandListBox()
+        {
+            base.SelectionChanged += OnSelectionChanged;
         }
 
         #endregion

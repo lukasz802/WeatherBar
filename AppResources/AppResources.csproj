@@ -159,5 +159,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Images\Tornado.jpg" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Languages\English.xml" />
+    <EmbeddedResource Include="Languages\Polish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Units\Imperial.xml" />
+    <EmbeddedResource Include="Units\Metric.xml" />
+    <EmbeddedResource Include="Units\Standard.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
