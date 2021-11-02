@@ -228,4 +228,12 @@
 		<Key>Searching</Key>
 		<Value>Szukanie...</Value>
 	</Row>
+	<Row>
+		<Key>RainDescription</Key>
+		<Value>Wielkość opadów deszczu:</Value>
+	</Row>
+	<Row>
+		<Key>SnowDescription</Key>
+		<Value>Wielkość opadów śniegu:</Value>
+	</Row>
 </Root>
