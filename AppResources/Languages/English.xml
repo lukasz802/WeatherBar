@@ -130,7 +130,7 @@
 	</Row>
 	<Row>
 		<Key>RefreshTimeDescription</Key>
-		<Value>Częstotliwość odświeżania danych pogodowych</Value>
+		<Value>Frequency of refreshing the weather data</Value>
 	</Row>
 	<Row>
 		<Key>PolishLanguage</Key>
