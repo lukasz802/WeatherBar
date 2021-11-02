@@ -1,4 +1,4 @@
-﻿<Application x:Class="WeatherBar.App"
+<Application x:Class="WeatherBar.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WeatherBar"
@@ -24,6 +24,8 @@
         <s:String x:Key="Longtitiude">Długość geograficzna</s:String>
         <s:String x:Key="Rain">Wielkość opadów deszczu w ciągu ostatniej doby</s:String>
         <s:String x:Key="Snow">Wielkość opadów śniego w ciągu ostatniej doby</s:String>
+        <s:String x:Key="RainDescription">Wielkość opadów deszczu:</s:String>
+        <s:String x:Key="SnowDescription">Wielkość opadów śniegu:</s:String>
         <s:String x:Key="FeelTemp">Odczuwalna</s:String>
         <s:String x:Key="FeelTempDescription">Temperatura odczuwalna: </s:String>
         <s:String x:Key="EmptySearchText">Wyszukaj</s:String>
