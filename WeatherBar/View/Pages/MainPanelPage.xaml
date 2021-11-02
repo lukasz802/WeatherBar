@@ -1,4 +1,4 @@
-﻿<Page x:Class="WeatherBar.View.Pages.MainPanelPage"
+<Page x:Class="WeatherBar.View.Pages.MainPanelPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -1161,7 +1161,7 @@
                                                                 <Run Text="{DynamicResource FeelTempDescription}"/><Run Text="{Binding FeelTemp, Mode=OneTime}"/><Run Text="{DynamicResource Degress}"/>
                                                             </TextBlock>
                                                             <TextBlock Grid.Row="2">
-                                                            <Run Text="Wielkość opadów deszczu: "/><Run Text="{Binding RainFall, Mode=OneTime}"/><Run Text="mm"/>
+                                                            <Run Text="{DynamicResource RainDescription}"/><Run Text=" "/><Run Text="{Binding RainFall, Mode=OneTime}"/><Run Text="mm"/>
                                                                 <TextBlock.Style>
                                                                     <Style TargetType="TextBlock">
                                                                         <Style.Triggers>
@@ -1173,7 +1173,7 @@
                                                                 </TextBlock.Style>
                                                             </TextBlock>
                                                             <TextBlock Grid.Row="3">
-                                                            <Run Text="Wielkość opadów śniegu: "/><Run Text="{Binding SnowFall, Mode=OneTime}"/><Run Text="mm"/>
+                                                            <Run Text="{DynamicResource SnowDescription}"/><Run Text=" "/><Run Text="{Binding SnowFall, Mode=OneTime}"/><Run Text="mm"/>
                                                                 <TextBlock.Style>
                                                                     <Style TargetType="TextBlock">
                                                                         <Style.Triggers>
