@@ -409,7 +409,6 @@ namespace WeatherBar.ViewModel
             OnPropertyChanged("FourDaysForecast");
             OnPropertyChanged("HourlyForecast");
             OnPropertyChanged("DailyForecast");
-            OnPropertyChanged("ApplicationUnits");
         }
 
         private void ChangeLanguage()
