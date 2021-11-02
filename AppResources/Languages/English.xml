@@ -37,7 +37,7 @@
 		<Value>Atmospheric pressure</Value>
 	</Row>
 	<Row>
-		<Key>Humidiy</Key>
+		<Key>Humidity</Key>
 		<Value>Humidity</Value>
 	</Row>
 	<Row>
@@ -227,5 +227,13 @@
 	<Row>
 		<Key>Searching</Key>
 		<Value>Searching...</Value>
+	</Row>
+	<Row>
+		<Key>RainDescription</Key>
+		<Value>The amount of rainfall:</Value>
+	</Row>
+	<Row>
+		<Key>SnowDescription</Key>
+		<Value>The amount of snowfall:</Value>
 	</Row>
 </Root>
