@@ -68,8 +68,6 @@
         <s:String x:Key="Updating">Aktualizowanie...</s:String>
         <s:String x:Key="Temperature">Temperatura:</s:String>
         <s:String x:Key="Searching">Szukanie...</s:String>
-	<s:String x:Key="RainDescription">Wielkość opadów deszczu:</s:String>
-        <s:String x:Key="SnowDescription">Wielkość opadów śniegu:</s:String>
         <SolidColorBrush x:Key="MenuBackgroundColorBrush" Color="#FFE5E5E5"/>
         <SolidColorBrush x:Key="MenuBarBackgroundColorBrush" Color="#FF2F69DC"/>
         <SolidColorBrush x:Key="MenuBarActiveControlColorBrush" Color="#FF6087D7"/>
