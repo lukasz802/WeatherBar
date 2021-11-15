@@ -28,14 +28,11 @@ namespace WeatherBar.View.Pages
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ApplicationUnits")
+            EventDispatcher.RaiseEventWithDelay(() =>
             {
-                EventDispatcher.RaiseEventWithDelay(() =>
-                {
-                    Resources["MaxTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 17D : 14D;
-                    Resources["MinTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 12D : 11D;
-                });
-            }
+                Resources["MaxTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 17D : 14D;
+                Resources["MinTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 12D : 11D;
+            });
 
             if (AppViewModel.Instance.HasStarted && e.PropertyName == "IsReady")
             {

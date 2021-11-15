@@ -369,6 +369,7 @@ namespace WeatherBar.ViewModel
         private void OnRefreshTimeChanged(RefreshTime refreshTime)
         {
             App.AppSettings.Interval = (int)refreshTime;
+
             UpdateAutoUpdateEvent();
             SetUpdateConfigurationFlag();
         }
