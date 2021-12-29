@@ -303,15 +303,15 @@ namespace WeatherBar.Controls
                 Popup.IsOpen = false;
                 SearchTextBoxControl.Clear();
             }
-            else if (Popup != null && Popup.IsOpen && !SearchTextBoxControl.IsMouseOver)
-            {
+            else if (Popup != null && Popup.IsOpen && !(SearchTextBoxControl.IsMouseOver || ItemList.IsMouseOver))
+            {;
                 e.Handled = true;
             }
         }
 
         private void CityPopupControlButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Popup != null)
+            if (Popup != null && !Popup.IsOpen)
             {
                 Resources["DefaultListBoxItemWidth"] = ActualWidth - 55;
                 Popup.Width = ItemList.Width = ActualWidth;
