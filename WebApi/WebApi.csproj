@@ -53,9 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IWeatherApiClient.cs" />
-    <Compile Include="IUpdateConfiguration.cs" />
-    <Compile Include="IWeatherApi.cs" />
+    <Compile Include="Interfaces\IWeatherApiClient.cs" />
+    <Compile Include="Interfaces\IUpdateConfiguration.cs" />
+    <Compile Include="Interfaces\IWeatherApi.cs" />
     <Compile Include="Model\Converters\CurrentWeatherDataConverter.cs" />
     <Compile Include="Model\Converters\FourDaysForecastDataConverter.cs" />
     <Compile Include="Model\DataTransferObjects\DailyForecastTransferObject.cs" />

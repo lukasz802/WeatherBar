@@ -24,9 +24,9 @@ namespace WeatherBar.Utils
             return hourlyData.Where(x => x.Date.Contains(tempDate.First() == '0' ? tempDate.Remove(0, 1) : tempDate)).ToList();
         }
 
-        public static Tuple<IEnumerable<IHourlyData>, IEnumerable<IHourlyData>> GetHourlyForecast(IEnumerable<IHourlyData> hourlyData)
+        public static Tuple<IEnumerable<IHourlyData>, IEnumerable<IHourlyData>> GetHourlyForecastFromHourlyData(IEnumerable<IHourlyData> hourlyData)
         {
-            return new Tuple<IEnumerable<IHourlyData>, IEnumerable<IHourlyData>>(hourlyData.Take(5), hourlyData.ToList().GetRange(5, 5)); ;
+            return new Tuple<IEnumerable<IHourlyData>, IEnumerable<IHourlyData>>(hourlyData.Take(5), hourlyData.ToList().GetRange(5, 5));
         }
 
         public static BitmapImage LoadImage(Stream imageStream)

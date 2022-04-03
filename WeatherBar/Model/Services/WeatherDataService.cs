@@ -2,6 +2,7 @@
 using WeatherBar.Model.Interfaces;
 using System.Linq;
 using WebApi.Model.Enums;
+using WeatherBar.Model.Services.Interfaces;
 
 namespace WeatherBar.Model.Services
 {

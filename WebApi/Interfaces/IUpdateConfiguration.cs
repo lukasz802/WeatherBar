@@ -1,5 +1,5 @@
 ﻿
-namespace WebApi
+namespace WebApi.Interfaces
 {
     public interface IUpdateConfiguration
     {

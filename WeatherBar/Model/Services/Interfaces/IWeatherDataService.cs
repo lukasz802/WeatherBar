@@ -1,6 +1,7 @@
-﻿using WebApi.Model.Enums;
+﻿using WeatherBar.Model.Interfaces;
+using WebApi.Model.Enums;
 
-namespace WeatherBar.Model.Interfaces
+namespace WeatherBar.Model.Services.Interfaces
 {
     public interface IWeatherDataService
     {

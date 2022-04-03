@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WeatherBar.Model.Interfaces
+namespace WeatherBar.Model.Services.Interfaces
 {
     public interface ICityDataService
     {

@@ -1,6 +1,6 @@
 ﻿using WebApi.Model.DataTransferObjects;
 
-namespace WebApi
+namespace WebApi.Interfaces
 {
     public interface IWeatherApiClient
     {

@@ -8,6 +8,7 @@ using WebApi.Model.Enums;
 using WebApi.Model.Interfaces;
 using WebApi.Model.Converters;
 using WebApi.Model.DataTransferObjects;
+using WebApi.Interfaces;
 
 namespace WebApi
 {

@@ -133,9 +133,9 @@
     <Compile Include="Controls\Enums\QueryStatus.cs" />
     <Compile Include="Model\Enums\RefreshTime.cs" />
     <Compile Include="Model\Enums\Units.cs" />
-    <Compile Include="Model\Interfaces\ICityDataService.cs" />
-    <Compile Include="Model\Interfaces\ICityRepository.cs" />
-    <Compile Include="Model\Interfaces\IWeatherDataService.cs" />
+    <Compile Include="Model\Services\Interfaces\ICityDataService.cs" />
+    <Compile Include="Model\Repositories\Interfaces\ICityRepository.cs" />
+    <Compile Include="Model\Services\Interfaces\IWeatherDataService.cs" />
     <Compile Include="Model\Services\WeatherDataService.cs" />
     <Compile Include="Model\FourDaysForecast.cs" />
     <Compile Include="Model\HourlyForecast.cs" />

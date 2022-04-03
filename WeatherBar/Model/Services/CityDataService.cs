@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WeatherBar.Model.Interfaces;
 using WeatherBar.Model.Repositories;
+using WeatherBar.Model.Repositories.Interfaces;
+using WeatherBar.Model.Services.Interfaces;
 
 namespace WeatherBar.Model.Services
 {

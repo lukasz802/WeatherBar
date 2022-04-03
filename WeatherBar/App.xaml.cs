@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using WeatherBar.Core;
 using WebApi;
+using WebApi.Interfaces;
 
 namespace WeatherBar
 {

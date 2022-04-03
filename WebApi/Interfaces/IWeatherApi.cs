@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WebApi
+namespace WebApi.Interfaces
 {
     public interface IWeatherApi : IDisposable, IUpdateConfiguration, IWeatherApiClient
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
-using WeatherBar.Model.Interfaces;
+using WeatherBar.Model.Repositories.Interfaces;
 
 namespace WeatherBar.Model.Repositories
 {
