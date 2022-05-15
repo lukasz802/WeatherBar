@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using WeatherBar.Controls.Enums;
 using WeatherBar.Controls.Templates;
 using WeatherBar.Extensions;
 using WeatherBar.Utils;
 
-namespace WeatherBar.Controls
+namespace WeatherBar.Controls.UserControls
 {
     public partial class CityPopupTextBox : SearchTextBoxBase
     {
@@ -354,8 +352,8 @@ namespace WeatherBar.Controls
 
             if (e.Key == Key.Tab)
             {
-                Frame parent = ApplicationUtils.FindVisualParent<Frame>(this);
-                Selector child = ApplicationUtils.FindVisualChildren<Selector>(parent).FirstOrDefault();
+                Frame parent = GlobalUtils.FindVisualParent<Frame>(this);
+                Selector child = GlobalUtils.FindVisualChildren<Selector>(parent).FirstOrDefault();
 
                 if (child != null)
                 {

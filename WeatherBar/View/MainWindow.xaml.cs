@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Controls.WinForms;
 using WeatherBar.Core;
+using WeatherBar.Core.Events;
 using WeatherBar.ViewModel;
 
 namespace WeatherBar.View
@@ -13,14 +14,20 @@ namespace WeatherBar.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Fields
+
+        private readonly MainWindowViewModel viewModel;
+
+        #endregion
+
         #region Constructors
 
         public MainWindow()
         {
             InitializeComponent();
-            this.Loaded += (s, e) => this.DataContext = AppViewModel.Instance;
+            viewModel = ViewModelManager.CreateViewModel<MainWindowViewModel>(this);
             InitializeTrayIcon();
-            AppViewModel.Instance.PropertyChanged += ViewModel_PropertyChanged;
+            viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         #endregion
@@ -29,14 +36,17 @@ namespace WeatherBar.View
 
         private void InitializeTrayIcon()
         {
-            TrayNotifyIcon.TrayNotifyIconInstance.RefreshToolStripMenuItemAction = AppViewModel.Instance.Refresh;
-            TrayNotifyIcon.TrayNotifyIconInstance.OpenToolStripMenuItemMouseEventHandler = TrayNotifyIcon_MouseClick;
-            TrayNotifyIcon.TrayNotifyIconInstance.CloseToolStripMenuItemMouseEventHandler = (s, e) => MenuBarButton_Click(CloseButton, null);
+            TrayNotifyIcon.Instance.RefreshToolStripMenuItemAction = viewModel.Refresh;
+            TrayNotifyIcon.Instance.OpenToolStripMenuItemMouseEventHandler = TrayNotifyIcon_MouseClick;
+            TrayNotifyIcon.Instance.CloseToolStripMenuItemMouseEventHandler = (s, e) => MenuBarButton_Click(CloseButton, null);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            TrayNotifyIcon.TrayNotifyIconInstance.Update();
+            if (e.PropertyName == "IsReady" && !viewModel.IsReady)
+            {
+                TrayNotifyIcon.Instance.Update((string)Application.Current.Resources["Updating"], "Update");
+            }
         }
 
         private void TrayNotifyIcon_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -65,11 +75,11 @@ namespace WeatherBar.View
             if (this.WindowState == WindowState.Minimized)
             {
                 this.ShowInTaskbar = false;
-                TrayNotifyIcon.TrayNotifyIconInstance.IsVisible = true;
+                TrayNotifyIcon.Instance.IsVisible = true;
             }
             else if (this.WindowState == WindowState.Normal)
             {
-                TrayNotifyIcon.TrayNotifyIconInstance.IsVisible = false;
+                TrayNotifyIcon.Instance.IsVisible = false;
                 this.ShowInTaskbar = true;
             }
         }
@@ -98,8 +108,8 @@ namespace WeatherBar.View
         {
             EventDispatcher.RaiseEventWithDelay(() =>
             {
-                RefreshButton.IsEnabled = OpenSiteButton.IsEnabled = !AppViewModel.Instance.IsOptionsPanelVisible;
-            }, AppViewModel.Instance.IsOptionsPanelVisible ? 350 : 0);
+                RefreshButton.IsEnabled = OpenSiteButton.IsEnabled = !viewModel.IsOptionsPanelVisible;
+            }, viewModel.IsOptionsPanelVisible ? 350 : 0);
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

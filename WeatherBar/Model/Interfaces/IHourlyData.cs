@@ -1,8 +1,7 @@
-﻿using System.ComponentModel;
-
+﻿
 namespace WeatherBar.Model.Interfaces
 {
-    public interface IHourlyData : INotifyPropertyChanged, IMultiLanguage, IUnits
+    public interface IHourlyData : IMultiLanguage, IUnits, IClonable<IHourlyData>
     {
         string CityName { get; }
 

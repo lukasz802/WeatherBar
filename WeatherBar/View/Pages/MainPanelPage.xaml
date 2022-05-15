@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WeatherBar.View.Pages"
       xmlns:c="clr-namespace:WeatherBar.Controls"
+      xmlns:u="clr-namespace:WeatherBar.Controls.UserControls"
       mc:Ignorable="d"
       SnapsToDevicePixels="True"
       xmlns:s="clr-namespace:System;assembly=mscorlib"
@@ -243,7 +244,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Panel.ZIndex="1">
-                <c:SearchTextBox x:Name="SearchUserControl" Width="220" Height="32"
+                <u:SearchTextBox x:Name="SearchUserControl" Width="220" Height="32"
                                  PreviewKeyDown="SearchUserControl_KeyDown"
                                  SearchClick="SearchUserControl_SearchClick"
                                  QueryResultSelected="SearchUserControl_SearchClick"
@@ -252,17 +253,12 @@
                                  Query="{Binding QueryCommand}"
                                  QueryParameter="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
                                  QueryResult="{Binding QueryResultCommand}">
-                    <c:SearchTextBox.Style>
-                        <Style TargetType="c:SearchTextBox">
-                            <Setter Property="ItemsSource" Value="{x:Null}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding QueryResult.IsStartingLocationQuery}" Value="False">
-                                    <Setter Property="ItemsSource" Value="{Binding QueryResult.Result}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
+                    <u:SearchTextBox.Style>
+                        <Style TargetType="u:SearchTextBox">
+                            <Setter Property="ItemsSource" Value="{Binding QueryResult.Result}"/>
                         </Style>
-                    </c:SearchTextBox.Style>
-                </c:SearchTextBox>
+                    </u:SearchTextBox.Style>
+                </u:SearchTextBox>
             </Grid>
             <Grid Grid.Row="1" HorizontalAlignment="Stretch">
                 <StackPanel Grid.Row="0" FlowDirection="RightToLeft" Orientation="Horizontal"
@@ -1158,7 +1154,7 @@
                                                                 <Run Text="{Binding Description, Mode=OneWay}"/>
                                                             </TextBlock>
                                                             <TextBlock Grid.Row="1">
-                                                                <Run Text="{DynamicResource FeelTempDescription}"/><Run Text="{Binding FeelTemp, Mode=OneTime}"/><Run Text="{DynamicResource Degress}"/>
+                                                                <Run Text="{DynamicResource FeelTempDescription}"/><Run Text=" "/><Run Text="{Binding FeelTemp, Mode=OneTime}"/><Run Text="{DynamicResource Degress}"/>
                                                             </TextBlock>
                                                             <TextBlock Grid.Row="2">
                                                             <Run Text="{DynamicResource RainDescription}"/><Run Text=" "/><Run Text="{Binding RainFall, Mode=OneTime}"/><Run Text="mm"/>

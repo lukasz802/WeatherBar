@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WeatherBar.View.Pages"
       xmlns:c="clr-namespace:WeatherBar.Controls"
+      xmlns:u="clr-namespace:WeatherBar.Controls.UserControls"
       mc:Ignorable="d" 
       SnapsToDevicePixels="True"
       FontFamily="/AppResources;Component/Fonts/#Roboto Condensed Light"
@@ -142,7 +143,7 @@
                                        FontSize="20" Foreground="White"/>
                             <TextBlock Grid.Row="1" Text="{DynamicResource LocationDescription}" TextWrapping="Wrap"
                                        FontSize="14" Foreground="{StaticResource UpdateInfoColorBrush}"/>
-                            <c:CityPopupTextBox ToolTip="{DynamicResource StartingLocationTextBox}"
+                            <u:CityPopupTextBox ToolTip="{DynamicResource StartingLocationTextBox}"
                                                 CityName="{Binding StartingLocation.Name}"
                                                 Latitude="{Binding StartingLocation.Latitude}"
                                                 Longtitude="{Binding StartingLocation.Longtitude}"
@@ -155,18 +156,12 @@
                                                 PreviewKeyDown="CityPopupTextBox_PreviewKeyDown"
                                                 VerticalAlignment="Top" HorizontalAlignment="Left"
                                                 Foreground="White">
-                                <c:CityPopupTextBox.Style>
-                                    <Style TargetType="c:CityPopupTextBox">
-                                        <Setter Property="ItemsSource" Value="{x:Null}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding QueryResult.IsStartingLocationQuery}" Value="True">
-                                                <Setter Property="ItemsSource" Value="{Binding QueryResult.Result}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                <u:CityPopupTextBox.Style>
+                                    <Style TargetType="u:CityPopupTextBox">
+                                        <Setter Property="ItemsSource" Value="{Binding StartingLocationQueryResult.Result}"/>
                                     </Style>
-                                </c:CityPopupTextBox.Style>
-                            </c:CityPopupTextBox>
-
+                                </u:CityPopupTextBox.Style>
+                            </u:CityPopupTextBox>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -237,6 +232,9 @@
                                 <Style BasedOn="{StaticResource ElementTypeComboBox}" TargetType="c:CommandComboBox">
                                     <Setter Property="SelectedIndex" Value="0"/>
                                     <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RefreshTime}" Value="15">
+                                            <Setter Property="SelectedIndex" Value="0"/>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding RefreshTime}" Value="30">
                                             <Setter Property="SelectedIndex" Value="1"/>
                                         </DataTrigger>
@@ -382,6 +380,9 @@
                                 <Style BasedOn="{StaticResource ElementTypeComboBox}" TargetType="c:CommandComboBox">
                                     <Setter Property="SelectedIndex" Value="0"/>
                                     <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ApplicationUnits}" Value="0">
+                                            <Setter Property="SelectedIndex" Value="0"/>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding ApplicationUnits}" Value="1">
                                             <Setter Property="SelectedIndex" Value="1"/>
                                         </DataTrigger>

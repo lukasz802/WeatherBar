@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using WeatherBar.Model.Enums;
 using WeatherBar.Model.Interfaces;
 
@@ -10,9 +8,9 @@ namespace WeatherBar.Model
     {
         #region Properties
 
-        public IEnumerable<IHourlyData> HourlyData { get; private set; }
+        public List<IHourlyData> HourlyData { get; private set; }
 
-        public IEnumerable<IDailyData> DailyData { get; private set; }
+        public List<IDailyData> DailyData { get; private set; }
 
         public Language Language { get; set; }
 
@@ -20,15 +18,9 @@ namespace WeatherBar.Model
 
         #endregion
 
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
-
         #region Constructors
 
-        public FourDaysForecast(IEnumerable<IHourlyData> hourlyData, IEnumerable<IDailyData> dailyData)
+        public FourDaysForecast(List<IHourlyData> hourlyData, List<IDailyData> dailyData)
         {
             HourlyData = hourlyData;
             DailyData = dailyData;
@@ -42,31 +34,35 @@ namespace WeatherBar.Model
         {
             Language = language;
 
-            DailyData.ToList().ForEach(x => x.ChangeLanguage(Language));
-            HourlyData.ToList().ForEach(x => x.ChangeLanguage(Language));
-
-            OnPropertyChanged("DailyData");
-            OnPropertyChanged("HourlyData");
+            DailyData.ForEach(x => x.ChangeLanguage(Language));
+            HourlyData.ForEach(x => x.ChangeLanguage(Language));
         }
 
         public void ChangeUnits(Units units)
         {
             Units = units;
 
-            DailyData.ToList().ForEach(x => x.ChangeUnits(Units));
-            HourlyData.ToList().ForEach(x => x.ChangeUnits(Units));
-
-            OnPropertyChanged("DailyData");
-            OnPropertyChanged("HourlyData");
+            DailyData.ForEach(x => x.ChangeUnits(Units));
+            HourlyData.ForEach(x => x.ChangeUnits(Units));
         }
 
-        #endregion
-
-        #region Private methods
-
-        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
+        public IFourDaysData Clone()
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var newHourlyData = new List<IHourlyData>();
+
+            HourlyData.ForEach(item =>
+            {
+                newHourlyData.Add(item.Clone());
+            });
+
+            var newDailyData = new List<IDailyData>();
+
+            DailyData.ForEach(item =>
+            {
+                newDailyData.Add(item.Clone());
+            });
+
+            return new FourDaysForecast(newHourlyData, newDailyData);
         }
 
         #endregion

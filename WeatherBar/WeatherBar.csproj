@@ -109,7 +109,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\CityPopupTextBox.xaml.cs">
+    <Compile Include="Controls\UserControls\CityPopupTextBox.xaml.cs">
       <DependentUpon>CityPopupTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\CommandComboBox.cs" />
@@ -119,11 +119,15 @@
     <Compile Include="Converters\LongtitudeFormatConverter.cs" />
     <Compile Include="Core\AppResource.cs" />
     <Compile Include="Core\AppSettings.cs" />
-    <Compile Include="Core\EventDispatcher.cs" />
+    <Compile Include="Core\Events\Enums\MessageType.cs" />
+    <Compile Include="Core\Events\EventDispatcher.cs" />
+    <Compile Include="Core\Events\MessageReceivedEventArgs.cs" />
+    <Compile Include="Core\ViewModelManager.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Model\City.cs" />
     <Compile Include="Controls\CommandListBox.cs" />
-    <Compile Include="Controls\SearchTextBox.xaml.cs">
+    <Compile Include="Controls\UserControls\SearchTextBox.xaml.cs">
       <DependentUpon>SearchTextBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\DailyForecast.cs" />
@@ -133,6 +137,7 @@
     <Compile Include="Controls\Enums\QueryStatus.cs" />
     <Compile Include="Model\Enums\RefreshTime.cs" />
     <Compile Include="Model\Enums\Units.cs" />
+    <Compile Include="Model\Interfaces\IClonable.cs" />
     <Compile Include="Model\Services\Interfaces\ICityDataService.cs" />
     <Compile Include="Model\Repositories\Interfaces\ICityRepository.cs" />
     <Compile Include="Model\Services\Interfaces\IWeatherDataService.cs" />
@@ -146,7 +151,13 @@
     <Compile Include="Model\Interfaces\IUnits.cs" />
     <Compile Include="Model\Repositories\CityRepository.cs" />
     <Compile Include="Model\Services\CityDataService.cs" />
-    <Compile Include="Utils\ApplicationUtils.cs" />
+    <Compile Include="Utils\GlobalUtils.cs" />
+    <Compile Include="ViewModel\ConnectionFailedPanelViewModel.cs" />
+    <Compile Include="ViewModel\ForecastPanelViewModel.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\NotFoundPanelViewModel.cs" />
+    <Compile Include="ViewModel\OptionsPanelViewModel.cs" />
+    <Compile Include="ViewModel\Templates\ViewModelBase.cs" />
     <Compile Include="View\Pages\ConnectionFailedPage.xaml.cs">
       <DependentUpon>ConnectionFailedPage.xaml</DependentUpon>
     </Compile>
@@ -162,18 +173,18 @@
     <Compile Include="View\Pages\NotFoundPage.xaml.cs">
       <DependentUpon>NotFoundPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Core\Commands\RelayCommand.cs" />
     <Compile Include="Utils\ViewModelUtils.cs" />
     <Compile Include="Controls\WinForms\TrayNotifyIcon.cs" />
     <Compile Include="View\Pages\OptionsPage.xaml.cs">
       <DependentUpon>OptionsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\AppViewModel.cs" />
-    <Page Include="Controls\CityPopupTextBox.xaml">
+    <Compile Include="ViewModel\MainPanelViewModel.cs" />
+    <Page Include="Controls\UserControls\CityPopupTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\SearchTextBox.xaml">
+    <Page Include="Controls\UserControls\SearchTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

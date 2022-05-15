@@ -2,7 +2,7 @@
 using System.Windows.Threading;
 using WeatherBar.Model.Enums;
 
-namespace WeatherBar.Core
+namespace WeatherBar.Core.Events
 {
     public class EventDispatcher
     {
@@ -70,9 +70,7 @@ namespace WeatherBar.Core
 
         public void UpdateInterval(RefreshTime interval)
         {
-            timer.Stop();
             timer.Interval = TimeSpan.FromMinutes((int)interval);
-            timer.Start();
         }
 
         #endregion

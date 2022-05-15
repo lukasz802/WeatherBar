@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace WeatherBar.Utils
 {
-    public static class ApplicationUtils
+    public static class GlobalUtils
     {
         #region Public methods
 
@@ -30,23 +30,10 @@ namespace WeatherBar.Utils
             {
                 DependencyObject parent = VisualTreeHelper.GetParent(depObj);
 
-                if (parent == null)
-                {
-                    return null;
-                }
-                else if (parent is T)
-                {
-                    return (T)parent;
-                }
-                else
-                {
-                    return FindVisualParent<T>(parent);
-                }
+                return parent == null ? null : parent is T t ? t : FindVisualParent<T>(parent);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
@@ -57,9 +44,9 @@ namespace WeatherBar.Utils
                 {
                     DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
 
-                    if (child != null && child is T)
+                    if (child != null && child is T t)
                     {
-                        yield return (T)child;
+                        yield return t;
                     }
 
                     foreach (T childOfChild in FindVisualChildren<T>(child))

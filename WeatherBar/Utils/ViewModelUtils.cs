@@ -16,7 +16,7 @@ namespace WeatherBar.Utils
     {
         #region Public methods
 
-        public static IEnumerable<IHourlyData> GetHourlyForecastForSpecificDate(IEnumerable<IHourlyData> hourlyData, Language language, DateTime date)
+        public static List<IHourlyData> GetHourlyForecastForSpecificDate(List<IHourlyData> hourlyData, Language language, DateTime date)
         {
             var cultureName = new CultureInfo(language == Language.English ? "en-US" : "pl-PL");
             var tempDate = date.ToString("dd MMMM", cultureName).Trim();
@@ -24,14 +24,15 @@ namespace WeatherBar.Utils
             return hourlyData.Where(x => x.Date.Contains(tempDate.First() == '0' ? tempDate.Remove(0, 1) : tempDate)).ToList();
         }
 
-        public static Tuple<IEnumerable<IHourlyData>, IEnumerable<IHourlyData>> GetHourlyForecastFromHourlyData(IEnumerable<IHourlyData> hourlyData)
+        public static Tuple<List<IHourlyData>, List<IHourlyData>> GetHourlyForecastFromHourlyData(List<IHourlyData> hourlyData)
         {
-            return new Tuple<IEnumerable<IHourlyData>, IEnumerable<IHourlyData>>(hourlyData.Take(5), hourlyData.ToList().GetRange(5, 5));
+            return new Tuple<List<IHourlyData>, List<IHourlyData>>(hourlyData.Take(5).ToList(), hourlyData.ToList().GetRange(5, 5).ToList());
         }
 
         public static BitmapImage LoadImage(Stream imageStream)
         {
-            BitmapImage image = new BitmapImage();
+            var image = new BitmapImage();
+
             image.BeginInit();
             image.CacheOption = BitmapCacheOption.OnLoad;
             image.StreamSource = imageStream;

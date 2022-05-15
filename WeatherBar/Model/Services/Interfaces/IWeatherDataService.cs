@@ -1,5 +1,4 @@
 ﻿using WeatherBar.Model.Interfaces;
-using WebApi.Model.Enums;
 
 namespace WeatherBar.Model.Services.Interfaces
 {
@@ -7,11 +6,9 @@ namespace WeatherBar.Model.Services.Interfaces
     {
         #region Public methods
 
-        IHourlyData GetHourlyData(CallType callType, string cityData);
+        IHourlyData GetHourlyData(string cityData);
 
-        IHourlyData GetEmptyHourlyData();
-
-        IFourDaysData GetFourDaysData(CallType callType, string cityData);
+        IFourDaysData GetFourDaysData(string cityData);
 
         #endregion
     }

@@ -7,9 +7,9 @@ namespace WebApi.Model.DataTransferObjects
     {
         #region Properties
 
-        public IEnumerable<HourlyForecastTransferObject> HourlyData { get; set; }
+        public List<HourlyForecastTransferObject> HourlyData { get; set; }
 
-        public IEnumerable<DailyForecastTransferObject> DailyData { get; set; }
+        public List<DailyForecastTransferObject> DailyData { get; set; }
 
         #endregion
     }

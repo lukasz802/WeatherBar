@@ -1,7 +1,6 @@
 ﻿using WebApi.Model.DataTransferObjects;
 using WeatherBar.Model.Interfaces;
 using System.Linq;
-using WebApi.Model.Enums;
 using WeatherBar.Model.Services.Interfaces;
 
 namespace WeatherBar.Model.Services
@@ -10,39 +9,20 @@ namespace WeatherBar.Model.Services
     {
         #region Public methods
 
-        public IHourlyData GetHourlyData(CallType callType, string cityData)
+        public IHourlyData GetHourlyData(string cityData)
         {
             HourlyForecastTransferObject hourlyForecastTransferObject;
 
-            if (callType == CallType.ByCityName)
-            {
-                hourlyForecastTransferObject = App.ApiClient.GetCurrentWeatherDataByCityName(cityData);
-            }
-            else
-            {
-                hourlyForecastTransferObject = App.ApiClient.GetCurrentWeatherDataByCityId(cityData);
-            }
+            hourlyForecastTransferObject = App.ApiClient.GetCurrentWeatherData(cityData);
 
             return ParseHourlyForecastTransferObject(hourlyForecastTransferObject);
         }
 
-        public IHourlyData GetEmptyHourlyData()
-        {
-            return HourlyForecast.Empty();
-        }
-
-        public IFourDaysData GetFourDaysData(CallType callType, string cityData)
+        public IFourDaysData GetFourDaysData(string cityData)
         {
             FourDaysForecastTransferObject fourDaysForecastTransferObject;
 
-            if (callType == CallType.ByCityName)
-            {
-                fourDaysForecastTransferObject = App.ApiClient.GetFourDaysForecastDataByCityName(cityData);
-            }
-            else
-            {
-                fourDaysForecastTransferObject = App.ApiClient.GetFourDaysForecastDataByCityId(cityData);
-            }
+            fourDaysForecastTransferObject = App.ApiClient.GetFourDaysForecastData(cityData);
 
             return new FourDaysForecast(fourDaysForecastTransferObject.HourlyData.Select(
                 x => ParseHourlyForecastTransferObject(x)).ToList(), fourDaysForecastTransferObject.DailyData.Select(x => ParseDailyForecastTransferObject(x)).ToList());
@@ -52,7 +32,7 @@ namespace WeatherBar.Model.Services
 
         #region Private methods
 
-        private HourlyForecast ParseHourlyForecastTransferObject(HourlyForecastTransferObject hourlyForecastTransferObject)
+        private IHourlyData ParseHourlyForecastTransferObject(HourlyForecastTransferObject hourlyForecastTransferObject)
         {
             return new HourlyForecast(
                 hourlyForecastTransferObject.Description,
@@ -77,7 +57,7 @@ namespace WeatherBar.Model.Services
                 hourlyForecastTransferObject.DayTime);
         }
 
-        private DailyForecast ParseDailyForecastTransferObject(DailyForecastTransferObject dailyForecastTransferObject)
+        private IDailyData ParseDailyForecastTransferObject(DailyForecastTransferObject dailyForecastTransferObject)
         {
             return new DailyForecast(
                 dailyForecastTransferObject.MaxTemp,

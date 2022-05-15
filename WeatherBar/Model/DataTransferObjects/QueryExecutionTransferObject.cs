@@ -8,8 +8,6 @@ namespace WeatherBar.Model.DataTransferObjects
 
         public string Argument { get; set; }
 
-        public bool IsStartingLocationQuery { get; set; }
-
         public IEnumerable<City> Result { get; set; }
 
         #endregion

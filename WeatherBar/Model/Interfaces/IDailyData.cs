@@ -1,8 +1,7 @@
-﻿using System.ComponentModel;
-
+﻿
 namespace WeatherBar.Model.Interfaces
 {
-    public interface IDailyData : INotifyPropertyChanged, IMultiLanguage, IUnits
+    public interface IDailyData : IMultiLanguage, IUnits, IClonable<IDailyData>
     {
         int MaxTemp { get; }
 

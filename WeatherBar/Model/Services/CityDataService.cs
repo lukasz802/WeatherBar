@@ -31,12 +31,7 @@ namespace WeatherBar.Model.Services
 
         public City GetCityById(string cityId)
         {
-            if (string.IsNullOrEmpty(cityId))
-            {
-                return null;
-            }
-
-            return cityRepository.GetAllWithId(cityId);
+            return string.IsNullOrEmpty(cityId) ? null : cityRepository.GetAllWithId(cityId);
         }
 
         public IEnumerable<City> GetCityListByName(string cityName)
@@ -49,7 +44,7 @@ namespace WeatherBar.Model.Services
             var coordinatesList = new List<KeyValuePair<decimal, decimal>>();
             var result = new List<City>();
 
-            foreach (var city in cityRepository.GetAllWithName(cityName))
+            foreach (City city in cityRepository.GetAllWithName(cityName))
             {
                 if (!coordinatesList.Any(x => Math.Floor(x.Key * 10) == Math.Floor(city.Latitude * 10) && Math.Floor(x.Value * 10) == Math.Floor(city.Longtitude * 10)))
                 {

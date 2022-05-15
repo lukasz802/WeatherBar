@@ -1,4 +1,6 @@
 ﻿using System.Windows.Controls;
+using WeatherBar.Core;
+using WeatherBar.ViewModel;
 
 namespace WeatherBar.View.Pages
 {
@@ -12,6 +14,7 @@ namespace WeatherBar.View.Pages
         public ForecastPage()
         {
             InitializeComponent();
+            ViewModelManager.CreateViewModel<ForecastPanelViewModel>(this);
         }
 
         #endregion

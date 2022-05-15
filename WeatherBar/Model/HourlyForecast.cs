@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using WeatherBar.Model.Enums;
@@ -20,12 +19,6 @@ namespace WeatherBar.Model
         private readonly Dictionary<Language, string> dayTimeDict = new Dictionary<Language, string>();
 
         private readonly Dictionary<Language, string> descriptionDict = new Dictionary<Language, string>();
-
-        #endregion
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 
@@ -123,10 +116,10 @@ namespace WeatherBar.Model
             RainFall = Math.Round(Convert.ToDouble(rainFall), 1);
             WindAngle = Convert.ToInt32(windAngle - 180);
             Icon = icon;
-            SunsetTime = sunsetTime != null ? (ApplicationUtils.UnixTimeStampToDateTime(sunsetTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
-            SunriseTime = sunriseTime != null ? (ApplicationUtils.UnixTimeStampToDateTime(sunriseTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
-            Longitude = longitude != null ? ApplicationUtils.ConvertCoordinatesFromDecToDeg(longitude.Value, true) : null;
-            Latitude = latitude != null ? ApplicationUtils.ConvertCoordinatesFromDecToDeg(latitude.Value, false) : null;
+            SunsetTime = sunsetTime != null ? (GlobalUtils.UnixTimeStampToDateTime(sunsetTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
+            SunriseTime = sunriseTime != null ? (GlobalUtils.UnixTimeStampToDateTime(sunriseTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
+            Longitude = longitude != null ? GlobalUtils.ConvertCoordinatesFromDecToDeg(longitude.Value, true) : null;
+            Latitude = latitude != null ? GlobalUtils.ConvertCoordinatesFromDecToDeg(latitude.Value, false) : null;
             Pressure = Convert.ToInt32(pressure);
             Humidity = Convert.ToInt32(humidity);
             Country = country;
@@ -151,11 +144,6 @@ namespace WeatherBar.Model
         public void ChangeLanguage(Language language)
         {
             Language = language;
-
-            OnPropertyChanged("Description");
-            OnPropertyChanged("Date");
-            OnPropertyChanged("DayTime");
-            OnPropertyChanged("WeekDay");
         }
 
         public void ChangeUnits(Units units)
@@ -163,9 +151,11 @@ namespace WeatherBar.Model
             SetUnits(units, Units);
 
             Units = units;
-            OnPropertyChanged("AvgTemp");
-            OnPropertyChanged("FeelTemp");
-            OnPropertyChanged("WindSpeed");
+        }
+
+        public IHourlyData Clone()
+        {
+            return (IHourlyData)MemberwiseClone();
         }
 
         #endregion
@@ -182,7 +172,7 @@ namespace WeatherBar.Model
             }
             else
             {
-                dayTimeDict.Add(language, (ApplicationUtils.UnixTimeStampToDateTime(dayTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm"));
+                dayTimeDict.Add(language, (GlobalUtils.UnixTimeStampToDateTime(dayTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm"));
             }
 
             if (language == Language.Polish)
@@ -191,7 +181,7 @@ namespace WeatherBar.Model
             }
             else
             {
-                descriptionDict.Add(language, descriptionId != null ? ApplicationUtils.GetDescriptionFromId(descriptionId) : string.Empty);
+                descriptionDict.Add(language, descriptionId != null ? GlobalUtils.GetDescriptionFromId(descriptionId) : string.Empty);
             }
 
             if (date != null)
@@ -200,11 +190,6 @@ namespace WeatherBar.Model
                         cultureName.DateTimeFormat.GetDayName(date.Value.DayOfWeek).Substring(1));
                 dateDict.Add(language, date.Value.ToString("dd MMMM", cultureName).First() == '0' ? date.Value.ToString("dd MMMM", cultureName).Remove(0, 1) : date.Value.ToString("dd MMMM", cultureName));
             }
-        }
-
-        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void SetUnits(Units toUnits, Units fromUnits)

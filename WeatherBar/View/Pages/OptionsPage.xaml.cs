@@ -1,5 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
+using WeatherBar.Core;
+using WeatherBar.ViewModel;
 
 namespace WeatherBar.View.Pages
 {
@@ -15,6 +17,7 @@ namespace WeatherBar.View.Pages
         public OptionsPage()
         {
             InitializeComponent();
+            ViewModelManager.CreateViewModel<OptionsPanelViewModel>(this);
         }
 
         #endregion

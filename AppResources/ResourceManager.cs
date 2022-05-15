@@ -9,7 +9,6 @@ namespace AppResources
     {
         public static KeyValuePair<Stream, string> GetImageWithHexColor(string imageId, int feelTemp, string description = null)
         {
-            Assembly asm = Assembly.GetExecutingAssembly();
             string imagePath, color;
 
             switch (imageId)
@@ -157,12 +156,11 @@ namespace AppResources
                     throw new ArgumentException($"Invalid input data. There is no appropriate content for Id: {imageId}");
             }
 
-            return new KeyValuePair<Stream, string>(asm.GetManifestResourceStream($"AppResources.Images.{imagePath}"), color);
+            return new KeyValuePair<Stream, string>(Assembly.GetExecutingAssembly().GetManifestResourceStream($"AppResources.Images.{imagePath}"), color);
         }
 
         public static Stream GetIcon(string iconId)
         {
-            Assembly asm = Assembly.GetExecutingAssembly();
             string iconPath;
 
             switch (iconId)
@@ -221,7 +219,7 @@ namespace AppResources
                     break;
             }
 
-            return asm.GetManifestResourceStream($"AppResources.Icons.{iconPath}");
+            return Assembly.GetExecutingAssembly().GetManifestResourceStream($"AppResources.Icons.{iconPath}");
         }
 
         public static Stream GetLanguage(string languageName)
@@ -248,7 +246,6 @@ namespace AppResources
 
         public static Stream GetUnits(string unitsName)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
             string unitsPath;
 
             switch (unitsName.ToLower())
@@ -266,7 +263,7 @@ namespace AppResources
                     throw new ArgumentException($"Invalid input data. There is no appropriate content for units: {unitsName}");
             }
 
-            return assembly.GetManifestResourceStream($"AppResources.Units.{unitsPath}");
+            return Assembly.GetExecutingAssembly().GetManifestResourceStream($"AppResources.Units.{unitsPath}");
         }
     }
 }

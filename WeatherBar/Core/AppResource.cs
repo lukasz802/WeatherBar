@@ -23,7 +23,7 @@ namespace WeatherBar.Core
 
         #region Public methods
 
-        public void Apply()
+        public void Use()
         {
             foreach (string key in resourceDictionary.Keys)
             {
@@ -49,7 +49,7 @@ namespace WeatherBar.Core
             }
             catch
             {
-                throw new XmlException("Unable to parse the XML document");
+                throw new XmlException("Unable to parse the XML document.");
             }
 
             Dictionary<string, string> result = new Dictionary<string, string>();

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace WeatherBar.Model.Interfaces
 {
-    public interface IFourDaysData : INotifyPropertyChanged, IMultiLanguage, IUnits
+    public interface IFourDaysData : IMultiLanguage, IUnits, IClonable<IFourDaysData>
     {
-        IEnumerable<IHourlyData> HourlyData { get; }
+        List<IHourlyData> HourlyData { get; }
 
-        IEnumerable<IDailyData> DailyData { get; }
+        List<IDailyData> DailyData { get; }
     }
 }

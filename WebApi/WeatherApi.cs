@@ -42,35 +42,19 @@ namespace WebApi
         #region Public methods
 
         /// <summary>
-        /// Get current weather data by city name.
+        /// Get current weather data.
         /// </summary>
-        public HourlyForecastTransferObject GetCurrentWeatherDataByCityName(string cityName)
+        public HourlyForecastTransferObject GetCurrentWeatherData(string cityData)
         {
-            return Task.Run(() => GetCurrentWeatherDataBodyAsync(CallType.ByCityName, cityName)).GetAwaiter().GetResult();
+            return Task.Run(() => GetCurrentWeatherDataBodyAsync(cityData)).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Get current weather data by city ID.
+        /// Get four days forecast data.
         /// </summary>
-        public HourlyForecastTransferObject GetCurrentWeatherDataByCityId(string cityId)
+        public FourDaysForecastTransferObject GetFourDaysForecastData(string cityData)
         {
-            return Task.Run(() => GetCurrentWeatherDataBodyAsync(CallType.ByCityID, cityId)).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Get four days forecast data by city name.
-        /// </summary>
-        public FourDaysForecastTransferObject GetFourDaysForecastDataByCityName(string cityName)
-        {
-            return Task.Run(() => GetWeatherForecastDataBodyAsync(CallType.ByCityName, cityName)).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Get four days forecast data by city ID.
-        /// </summary>
-        public FourDaysForecastTransferObject GetFourDaysForecastDataByCityId(string cityId)
-        {
-            return Task.Run(() => GetWeatherForecastDataBodyAsync(CallType.ByCityID, cityId)).GetAwaiter().GetResult();
+            return Task.Run(() => GetWeatherForecastDataBodyAsync(cityData)).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -86,10 +70,10 @@ namespace WebApi
 
         #region Private methods
 
-        private async Task<IWeatherData> GetForecastDataAsync(WeatherDataType weatherDataType, CallType callType, string input)
+        private async Task<IWeatherData> GetForecastDataAsync(WeatherDataType weatherDataType, string input)
         {
             var querry = weatherDataType == WeatherDataType.CurrentWeather ? "weather" : "forecast";
-            var call = callType == CallType.ByCityName ? "q" : "id";
+            var call = !int.TryParse(input, out int _) ? "q" : "id";
             var url = new Uri($"http://api.openweathermap.org/data/2.5/{querry}?{call}={input}&units=Metric&appid={ApiKey}&lang=pl").ToString();
             var httpRequest = new HttpRequestMessage
             {
@@ -129,14 +113,14 @@ namespace WebApi
             }
         }
 
-        private async Task<HourlyForecastTransferObject> GetCurrentWeatherDataBodyAsync(CallType callType, string input)
+        private async Task<HourlyForecastTransferObject> GetCurrentWeatherDataBodyAsync(string input)
         {
-            return (HourlyForecastTransferObject)await GetForecastDataAsync(WeatherDataType.CurrentWeather, callType, input);
+            return (HourlyForecastTransferObject)await GetForecastDataAsync(WeatherDataType.CurrentWeather, input);
         }
 
-        private async Task<FourDaysForecastTransferObject> GetWeatherForecastDataBodyAsync(CallType callType, string input)
+        private async Task<FourDaysForecastTransferObject> GetWeatherForecastDataBodyAsync(string input)
         {
-            return (FourDaysForecastTransferObject)await GetForecastDataAsync(WeatherDataType.WeatherForecast, callType, input);
+            return (FourDaysForecastTransferObject)await GetForecastDataAsync(WeatherDataType.WeatherForecast, input);
         }
 
         #endregion

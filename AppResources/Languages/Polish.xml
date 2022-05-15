@@ -82,7 +82,7 @@
 	</Row>
 	<Row>
 		<Key>FeelTempDescription</Key>
-		<Value>Temperatura odczuwalna: </Value>
+		<Value>Temperatura odczuwalna:</Value>
 	</Row>
 	<Row>
 		<Key>EmptySearchText</Key>

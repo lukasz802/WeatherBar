@@ -45,7 +45,7 @@ namespace WebApi.Model.Converters
 
         #region Methods
 
-        private IEnumerable<HourlyForecastTransferObject> PrepareHourlyForecastData(JObject weatherForecastData)
+        private List<HourlyForecastTransferObject> PrepareHourlyForecastData(JObject weatherForecastData)
         {
             var result = new List<HourlyForecastTransferObject>();
 
@@ -58,8 +58,8 @@ namespace WebApi.Model.Converters
                     AvgTemp = item["main"]["temp"].ToObject<double>(),
                     Pressure = item["main"]["pressure"].ToObject<int>(),
                     Humidity = item["main"]["humidity"].ToObject<int>(),
-                    RainFall = item["rain"] != null ? item["rain"].Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>() : 0,
-                    SnowFall = item["snow"] != null ? item["snow"].Where(x => x.Path.Contains("3h")).FirstOrDefault().ToObject<double>() : 0,
+                    RainFall = item["rain"] != null ? item["rain"].FirstOrDefault(x => x.Path.Contains("3h")).ToObject<double>() : 0,
+                    SnowFall = item["snow"] != null ? item["snow"].FirstOrDefault(x => x.Path.Contains("3h")).ToObject<double>() : 0,
                     WindAngle = item["wind"]["deg"].ToObject<int>(),
                     WindSpeed = item["wind"]["speed"].ToObject<double>(),
                     Icon = ((JArray)item["weather"])[0]["icon"].ToObject<string>(),
@@ -72,7 +72,7 @@ namespace WebApi.Model.Converters
             return result;
         }
 
-        private IEnumerable<DailyForecastTransferObject> PrepareDailyForecastData(JObject weatherForecastData)
+        private List<DailyForecastTransferObject> PrepareDailyForecastData(JObject weatherForecastData)
         {
             var result = new List<DailyForecastTransferObject>();
             var tempList = ((JArray)weatherForecastData["list"]).Where(x => !x["dt_txt"].ToObject<string>().Contains(DateTime.Now.ToString("yyyy-MM-dd")))
@@ -95,9 +95,9 @@ namespace WebApi.Model.Converters
                 result.Add(new DailyForecastTransferObject()
                 {
                     MaxTemp = (from value in item.Values
-                              select value["main"]["temp"].ToObject<double>()).Max(),
+                               select value["main"]["temp"].ToObject<double>()).Max(),
                     MinTemp = (from value in item.Values
-                              select value["main"]["temp"].ToObject<double>()).Min(),
+                               select value["main"]["temp"].ToObject<double>()).Min(),
                     Icon = groupingElement.Key + "d",
                     WeekDay = DateTime.Now.AddDays(counter).DayOfWeek,
                     Description = ((JArray)groupingElement.FirstOrDefault()["weather"])[0]["description"].ToObject<string>(),

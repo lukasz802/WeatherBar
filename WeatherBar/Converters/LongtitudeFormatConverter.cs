@@ -9,7 +9,7 @@ namespace WeatherBar.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ApplicationUtils.ConvertCoordinatesFromDecToDeg(System.Convert.ToDouble(value?.ToString().Replace(",", "."), CultureInfo.InvariantCulture), true);
+            return GlobalUtils.ConvertCoordinatesFromDecToDeg(System.Convert.ToDouble(value?.ToString().Replace(",", "."), CultureInfo.InvariantCulture), true);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

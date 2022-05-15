@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,12 +16,6 @@ namespace WeatherBar.Model
         private readonly Dictionary<Language, string> dateDict = new Dictionary<Language, string>();
 
         private readonly Dictionary<Language, string> descriptionDict = new Dictionary<Language, string>();
-
-        #endregion
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 
@@ -80,9 +73,6 @@ namespace WeatherBar.Model
         public void ChangeLanguage(Language language)
         {
             Language = language;
-
-            OnPropertyChanged("Description");
-            OnPropertyChanged("Date");
         }
 
         public void ChangeUnits(Units units)
@@ -90,8 +80,11 @@ namespace WeatherBar.Model
             SetUnits(units, Units);
 
             Units = units;
-            OnPropertyChanged("MinTemp");
-            OnPropertyChanged("MaxTemp");
+        }
+
+        public IDailyData Clone()
+        {
+            return (IDailyData)MemberwiseClone();
         }
 
         #endregion
@@ -115,7 +108,7 @@ namespace WeatherBar.Model
             else
             {
                 descriptionDict.Add(language, cultureName.DateTimeFormat.GetDayName(weekDay).First().ToString().ToUpper() +
-                           cultureName.DateTimeFormat.GetDayName(weekDay).Substring(1) + ", " + ApplicationUtils.GetDescriptionFromId(descriptionId));
+                           cultureName.DateTimeFormat.GetDayName(weekDay).Substring(1) + ", " + GlobalUtils.GetDescriptionFromId(descriptionId));
             }
         }
 
@@ -156,11 +149,6 @@ namespace WeatherBar.Model
                     }
                     break;
             }
-        }
-
-        private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void CalculateFromMetricToImperial()

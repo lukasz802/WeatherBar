@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WeatherBar.Controls.Templates;
 
-namespace WeatherBar.Controls
+namespace WeatherBar.Controls.UserControls
 {
     /// <summary>
     /// Logika interakcji dla klasy SearchTextBox.xaml

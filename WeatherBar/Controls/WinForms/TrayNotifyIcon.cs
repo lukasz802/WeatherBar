@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Windows;
-using WeatherBar.ViewModel;
 
 namespace WeatherBar.Controls.WinForms
 {
@@ -9,7 +7,7 @@ namespace WeatherBar.Controls.WinForms
     {
         #region Fields
 
-        private static TrayNotifyIcon trayNotifyIconInstance;
+        private static TrayNotifyIcon instance;
 
         private System.Windows.Forms.NotifyIcon trayNotifyIcon;
 
@@ -26,16 +24,16 @@ namespace WeatherBar.Controls.WinForms
 
         #region Properties
 
-        public static TrayNotifyIcon TrayNotifyIconInstance
+        public static TrayNotifyIcon Instance
         {
             get
             {
-                if (trayNotifyIconInstance == null)
+                if (instance == null)
                 {
-                    trayNotifyIconInstance = new TrayNotifyIcon();
+                    instance = new TrayNotifyIcon();
                 }
 
-                return trayNotifyIconInstance;
+                return instance;
             }
         }
 
@@ -103,15 +101,10 @@ namespace WeatherBar.Controls.WinForms
 
         #region Public methods
 
-        public void Update()
+        public void Update(string text, string iconId)
         {
-            var text = !AppViewModel.Instance.IsReady ? (string)Application.Current.Resources["Updating"] : AppViewModel.Instance.IsConnected ?
-                        $"{AppViewModel.Instance.CityName}, {AppViewModel.Instance.Country}\n{AppViewModel.Instance.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
-                        $"{AppViewModel.Instance.AvgTemp}/{AppViewModel.Instance.FeelTemp}{(string)Application.Current.Resources["TempUnit"]}\n" +
-                        $"{(string)Application.Current.Resources["Update"]} {AppViewModel.Instance.UpdateTime}" : (string)Application.Current.Resources["NoConnectionServer"];
-
             SetNotifyIconText(text);
-            trayNotifyIcon.Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon(!AppViewModel.Instance.IsReady ? "Update" : AppViewModel.Instance.IsConnected ? AppViewModel.Instance.Icon : string.Empty));
+            trayNotifyIcon.Icon = new System.Drawing.Icon(AppResources.ResourceManager.GetIcon(iconId));
         }
 
         #endregion
@@ -190,6 +183,7 @@ namespace WeatherBar.Controls.WinForms
         {
             var type = typeof(System.Windows.Forms.NotifyIcon);
             var hiddenFieldFlag = BindingFlags.NonPublic | BindingFlags.Instance;
+
             type.GetField("text", hiddenFieldFlag).SetValue(trayNotifyIcon, text);
 
             if ((bool)type.GetField("added", hiddenFieldFlag).GetValue(trayNotifyIcon))

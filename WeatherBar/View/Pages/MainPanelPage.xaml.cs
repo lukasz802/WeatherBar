@@ -1,8 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WeatherBar.Controls;
+using WeatherBar.Controls.UserControls;
+using WeatherBar.Controls.WinForms;
 using WeatherBar.Core;
+using WeatherBar.Core.Events;
 using WeatherBar.Model.Enums;
 using WeatherBar.ViewModel;
 
@@ -13,13 +15,20 @@ namespace WeatherBar.View.Pages
     /// </summary>
     public partial class MainPanelPage : Page
     {
+        #region Fields
+
+        private readonly MainPanelViewModel viewModel;
+
+        #endregion
+
         #region Constructors
 
         public MainPanelPage()
         {
             InitializeComponent();
+            viewModel = ViewModelManager.CreateViewModel<MainPanelViewModel>(this);
             ForecastTypeComboBox.SelectionChanged += ForecastTypeComboBox_Selected;
-            this.Loaded += (s, e) => AppViewModel.Instance.PropertyChanged += ViewModel_PropertyChanged;
+            this.Loaded += (s, e) => viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
         #endregion
@@ -30,18 +39,23 @@ namespace WeatherBar.View.Pages
         {
             EventDispatcher.RaiseEventWithDelay(() =>
             {
-                Resources["MaxTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 17D : 14D;
-                Resources["MinTempFontSize"] = AppViewModel.Instance.ApplicationUnits != Units.Standard ? 12D : 11D;
+                Resources["MaxTempFontSize"] = App.AppSettings.Units != Units.Standard ? 17D : 14D;
+                Resources["MinTempFontSize"] = App.AppSettings.Units != Units.Standard ? 12D : 11D;
             });
 
-            if (AppViewModel.Instance.HasStarted && e.PropertyName == "IsReady")
+            if (e.PropertyName == "IsReady")
             {
-                if (!AppViewModel.Instance.IsReady)
+                if (!viewModel.IsReady)
                 {
                     EventDispatcher.RaiseEventWithDelay(() => SearchUserControl.SearchTextBoxControl.Clear());
                 }
                 else
                 {
+                    TrayNotifyIcon.Instance.Update(viewModel.IsConnected ? $"{viewModel.CityName}, {viewModel.Country}\n{viewModel.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
+                        $"{viewModel.AvgTemp}/{viewModel.FeelTemp}{(string)Application.Current.Resources["TempUnit"]}\n" +
+                        $"{(string)Application.Current.Resources["Update"]} {viewModel.UpdateTime}" : (string)Application.Current.Resources["NoConnectionServer"],
+                        viewModel.IsConnected ? viewModel.Icon : string.Empty);
+
                     EventDispatcher.RaiseEventWithDelay(() =>
                     {
                         SearchUserControl.Focusable = true;
@@ -89,7 +103,7 @@ namespace WeatherBar.View.Pages
             if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
             {
                 EventDispatcher.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
-                EventDispatcher.RaiseEventWithDelay(() => AppViewModel.Instance.IsForecastPanelVisible = false, 50);
+                EventDispatcher.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 50);
             }
         }
 

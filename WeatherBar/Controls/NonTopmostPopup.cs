@@ -44,7 +44,7 @@ namespace WeatherBar.Controls
 
         private void AutoRepositionPopupBehavior()
         {
-            UserControl parent = ApplicationUtils.FindVisualParent<UserControl>(this);
+            UserControl parent = GlobalUtils.FindVisualParent<UserControl>(this);
             Window window = Window.GetWindow(parent);
 
             if (window != null || this == null)

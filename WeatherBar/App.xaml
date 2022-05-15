@@ -27,7 +27,7 @@
         <s:String x:Key="RainDescription">Wielkość opadów deszczu:</s:String>
         <s:String x:Key="SnowDescription">Wielkość opadów śniegu:</s:String>
         <s:String x:Key="FeelTemp">Odczuwalna</s:String>
-        <s:String x:Key="FeelTempDescription">Temperatura odczuwalna: </s:String>
+        <s:String x:Key="FeelTempDescription">Temperatura odczuwalna:</s:String>
         <s:String x:Key="EmptySearchText">Wyszukaj</s:String>
         <s:String x:Key="Next">Następny</s:String>
         <s:String x:Key="Previous">Poprzedni</s:String>
