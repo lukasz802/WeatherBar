@@ -1,7 +1,7 @@
 ﻿using System;
 using WeatherBar.Core.Events.Enums;
 
-namespace WeatherBar.Core.Events
+namespace WeatherBar.Core.Events.Args
 {
     public class MessageReceivedEventArgs : EventArgs
     {

@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WeatherBar.Core.Commands;
 using WeatherBar.Core.Events;
+using WeatherBar.Core.Events.Args;
 using WeatherBar.Model.DataTransferObjects;
 using WeatherBar.Model.Enums;
 using WeatherBar.Model.Interfaces;

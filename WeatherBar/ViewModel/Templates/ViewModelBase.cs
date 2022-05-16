@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using WeatherBar.Core;
-using WeatherBar.Core.Events;
+using WeatherBar.Core.Events.Args;
 using WeatherBar.Core.Events.Enums;
 using WeatherBar.Extensions;
 

@@ -198,7 +198,7 @@ namespace WeatherBar.Controls.Templates
                 }
 
                 QueryStatus = QueryStatus.Pending;
-            }, 400);
+            }, 300);
         }
 
         #endregion

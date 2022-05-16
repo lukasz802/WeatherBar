@@ -43,26 +43,24 @@ namespace WeatherBar.View.Pages
                 Resources["MinTempFontSize"] = App.AppSettings.Units != Units.Standard ? 12D : 11D;
             });
 
-            if (e.PropertyName == "IsReady")
+            if (e.PropertyName == "IsReady" && viewModel.IsReady)
             {
-                if (!viewModel.IsReady)
-                {
-                    EventDispatcher.RaiseEventWithDelay(() => SearchUserControl.SearchTextBoxControl.Clear());
-                }
-                else
-                {
-                    TrayNotifyIcon.Instance.Update(viewModel.IsConnected ? $"{viewModel.CityName}, {viewModel.Country}\n{viewModel.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
-                        $"{viewModel.AvgTemp}/{viewModel.FeelTemp}{(string)Application.Current.Resources["TempUnit"]}\n" +
-                        $"{(string)Application.Current.Resources["Update"]} {viewModel.UpdateTime}" : (string)Application.Current.Resources["NoConnectionServer"],
-                        viewModel.IsConnected ? viewModel.Icon : string.Empty);
+                TrayNotifyIcon.Instance.Update(viewModel.IsConnected ? $"{viewModel.CityName}, {viewModel.Country}\n{viewModel.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
+                    $"{viewModel.AvgTemp}/{viewModel.FeelTemp}{(string)Application.Current.Resources["TempUnit"]}\n" +
+                    $"{(string)Application.Current.Resources["Update"]} {viewModel.UpdateTime}" : (string)Application.Current.Resources["NoConnectionServer"],
+                    viewModel.IsConnected ? viewModel.Icon : string.Empty);
 
-                    EventDispatcher.RaiseEventWithDelay(() =>
-                    {
-                        SearchUserControl.Focusable = true;
-                        SearchUserControl.SearchTextBoxControl.Focus();
-                        SearchUserControl.Focusable = false;
-                    }, 300);
-                }
+                EventDispatcher.RaiseEventWithDelay(() =>
+                {
+                    SearchUserControl.SearchTextBoxControl.Clear();
+                });
+
+                EventDispatcher.RaiseEventWithDelay(() =>
+                {
+                    SearchUserControl.Focusable = true;
+                    SearchUserControl.SearchTextBoxControl.Focus();
+                    SearchUserControl.Focusable = false;
+                }, 400);
             }
         }
 

@@ -9,8 +9,8 @@ using WeatherBar.Model.Services;
 using WeatherBar.Model.Services.Interfaces;
 using WeatherBar.ViewModel.Templates;
 using WeatherBar.Model;
-using WeatherBar.Core.Events;
 using WeatherBar.Core.Commands;
+using WeatherBar.Core.Events.Args;
 
 namespace WeatherBar.ViewModel
 {

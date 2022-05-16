@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using WeatherBar.Core.Commands;
+using WeatherBar.Core.Events.Args;
 using WeatherBar.Model;
 using WeatherBar.Model.DataTransferObjects;
 using WeatherBar.Model.Enums;
@@ -163,7 +164,7 @@ namespace WeatherBar.ViewModel
 
         #region Private methods
 
-        private void OptionsPanelViewModel_MessageReceived(object sender, Core.Events.MessageReceivedEventArgs e)
+        private void OptionsPanelViewModel_MessageReceived(object sender, MessageReceivedEventArgs e)
         {
             if (e.CallerName == "SetStartingLocation")
             {

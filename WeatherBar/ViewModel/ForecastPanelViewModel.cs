@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Input;
 using WeatherBar.Core.Commands;
-using WeatherBar.Core.Events;
+using WeatherBar.Core.Events.Args;
 using WeatherBar.Model.Interfaces;
 using WeatherBar.ViewModel.Templates;
 

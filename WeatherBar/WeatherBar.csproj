@@ -121,7 +121,7 @@
     <Compile Include="Core\AppSettings.cs" />
     <Compile Include="Core\Events\Enums\MessageType.cs" />
     <Compile Include="Core\Events\EventDispatcher.cs" />
-    <Compile Include="Core\Events\MessageReceivedEventArgs.cs" />
+    <Compile Include="Core\Events\Args\MessageReceivedEventArgs.cs" />
     <Compile Include="Core\ViewModelManager.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
