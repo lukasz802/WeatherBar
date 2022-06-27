@@ -48,7 +48,8 @@ namespace WeatherBar.ViewModel
         public ForecastPanelViewModel()
         {
             this.AutomaticallyApplyReceivedChanges = true;
-            this.IncludeOnlyPublicChanges = false;
+            this.ReceiveOnlyPublicChanges = false;
+            this.SendOnlyPublicChanges = false;
             this.MessageReceived += DailyForecastViewModel_MessageReceived;
             this.ReturnToMainPanelCommand = new RelayCommand(ReturnToMainPanel);
         }

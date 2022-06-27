@@ -153,7 +153,8 @@ namespace WeatherBar.ViewModel
         public MainPanelViewModel()
         {
             this.AutomaticallyApplyReceivedChanges = true;
-            this.IncludeOnlyPublicChanges = false;
+            this.ReceiveOnlyPublicChanges = false;
+            this.SendOnlyPublicChanges = false;
             this.MessageReceived += MainPanelViewModel_MessageReceived;
             this.cityDataService = new CityDataService();
             this.ShowMapCommand = new RelayCommand(ShowMap);

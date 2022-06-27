@@ -150,6 +150,7 @@ namespace WeatherBar.ViewModel
             LoadConfiguration();
 
             this.AutomaticallyApplyReceivedChanges = true;
+            this.SendOnlyPublicChanges = false;
             this.MessageReceived += OptionsPanelViewModel_MessageReceived;
             this.UpdateConfiguration = false;
             this.cityDataService = new CityDataService();

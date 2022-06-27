@@ -36,7 +36,9 @@ namespace WeatherBar.ViewModel.Templates
             }
         }
 
-        public bool IncludeOnlyPublicChanges { get; set; }
+        public bool ReceiveOnlyPublicChanges { get; set; }
+
+        public bool SendOnlyPublicChanges { get; set; }
 
         #endregion
 
@@ -59,7 +61,8 @@ namespace WeatherBar.ViewModel.Templates
         public ViewModelBase()
         {
             AutomaticallyApplyReceivedChanges = false;
-            IncludeOnlyPublicChanges = true;
+            ReceiveOnlyPublicChanges = true;
+            SendOnlyPublicChanges = true;
         }
 
         #endregion
@@ -69,6 +72,11 @@ namespace WeatherBar.ViewModel.Templates
         public void Notify([System.Runtime.CompilerServices.CallerMemberName] string caller = "", object message = null)
         {
             var messageType = GetMessageType(caller);
+
+            if (SendOnlyPublicChanges && messageType.ToString().Contains("Private"))
+            {
+                return;
+            }
 
             switch (messageType)
             {
@@ -119,7 +127,7 @@ namespace WeatherBar.ViewModel.Templates
             switch (e.MessageType)
             {
                 case MessageType.PrivateFieldChanged:
-                    if (!IncludeOnlyPublicChanges)
+                    if (!ReceiveOnlyPublicChanges)
                     {
                         TrySetFieldValue(e);
                     }
@@ -128,7 +136,7 @@ namespace WeatherBar.ViewModel.Templates
                     TrySetFieldValue(e);
                     break;
                 case MessageType.PrivatePropertyChanged:
-                    if (!IncludeOnlyPublicChanges)
+                    if (!ReceiveOnlyPublicChanges)
                     {
                         TrySetPropertyValue(e);
                     }

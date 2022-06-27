@@ -54,13 +54,6 @@ namespace WeatherBar.View.Pages
                 {
                     SearchUserControl.SearchTextBoxControl.Clear();
                 });
-
-                EventDispatcher.RaiseEventWithDelay(() =>
-                {
-                    SearchUserControl.Focusable = true;
-                    SearchUserControl.SearchTextBoxControl.Focus();
-                    SearchUserControl.Focusable = false;
-                }, 400);
             }
         }
 

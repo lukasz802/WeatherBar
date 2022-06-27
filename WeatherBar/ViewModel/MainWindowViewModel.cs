@@ -201,7 +201,8 @@ namespace WeatherBar.ViewModel
         public MainWindowViewModel()
         {
             this.AutomaticallyApplyReceivedChanges = true;
-            this.IncludeOnlyPublicChanges = false;
+            this.ReceiveOnlyPublicChanges = false;
+            this.SendOnlyPublicChanges = false;
             this.MessageReceived += MainWindowViewModel_MessageReceived;
             this.weatherDataService = new WeatherDataService();
             this.cityDataService = new CityDataService();
@@ -402,6 +403,7 @@ namespace WeatherBar.ViewModel
             FourDaysForecast = weatherForecastData.DailyData;
 
             CurrentWeatherData.ChangeUnits(units);
+            Notify("CurrentWeatherData");
             UpdateDailyForecast();
         }
 
