@@ -181,13 +181,9 @@
                         <DataTrigger Binding="{Binding IsOptionsPanelVisible}" Value="True">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                         </DataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsConneted}" Value="True"/>
-                                <Condition Binding="{Binding IsReady}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsReady}" Value="False">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsReady}" Value="False"/>
@@ -204,7 +200,7 @@
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
                                             <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
@@ -565,6 +561,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding IsReady}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
+                                <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                                 <MultiDataTrigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>

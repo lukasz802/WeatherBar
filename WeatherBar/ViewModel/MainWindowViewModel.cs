@@ -307,20 +307,15 @@ namespace WeatherBar.ViewModel
         {
             try
             {
-                string oldIcon = CurrentWeatherData.Icon;
+                IsReady = false;
 
-                IsReady = !arg.IsRefreshIndicatorVisible;
                 System.Threading.Thread.Sleep(HasStarted ? 500 : 2000);
+
                 weatherForecastData = weatherDataService.GetFourDaysData(arg.Argument);
                 CurrentWeatherData = weatherDataService.GetHourlyData(arg.Argument);
-
-                if (!arg.IsRefreshIndicatorVisible && oldIcon != CurrentWeatherData.Icon)
-                {
-                    IsReady = false;
-                }
-
                 HourlyForecast = ViewModelUtils.GetHourlyForecastFromHourlyData(weatherForecastData.HourlyData);
                 FourDaysForecast = weatherForecastData.DailyData;
+
                 IsConnected = true;
             }
             catch (HttpOperationException)
