@@ -1,4 +1,4 @@
-﻿namespace WebApi.Model.Enums
+﻿namespace WeatherDataProvider.Model.Enums
 {
     internal enum WeatherDataType
     {

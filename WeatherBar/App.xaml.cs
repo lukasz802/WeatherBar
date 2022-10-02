@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using WeatherBar.Core;
-using WebApi;
-using WebApi.Interfaces;
+using WeatherDataProvider.Interfaces;
 
 namespace WeatherBar
 {
@@ -12,7 +11,7 @@ namespace WeatherBar
     {
         #region Fields
 
-        private static IWeatherApi apiClient;
+        private static IWeatherDataProvider weatherDataProvider;
 
         private static AppSettings appSettings;
 
@@ -20,7 +19,7 @@ namespace WeatherBar
 
         #region Properties
 
-        public static IWeatherApiClient ApiClient => apiClient ?? (apiClient = InitializeAndConfigureApiClient());
+        public static IWeatherDataProvider WeatherDataProvider => weatherDataProvider ?? (weatherDataProvider = InitializeAndConfigureWeatherDataProvider());
 
         public static AppSettings AppSettings => appSettings ?? (appSettings = new AppSettings());
 
@@ -31,16 +30,15 @@ namespace WeatherBar
         public static void UpdateAndSaveConfiguration()
         {
             AppSettings.UpdateAndSaveConfiguration();
-            apiClient?.UpdateConfiguration(cityId: AppSettings.CityId, interval: AppSettings.Interval);
         }
 
         #endregion
 
         #region Private methods
 
-        private static IWeatherApi InitializeAndConfigureApiClient()
+        private static IWeatherDataProvider InitializeAndConfigureWeatherDataProvider()
         {
-            return new WeatherApi(apiKey: AppSettings.ApiKey, interval: AppSettings.Interval, cityId: AppSettings.CityId);
+            return new WeatherDataProvider.WeatherDataProvider(apiKey: AppSettings.ApiKey);
         }
 
         #endregion

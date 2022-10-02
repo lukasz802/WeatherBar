@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using WeatherBar.Controls.Templates;
+using WeatherBar.Controls.UserControls.Templates;
 
 namespace WeatherBar.Controls.UserControls
 {

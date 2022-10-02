@@ -1,9 +1,9 @@
 ﻿using AppResources;
-using Microsoft.Rest;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -318,7 +318,7 @@ namespace WeatherBar.ViewModel
 
                 IsConnected = true;
             }
-            catch (HttpOperationException)
+            catch (HttpException)
             {
                 ResourceFounded = false;
                 return false;

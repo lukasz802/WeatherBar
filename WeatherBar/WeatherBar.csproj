@@ -65,9 +65,6 @@
     <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Rest.ClientRuntime.2.3.22\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -89,6 +86,7 @@
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -114,7 +112,7 @@
     </Compile>
     <Compile Include="Controls\CommandComboBox.cs" />
     <Compile Include="Controls\NonTopmostPopup.cs" />
-    <Compile Include="Controls\Templates\SearchTextBoxBase.cs" />
+    <Compile Include="Controls\UserControls\Templates\SearchTextBoxBase.cs" />
     <Compile Include="Converters\LatitudeFormatConverter.cs" />
     <Compile Include="Converters\LongtitudeFormatConverter.cs" />
     <Compile Include="Core\AppResource.cs" />
@@ -123,6 +121,7 @@
     <Compile Include="Core\Events\EventDispatcher.cs" />
     <Compile Include="Core\Events\Args\MessageReceivedEventArgs.cs" />
     <Compile Include="Core\ViewModelManager.cs" />
+    <Compile Include="Core\ViewModelMember.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Model\City.cs" />
@@ -260,9 +259,9 @@
       <Project>{a6306dd5-b236-4ffb-b258-596cfe1d0d0b}</Project>
       <Name>AppResources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebApi\WebApi.csproj">
+    <ProjectReference Include="..\WeatherDataProvider\WeatherDataProvider.csproj">
       <Project>{7e75f96b-67d8-4e76-a5c3-e7a85605e3ab}</Project>
-      <Name>WebApi</Name>
+      <Name>WeatherDataProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

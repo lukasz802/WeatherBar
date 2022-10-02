@@ -181,14 +181,16 @@
                         <DataTrigger Binding="{Binding IsOptionsPanelVisible}" Value="True">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsReady}" Value="False">
-                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsReady}" Value="False"/>
+                                <Condition Binding="{Binding IsConneted}" Value="True"/>
+                                <Condition Binding="{Binding IsReady}" Value="True"/>
                             </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.ExitActions>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsReady}" Value="False">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                            <DataTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
@@ -196,8 +198,8 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </MultiDataTrigger.ExitActions>
-                            <MultiDataTrigger.EnterActions>
+                            </DataTrigger.ExitActions>
+                            <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
@@ -205,8 +207,8 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </MultiDataTrigger.EnterActions>
-                        </MultiDataTrigger>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsOptionsPanelVisible}" Value="False">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>

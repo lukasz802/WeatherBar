@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using WebApi.Model.DataTransferObjects;
+using WeatherDataProvider.Model.DataTransferObjects;
 
-namespace WebApi.Model.Converters
+namespace WeatherDataProvider.Model.Converters
 {
     internal class FourDaysForecastDataConverter : JsonConverter
     {

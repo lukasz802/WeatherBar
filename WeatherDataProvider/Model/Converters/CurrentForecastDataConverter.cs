@@ -3,11 +3,11 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Reflection;
-using WebApi.Model.DataTransferObjects;
+using WeatherDataProvider.Model.DataTransferObjects;
 
-namespace WebApi.Model.Converters
+namespace WeatherDataProvider.Model.Converters
 {
-    internal class CurrentWeatherDataConverter : JsonConverter
+    internal class CurrentForecastDataConverter : JsonConverter
     {
         #region Public methods
 

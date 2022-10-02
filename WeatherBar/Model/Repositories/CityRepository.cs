@@ -44,17 +44,21 @@ namespace WeatherBar.Model.Repositories
 
         public async Task<City> GetAllWithIdAsync(string cityId)
         {
-            return await Task.Run(() => GetSqliteCommandResult($"SELECT * FROM CITYLIST WHERE id = {cityId}").FirstOrDefault());
+            return await Task.Run(() => GetAllWithId(cityId));
         }
 
         public IEnumerable<City> GetAllWithName(string cityName)
         {
-            return GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim()));
+            cityName = cityName.ToLower().Trim();
+
+            var tempResult = GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName));
+
+            return tempResult.Where(x => RemoveAccents(x.Name.ToLower()) == RemoveAccents(cityName));
         }
 
         public async Task<IEnumerable<City>> GetAllWithNameAsync(string cityName)
         {
-            return await Task.Run(() => GetSqliteCommandResult(PrepareGetAllWithNameCommand(cityName.ToLower().Trim())));
+            return await Task.Run(() => GetAllWithName(cityName));
         }
 
         public void Dispose()
@@ -93,65 +97,57 @@ namespace WeatherBar.Model.Repositories
 
         private string PrepareGetAllWithNameCommand(string cityName)
         {
-            var charsToCheck = new List<char>() { 'l', 'a', 'c', 'e', 'o', 'n', 's', 'z', };
-            var rootCommand = "SELECT * FROM CITYLIST WHERE";
-            var tempCommand = "LOWER(name)";
+            var charsToCheck = new List<char>() { 'l', 'a', 'c', 'e', 'o', 'n', 's', 'z', 'u', 'y', 'i' };
+            var rootCommand = "SELECT * FROM CITYLIST WHERE LOWER(name) LIKE ";
 
-            cityName = cityName.Replace('ł', 'l')
-                               .Replace('ą', 'a')
-                               .Replace('ć', 'c')
-                               .Replace('ę', 'e')
-                               .Replace('ó', 'o')
-                               .Replace('ń', 'n')
-                               .Replace('ś', 's')
-                               .Replace('ź', 'z')
-                               .Replace('ż', 'z');
+            cityName = RemoveAccents(cityName);
 
             for (int i = 0; i < charsToCheck.Count; i++)
             {
                 if (cityName.Contains(charsToCheck[i]))
                 {
-                    switch (charsToCheck[i])
-                    {
-                        case 'l':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ł"", ""l"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ł"", ""l"")";
-                            break;
-                        case 'a':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ą"", ""a"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ą"", ""a"")";
-                            break;
-                        case 'c':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ć"", ""c"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ć"", ""c"")";
-                            break;
-                        case 'e':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ę"", ""e"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ę"", ""e"")";
-                            break;
-                        case 'o':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ó"", ""o"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ó"", ""o"")";
-                            break;
-                        case 'n':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ń"", ""n"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ń"", ""n"")";
-                            break;
-                        case 's':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ś"", ""s"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ś"", ""s"")";
-                            break;
-                        case 'z':
-                            tempCommand = $@"REPLACE({tempCommand}, ""ź"", ""z"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ź"", ""z"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""ż"", ""z"")";
-                            tempCommand = $@"REPLACE({tempCommand}, ""Ż"", ""z"")";
-                            break;
-                    }
+                    cityName = cityName.Replace(charsToCheck[i], '_');
                 }
             }
 
-            return string.Concat(rootCommand, " ", tempCommand, $@" = ""{cityName}""");
+            return string.Concat(rootCommand, $"'{cityName}'");
+        }
+
+        private string RemoveAccents(string input)
+        {
+            return input.Replace('ł', 'l')
+                        .Replace('ą', 'a')
+                        .Replace('ć', 'c')
+                        .Replace('ę', 'e')
+                        .Replace('ó', 'o')
+                        .Replace('ń', 'n')
+                        .Replace('ś', 's')
+                        .Replace('ź', 'z')
+                        .Replace('ż', 'z')
+                        .Replace('á', 'a')
+                        .Replace('à', 'a')
+                        .Replace('â', 'a')
+                        .Replace('ã', 'a')
+                        .Replace('ä', 'a')
+                        .Replace('é', 'e')
+                        .Replace('è', 'e')
+                        .Replace('ê', 'e')
+                        .Replace('ë', 'e')
+                        .Replace('í', 'i')
+                        .Replace('ì', 'i')
+                        .Replace('î', 'i')
+                        .Replace('ï', 'i')
+                        .Replace('ò', 'o')
+                        .Replace('ô', 'o')
+                        .Replace('õ', 'o')
+                        .Replace('ö', 'o')
+                        .Replace('ú', 'u')
+                        .Replace('ù', 'u')
+                        .Replace('û', 'u')
+                        .Replace('ü', 'u')
+                        .Replace('ý', 'y')
+                        .Replace('ñ', 'n')
+                        .Replace('ç', 'c');
         }
 
         #endregion

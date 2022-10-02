@@ -24,6 +24,15 @@ namespace WeatherBar.Utils
             return hourlyData.Where(x => x.Date.Contains(tempDate.First() == '0' ? tempDate.Remove(0, 1) : tempDate)).ToList();
         }
 
+        public static string ConvertCoordinatesFromDecToDeg(double decValue, bool isLongitude)
+        {
+            string direction = decValue > 0 ? isLongitude ? "E" : "N" : isLongitude ? "W" : "S";
+            string[] temp = Math.Round(decValue > 0 ? decValue : -decValue, 2).ToString().Split('.', ',');
+            string minutesValue = Math.Round(double.Parse(temp.Last()) * 60 / 100).ToString();
+
+            return string.Concat(temp.First(), "° ", minutesValue.Length != 1 ? minutesValue : $"0{minutesValue}", $"' {direction}");
+        }
+
         public static Tuple<List<IHourlyData>, List<IHourlyData>> GetHourlyForecastFromHourlyData(List<IHourlyData> hourlyData)
         {
             return new Tuple<List<IHourlyData>, List<IHourlyData>>(hourlyData.Take(5).ToList(), hourlyData.ToList().GetRange(5, 5).ToList());

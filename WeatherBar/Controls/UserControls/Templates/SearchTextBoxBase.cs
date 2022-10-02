@@ -6,7 +6,7 @@ using System.Windows.Input;
 using WeatherBar.Controls.Enums;
 using WeatherBar.Core.Events;
 
-namespace WeatherBar.Controls.Templates
+namespace WeatherBar.Controls.UserControls.Templates
 {
     public class SearchTextBoxBase : UserControl
     {

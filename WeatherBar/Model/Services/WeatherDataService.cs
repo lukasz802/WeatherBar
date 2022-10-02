@@ -1,4 +1,4 @@
-﻿using WebApi.Model.DataTransferObjects;
+﻿using WeatherDataProvider.Model.DataTransferObjects;
 using WeatherBar.Model.Interfaces;
 using System.Linq;
 using WeatherBar.Model.Services.Interfaces;
@@ -13,7 +13,7 @@ namespace WeatherBar.Model.Services
         {
             HourlyForecastTransferObject hourlyForecastTransferObject;
 
-            hourlyForecastTransferObject = App.ApiClient.GetCurrentWeatherData(cityData);
+            hourlyForecastTransferObject = App.WeatherDataProvider.GetCurrentForecast(cityData);
 
             return ParseHourlyForecastTransferObject(hourlyForecastTransferObject);
         }
@@ -22,7 +22,7 @@ namespace WeatherBar.Model.Services
         {
             FourDaysForecastTransferObject fourDaysForecastTransferObject;
 
-            fourDaysForecastTransferObject = App.ApiClient.GetFourDaysForecastData(cityData);
+            fourDaysForecastTransferObject = App.WeatherDataProvider.GetFourDaysForecast(cityData);
 
             return new FourDaysForecast(fourDaysForecastTransferObject.HourlyData.Select(
                 x => ParseHourlyForecastTransferObject(x)).ToList(), fourDaysForecastTransferObject.DailyData.Select(x => ParseDailyForecastTransferObject(x)).ToList());

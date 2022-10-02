@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using WebApi.Model.Interfaces;
+using WeatherDataProvider.Model.Interfaces;
 
-namespace WebApi.Model.DataTransferObjects
+namespace WeatherDataProvider.Model.DataTransferObjects
 {
     public class FourDaysForecastTransferObject : IWeatherData
     {

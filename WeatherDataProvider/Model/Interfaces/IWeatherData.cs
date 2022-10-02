@@ -1,5 +1,5 @@
 ﻿
-namespace WebApi.Model.Interfaces
+namespace WeatherDataProvider.Model.Interfaces
 {
     internal interface IWeatherData
     {

@@ -118,8 +118,8 @@ namespace WeatherBar.Model
             Icon = icon;
             SunsetTime = sunsetTime != null ? (GlobalUtils.UnixTimeStampToDateTime(sunsetTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
             SunriseTime = sunriseTime != null ? (GlobalUtils.UnixTimeStampToDateTime(sunriseTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
-            Longitude = longitude != null ? GlobalUtils.ConvertCoordinatesFromDecToDeg(longitude.Value, true) : null;
-            Latitude = latitude != null ? GlobalUtils.ConvertCoordinatesFromDecToDeg(latitude.Value, false) : null;
+            Longitude = longitude != null ? ViewModelUtils.ConvertCoordinatesFromDecToDeg(longitude.Value, true) : null;
+            Latitude = latitude != null ? ViewModelUtils.ConvertCoordinatesFromDecToDeg(latitude.Value, false) : null;
             Pressure = Convert.ToInt32(pressure);
             Humidity = Convert.ToInt32(humidity);
             Country = country;

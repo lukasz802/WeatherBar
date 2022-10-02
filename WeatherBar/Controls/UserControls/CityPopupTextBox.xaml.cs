@@ -6,7 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using WeatherBar.Controls.Enums;
-using WeatherBar.Controls.Templates;
+using WeatherBar.Controls.UserControls.Templates;
 using WeatherBar.Extensions;
 using WeatherBar.Utils;
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using WeatherBar.Core;
@@ -11,6 +12,8 @@ namespace WeatherBar.ViewModel.Templates
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
         #region Fields
+
+        private readonly Dictionary<string, ViewModelMember> viewModelMembersMap = new Dictionary<string, ViewModelMember>();
 
         private bool automaticallyApplyReceivedChanges;
 
@@ -60,6 +63,8 @@ namespace WeatherBar.ViewModel.Templates
 
         public ViewModelBase()
         {
+            PrepareMessageTypeMap();
+
             AutomaticallyApplyReceivedChanges = false;
             ReceiveOnlyPublicChanges = true;
             SendOnlyPublicChanges = true;
@@ -71,7 +76,10 @@ namespace WeatherBar.ViewModel.Templates
 
         public void Notify([System.Runtime.CompilerServices.CallerMemberName] string caller = "", object message = null)
         {
-            var messageType = GetMessageType(caller);
+            var getMessageTypeResult = viewModelMembersMap.TryGetValue(caller, out ViewModelMember viewModelMember);
+            MessageType messageType;
+
+            messageType = getMessageTypeResult ? viewModelMember.MessageType : MessageType.OtherInformationSend;
 
             if (SendOnlyPublicChanges && messageType.ToString().Contains("Private"))
             {
@@ -81,17 +89,13 @@ namespace WeatherBar.ViewModel.Templates
             switch (messageType)
             {
                 case MessageType.PublicPropertyChanged:
-                    message = message ?? GetType().GetProperty(caller)?.GetValue(this);
+                    message = message ?? viewModelMember.GetValue();
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(caller));
                     break;
-                case MessageType.PrivatePropertyChanged:
-                    message = message ?? GetType().GetProperty(caller, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(this);
-                    break;
-                case MessageType.PublicFieldChanged:
-                    message = message ?? GetType().GetField(caller)?.GetValue(this);
-                    break;
                 case MessageType.PrivateFieldChanged:
-                    message = message ?? GetType().GetField(caller, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)?.GetValue(this);
+                case MessageType.PublicFieldChanged:
+                case MessageType.PrivatePropertyChanged:
+                    message = message ?? viewModelMember.GetValue();
                     break;
             }
 
@@ -107,19 +111,21 @@ namespace WeatherBar.ViewModel.Templates
 
         #region Private methods
 
-        private MessageType GetMessageType(string caller)
+        private void PrepareMessageTypeMap()
         {
-            var property = GetType().GetProperty(caller, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var properties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-            if (property != null)
+            foreach (var property in properties)
             {
-                return property.GetMethod.IsPublic ? MessageType.PublicPropertyChanged : MessageType.PrivatePropertyChanged;
+                viewModelMembersMap.Add(property.Name, new ViewModelMember(property, this));
             }
 
-            var field = GetType().GetField(caller, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var fields = GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
-            return field != null ? field.FieldType.IsPublic ? MessageType.PublicFieldChanged : MessageType.PrivateFieldChanged
-                : MessageType.OtherInformationSend;
+            foreach (var field in fields)
+            {
+                viewModelMembersMap.Add(field.Name, new ViewModelMember(field, this));
+            }
         }
 
         private void ViewModelBase_MessageReceived(object sender, MessageReceivedEventArgs e)
@@ -127,46 +133,26 @@ namespace WeatherBar.ViewModel.Templates
             switch (e.MessageType)
             {
                 case MessageType.PrivateFieldChanged:
-                    if (!ReceiveOnlyPublicChanges)
-                    {
-                        TrySetFieldValue(e);
-                    }
-                    break;
-                case MessageType.PublicFieldChanged:
-                    TrySetFieldValue(e);
-                    break;
                 case MessageType.PrivatePropertyChanged:
                     if (!ReceiveOnlyPublicChanges)
                     {
-                        TrySetPropertyValue(e);
+                        TrySetNewValue(e);
                     }
                     break;
                 case MessageType.PublicPropertyChanged:
-                    TrySetPropertyValue(e);
+                case MessageType.PublicFieldChanged:
+                    TrySetNewValue(e);
                     break;
             }
         }
 
-        private void TrySetPropertyValue(MessageReceivedEventArgs messageReceivedEventArgs)
+        private void TrySetNewValue(MessageReceivedEventArgs messageReceivedEventArgs)
         {
-            var property = this.GetType().GetProperty(messageReceivedEventArgs.CallerName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var getMessageTypeResult = viewModelMembersMap.TryGetValue(messageReceivedEventArgs.CallerName, out ViewModelMember viewModelMember);
 
-            if (property != null && !property.GetValue(this).DeepCompare(messageReceivedEventArgs.Message))
+            if (getMessageTypeResult && !viewModelMember.GetValue().DeepCompare(messageReceivedEventArgs.Message))
             {
-                if (property.SetMethod != null)
-                {
-                    property.SetValue(this, messageReceivedEventArgs.Message);
-                }
-            }
-        }
-
-        private void TrySetFieldValue(MessageReceivedEventArgs messageReceivedEventArgs)
-        {
-            var field = this.GetType().GetField(messageReceivedEventArgs.CallerName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-            if (field != null && field.GetValue(this).DeepCompare(messageReceivedEventArgs.Message))
-            {
-                field.SetValue(this, messageReceivedEventArgs.Message);
+                viewModelMember.SetValue(messageReceivedEventArgs.Message);
             }
         }
 
