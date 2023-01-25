@@ -4,6 +4,7 @@ using System.Windows.Input;
 using WeatherBar.Controls.UserControls;
 using WeatherBar.Controls.WinForms;
 using WeatherBar.Core;
+using WeatherBar.Core.Enums;
 using WeatherBar.Core.Events;
 using WeatherBar.Model.Enums;
 using WeatherBar.ViewModel;
@@ -26,7 +27,13 @@ namespace WeatherBar.View.Pages
         public MainPanelPage()
         {
             InitializeComponent();
-            viewModel = ViewModelManager.CreateViewModel<MainPanelViewModel>(this);
+
+            viewModel = new MainPanelViewModel();
+
+            ViewModelManager.Register(viewModel, this);
+
+            this.Loaded += (s, e) => this.DataContext = viewModel;
+
             ForecastTypeComboBox.SelectionChanged += ForecastTypeComboBox_Selected;
             this.Loaded += (s, e) => viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
@@ -43,12 +50,12 @@ namespace WeatherBar.View.Pages
                 Resources["MinTempFontSize"] = App.AppSettings.Units != Units.Standard ? 12D : 11D;
             });
 
-            if (e.PropertyName == "IsReady" && viewModel.IsReady)
+            if (e.PropertyName == "AppStatus" && viewModel.AppStatus != AppStatus.LoadingResource && viewModel.AppStatus != AppStatus.Starting)
             {
-                TrayNotifyIcon.Instance.Update(viewModel.IsConnected ? $"{viewModel.CityName}, {viewModel.Country}\n{viewModel.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
+                TrayNotifyIcon.Instance.Update(viewModel.AppStatus != AppStatus.ConnectionFailed ? $"{viewModel.CityName}, {viewModel.Country}\n{viewModel.Description}\n{(string)Application.Current.Resources["Temperature"]} " +
                     $"{viewModel.AvgTemp}/{viewModel.FeelTemp}{(string)Application.Current.Resources["TempUnit"]}\n" +
                     $"{(string)Application.Current.Resources["Update"]} {viewModel.UpdateTime}" : (string)Application.Current.Resources["NoConnectionServer"],
-                    viewModel.IsConnected ? viewModel.Icon : string.Empty);
+                    viewModel.AppStatus != AppStatus.ConnectionFailed ? viewModel.Icon : string.Empty);
 
                 EventDispatcher.RaiseEventWithDelay(() =>
                 {

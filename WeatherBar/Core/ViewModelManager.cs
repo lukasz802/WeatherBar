@@ -21,31 +21,24 @@ namespace WeatherBar.Core
 
         #region Public methods
 
-        public static TViewModel CreateViewModel<TViewModel>(FrameworkElement view) where TViewModel : ViewModelBase, new()
+        public static void Register<TViewModel>(TViewModel viewModel, FrameworkElement view) where TViewModel : ViewModelBase, new()
         {
-            if (registeredViewModels.ContainsKey(view))
+            if (!registeredViewModels.ContainsKey(view))
             {
-                return (TViewModel)registeredViewModels[view];
-            }
-
-            var instance = new TViewModel();
-
-            if (view.IsLoaded)
-            {
-                view.DataContext = instance;
+                registeredViewModels.Add(view, viewModel);
             }
             else
             {
-                view.Loaded += (s, e) => view.DataContext = instance;
+                registeredViewModels[view] = viewModel;
             }
-
-            view.Unloaded += (s, e) => registeredViewModels.Remove(view);
-            registeredViewModels.Add(view, instance);
-
-            return instance;
         }
 
-        public static TViewModel GetRequiredViewModel<TViewModel>(FrameworkElement view) where TViewModel : ViewModelBase
+        public static void Unregister<TViewModel>(this TViewModel viewModel, FrameworkElement view) where TViewModel : ViewModelBase, new()
+        {
+            registeredViewModels.Remove(view);
+        }
+
+        public static TViewModel GetRequired<TViewModel>(FrameworkElement view) where TViewModel : ViewModelBase
         {
             if (registeredViewModels.ContainsKey(view))
             {
@@ -53,6 +46,17 @@ namespace WeatherBar.Core
             }
 
             throw new ArgumentException($"Could not find any matching {typeof(TViewModel)} ViewModel for {view.GetType()} View.");
+        }
+
+
+        public static TViewModel Get<TViewModel>(FrameworkElement view) where TViewModel : ViewModelBase
+        {
+            if (registeredViewModels.ContainsKey(view))
+            {
+                return (TViewModel)registeredViewModels[view];
+            }
+
+            return null;
         }
 
         #endregion

@@ -1,12 +1,13 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using WeatherBar.Core.Commands;
+using WeatherBar.Core.Enums;
 using WeatherBar.Core.Events.Args;
 using WeatherBar.Model;
 using WeatherBar.Model.DataTransferObjects;
 using WeatherBar.Model.Enums;
-using WeatherBar.Model.Services;
-using WeatherBar.Model.Services.Interfaces;
+using WeatherBar.Services;
+using WeatherBar.Services.Interfaces;
 using WeatherBar.ViewModel.Templates;
 
 namespace WeatherBar.ViewModel
@@ -27,11 +28,11 @@ namespace WeatherBar.ViewModel
 
         private bool updateConfiguration;
 
-        private bool hasStarted;
+        private AppStatus appStatus;
 
         private string searchText;
 
-        private QueryExecutionTransferObject startingLocationQueryResult;
+        private QueryExecutionDto startingLocationQueryResult;
 
         #endregion
 
@@ -107,7 +108,7 @@ namespace WeatherBar.ViewModel
             }
         }
 
-        public QueryExecutionTransferObject StartingLocationQueryResult
+        public QueryExecutionDto StartingLocationQueryResult
         {
             get => startingLocationQueryResult;
             private set
@@ -131,12 +132,12 @@ namespace WeatherBar.ViewModel
             }
         }
 
-        private bool HasStarted
+        private AppStatus AppStatus
         {
-            get => hasStarted;
+            get => appStatus;
             set
             {
-                hasStarted = value;
+                appStatus = value;
                 Notify();
             }
         }
@@ -154,9 +155,9 @@ namespace WeatherBar.ViewModel
             this.MessageReceived += OptionsPanelViewModel_MessageReceived;
             this.UpdateConfiguration = false;
             this.cityDataService = new CityDataService();
-            this.RefreshTimeCommand = new RelayCommand(ChangeRefreshTime, (o) => HasStarted);
-            this.SelectUnitsCommand = new RelayCommand(ChangeUnits, (o) => HasStarted);
-            this.SelectLanguageCommand = new RelayCommand(ChangeLanguage, (o) => HasStarted);
+            this.RefreshTimeCommand = new RelayCommand(ChangeRefreshTime, (o) => HasStarted());
+            this.SelectUnitsCommand = new RelayCommand(ChangeUnits, (o) => HasStarted());
+            this.SelectLanguageCommand = new RelayCommand(ChangeLanguage, (o) => HasStarted());
             this.StartingLocationCommand = new RelayCommand(ExecuteQuery);
             this.StartingLocationResultCommand = new RelayCommand(SetStartingLocation);
         }
@@ -177,14 +178,14 @@ namespace WeatherBar.ViewModel
         {
             searchText = obj.ToString();
 
-            Task.Run(() => new QueryExecutionTransferObject()
+            Task.Run(() => new QueryExecutionDto()
             {
                 Argument = obj.ToString(),
                 Result = cityDataService.GetCityListByName(obj.ToString())
             }).ContinueWith(t => VerifyAndApplyQueryResult(t.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void VerifyAndApplyQueryResult(QueryExecutionTransferObject queryExecutionTransferObject)
+        private void VerifyAndApplyQueryResult(QueryExecutionDto queryExecutionTransferObject)
         {
             if (searchText == queryExecutionTransferObject.Argument)
             {
@@ -253,6 +254,11 @@ namespace WeatherBar.ViewModel
             refreshTime = (RefreshTime)App.AppSettings.Interval;
             appLanguage = App.AppSettings.Language;
             appUnits = App.AppSettings.Units;
+        }
+
+        private bool HasStarted()
+        {
+            return AppStatus != AppStatus.Starting;
         }
 
         #endregion

@@ -1529,15 +1529,6 @@
                     </Style>
                 </Grid.Style>
             </Grid>
-            <Grid.Style>
-                <Style TargetType="Grid">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
         </Grid>
     </Grid>
 </Page>

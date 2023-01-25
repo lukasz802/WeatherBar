@@ -14,7 +14,12 @@ namespace WeatherBar.View.Pages
         public ForecastPage()
         {
             InitializeComponent();
-            ViewModelManager.CreateViewModel<ForecastPanelViewModel>(this);
+
+            var viewModel = new ForecastPanelViewModel();
+
+            ViewModelManager.Register(viewModel, this);
+
+            this.Loaded += (s, e) => this.DataContext = viewModel;
         }
 
         #endregion

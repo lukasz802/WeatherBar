@@ -12,15 +12,16 @@ namespace WeatherBar.View.Pages
     {
         #region Constructors
 
-        #region Constructors
-
         public OptionsPage()
         {
             InitializeComponent();
-            ViewModelManager.CreateViewModel<OptionsPanelViewModel>(this);
-        }
 
-        #endregion
+            var viewModel = new OptionsPanelViewModel();
+
+            ViewModelManager.Register(viewModel, this);
+
+            this.Loaded += (s, e) => this.DataContext = viewModel;
+        }
 
         #endregion
 

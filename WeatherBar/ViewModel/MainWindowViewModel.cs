@@ -8,13 +8,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WeatherBar.Core.Commands;
+using WeatherBar.Core.Enums;
 using WeatherBar.Core.Events;
 using WeatherBar.Core.Events.Args;
-using WeatherBar.Model.DataTransferObjects;
 using WeatherBar.Model.Enums;
 using WeatherBar.Model.Interfaces;
-using WeatherBar.Model.Services;
-using WeatherBar.Model.Services.Interfaces;
+using WeatherBar.Services;
+using WeatherBar.Services.Interfaces;
 using WeatherBar.Utils;
 using WeatherBar.ViewModel.Templates;
 
@@ -34,13 +34,7 @@ namespace WeatherBar.ViewModel
 
         private EventDispatcher autoUpdateEvent;
 
-        private bool isReady;
-
-        private bool isConnected;
-
-        private bool hasStarted;
-
-        private bool resourceFounded;
+        private AppStatus appStatus;
 
         private bool isOptionsPanelVisible;
 
@@ -66,6 +60,16 @@ namespace WeatherBar.ViewModel
 
         public ICommand RefreshCommand { get; private set; }
 
+        public AppStatus AppStatus
+        {
+            get => appStatus;
+            set
+            {
+                appStatus = value;
+                Notify();
+            }
+        }
+
         public bool IsOptionsPanelVisible
         {
             get => isOptionsPanelVisible;
@@ -82,46 +86,6 @@ namespace WeatherBar.ViewModel
             set
             {
                 isForecastPanelVisible = value;
-                Notify();
-            }
-        }
-
-        public bool IsReady
-        {
-            get => isReady;
-            private set
-            {
-                isReady = value;
-                Notify();
-            }
-        }
-
-        public bool HasStarted
-        {
-            get => hasStarted;
-            private set
-            {
-                hasStarted = value;
-                Notify();
-            }
-        }
-
-        public bool ResourceFounded
-        {
-            get => resourceFounded;
-            private set
-            {
-                resourceFounded = value;
-                Notify();
-            }
-        }
-
-        public bool IsConnected
-        {
-            get => isConnected;
-            private set
-            {
-                isConnected = value;
                 Notify();
             }
         }
@@ -200,16 +164,13 @@ namespace WeatherBar.ViewModel
 
         public MainWindowViewModel()
         {
+            this.AppStatus = AppStatus.Starting;
             this.AutomaticallyApplyReceivedChanges = true;
             this.ReceiveOnlyPublicChanges = false;
             this.SendOnlyPublicChanges = false;
             this.MessageReceived += MainWindowViewModel_MessageReceived;
             this.weatherDataService = new WeatherDataService();
             this.cityDataService = new CityDataService();
-            this.ResourceFounded = true;
-            this.IsConnected = true;
-            this.IsReady = false;
-            this.HasStarted = false;
             this.IsOptionsPanelVisible = false;
             this.IsForecastPanelVisible = false;
             this.ShowForecastCommand = new RelayCommand(ShowForecast, (o) => o != null && (int)o != -1);
@@ -218,7 +179,7 @@ namespace WeatherBar.ViewModel
             this.ShowOptionsCommand = new RelayCommand(ShowOptions);
             this.RefreshCommand = new RelayCommand(Refresh);
 
-            GetAndUpdateWeatherData(App.AppSettings.CityId, true);
+            GetAndUpdateWeatherData(App.AppSettings.CityId);
         }
 
         #endregion
@@ -227,7 +188,7 @@ namespace WeatherBar.ViewModel
 
         public void Refresh()
         {
-            GetAndUpdateWeatherData(CurrentWeatherData.CityId ?? App.AppSettings.CityId, true);
+            GetAndUpdateWeatherData(CurrentWeatherData.CityId ?? App.AppSettings.CityId);
         }
 
         #endregion
@@ -239,9 +200,9 @@ namespace WeatherBar.ViewModel
             switch (e.CallerName)
             {
                 case "UpdateWeatherData":
-                    var input = (GetWeatherDataEventTransferObject)e.Message;
+                    var input = (string)e.Message;
 
-                    GetAndUpdateWeatherData(input.Argument, input.IsRefreshIndicatorVisible);
+                    GetAndUpdateWeatherData(input);
                     break;
                 case "ShowDailyForecast":
                     dailyForecastDate = (DateTime)e.Message;
@@ -255,16 +216,10 @@ namespace WeatherBar.ViewModel
                     UpdateRefreshTime((RefreshTime)e.Message);
                     break;
                 case "UnitsUpdated":
-                    if (HasStarted)
-                    {
-                        UpdateUnits();
-                    }
+                    ExecuteIfAppStarted(UpdateUnits);
                     break;
                 case "LanguageUpdated":
-                    if (HasStarted)
-                    {
-                        UpdateLanguage();
-                    }
+                    ExecuteIfAppStarted(UpdateLanguage);
                     break;
             }
         }
@@ -281,55 +236,49 @@ namespace WeatherBar.ViewModel
         private void ShowForecast(object obj)
         {
             Notify("ShowDailyForecast", DateTime.Now.AddDays((int)obj + 1));
+
             this.IsForecastPanelVisible = true;
         }
 
         private void AutoRefresh()
         {
-            GetAndUpdateWeatherData(CurrentWeatherData.CityId ?? App.AppSettings.CityId, false);
+            GetAndUpdateWeatherData(CurrentWeatherData.CityId ?? App.AppSettings.CityId);
         }
 
-        private void GetAndUpdateWeatherData(string input, bool isRefreshIndicatorVisible)
+        private void GetAndUpdateWeatherData(string input)
         {
-            var arg = new GetWeatherDataEventTransferObject()
-            {
-                IsRefreshIndicatorVisible = isRefreshIndicatorVisible,
-                Argument = input
-            };
-
-            Task.Run(() => TryGetCurrentWeatherData(arg))
-                .ContinueWith(t => UpdateWeatherData(t.Result), TaskScheduler.FromCurrentSynchronizationContext());
-
+            Task.Run(() => TryGetWeatherData(input));
             AutoUpdateEvent.Restart();
         }
 
-        private bool TryGetCurrentWeatherData(GetWeatherDataEventTransferObject arg)
+        private void TryGetWeatherData(string cityData)
         {
             try
             {
-                IsReady = false;
+                ExecuteIfAppStarted(() => AppStatus = AppStatus.LoadingResource);
 
-                System.Threading.Thread.Sleep(HasStarted ? 500 : 2000);
+                System.Threading.Thread.Sleep(AppStatus != AppStatus.Starting ? 500 : 2000);
 
-                weatherForecastData = weatherDataService.GetFourDaysData(arg.Argument);
-                CurrentWeatherData = weatherDataService.GetHourlyData(arg.Argument);
+                weatherForecastData = weatherDataService.GetFourDaysData(cityData);
+                CurrentWeatherData = weatherDataService.GetHourlyData(cityData);
                 HourlyForecast = ViewModelUtils.GetHourlyForecastFromHourlyData(weatherForecastData.HourlyData);
                 FourDaysForecast = weatherForecastData.DailyData;
 
-                IsConnected = true;
+                UpdateUnits();
+                UpdateLanguage();
+                SetStartlingLocation();
+                UpdateProperties();
+
+                AppStatus = AppStatus.Ready;
             }
             catch (HttpException)
             {
-                ResourceFounded = false;
-                return false;
+                AppStatus = AppStatus.ResourceNotFound;
             }
             catch (TaskCanceledException)
             {
-                IsConnected = false;
-                return false;
+                AppStatus = AppStatus.ConnectionFailed;
             }
-
-            return true;
         }
 
         private void ShowOptions(object obj)
@@ -339,7 +288,7 @@ namespace WeatherBar.ViewModel
 
         private void SetStartlingLocation()
         {
-            if (!HasStarted)
+            if (AppStatus == AppStatus.Starting)
             {
                 Notify("SetStartingLocation", cityDataService.GetCityById(currentWeatherData.CityId));
             }
@@ -348,24 +297,6 @@ namespace WeatherBar.ViewModel
         private void OpenWeathermapSite()
         {
             Process.Start($"https://openweathermap.org/");
-        }
-
-        private void UpdateWeatherData(bool isGetAndUpdateWeatherDataSucceed)
-        {
-            if (isGetAndUpdateWeatherDataSucceed)
-            {
-                UpdateUnits();
-                UpdateLanguage();
-                SetStartlingLocation();
-                SetHasStartedFlag();
-                UpdateProperties();
-            }
-            else
-            {
-                SetHasStartedFlag();
-            }
-
-            IsReady = true;
         }
 
         private void UpdateProperties()
@@ -427,11 +358,11 @@ namespace WeatherBar.ViewModel
             }
         }
 
-        private void SetHasStartedFlag()
+        private void ExecuteIfAppStarted(Action action)
         {
-            if (!HasStarted)
+            if (AppStatus != AppStatus.Starting)
             {
-                HasStarted = true;
+                action?.Invoke();
             }
         }
 

@@ -1,9 +1,10 @@
 ﻿using WeatherDataProvider.Model.DataTransferObjects;
 using WeatherBar.Model.Interfaces;
 using System.Linq;
-using WeatherBar.Model.Services.Interfaces;
+using WeatherBar.Services.Interfaces;
+using WeatherBar.Model;
 
-namespace WeatherBar.Model.Services
+namespace WeatherBar.Services
 {
     public class WeatherDataService : IWeatherDataService
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Linq;
-using WeatherBar.Model.Repositories;
+using WeatherBar.Repositories;
 
 namespace WeatherBarTests
 {

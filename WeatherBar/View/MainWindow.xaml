@@ -64,26 +64,31 @@
                         <Trigger Property="Opacity" Value="0">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </Trigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsReady}" Value="False"/>
-                                <Condition Binding="{Binding HasStarted}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard TargetProperty="Opacity">
-                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.2"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </MultiDataTrigger.EnterActions>
-                            <MultiDataTrigger.ExitActions>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="Starting">
+                            <DataTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard TargetProperty="Opacity">
                                         <DoubleAnimation From="1" To="0" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </MultiDataTrigger.ExitActions>
-                        </MultiDataTrigger>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="LoadingResource">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard TargetProperty="Opacity">
+                                        <DoubleAnimation From="1" To="0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Frame.Style>
@@ -93,9 +98,27 @@
                Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
+                    <Setter Property="Visibility" Value="Hidden"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
-                            <Setter Property="Visibility" Value="Hidden"/>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="ConnectionFailed">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.2" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -106,24 +129,24 @@
                Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
+                    <Setter Property="Visibility" Value="Hidden"/>
                     <Style.Triggers>
-                        <Trigger Property="Opacity" Value="0">
-                            <Setter Property="Visibility" Value="Hidden"/>
-                        </Trigger>
-                        <DataTrigger Binding="{Binding ResourceFounded}" Value="True">
+                        <DataTrigger Binding="{Binding AppStatus}" Value="ResourceNotFound">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
-                                    <Storyboard TargetProperty="Opacity">
-                                        <DoubleAnimation From="1" To="0" Duration="0:0:0.15"
-                                                         BeginTime="0:0:0.0"/>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
                                 <BeginStoryboard>
-                                    <Storyboard TargetProperty="Opacity">
-                                        <DoubleAnimation From="0" To="1" Duration="0:0:0.0"
-                                                         BeginTime="0:0:0.0"/>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.2" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.ExitActions>
@@ -138,10 +161,10 @@
             <Frame.Style>
                 <Style TargetType="Frame">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResourceFounded}" Value="False">
+                        <DataTrigger Binding="{Binding AppStatus}" Value="ResourceNotFound">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                        <DataTrigger Binding="{Binding AppStatus}" Value="ConnectionFailed">
                             <Setter Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                         <Trigger Property="Opacity" Value="0">
@@ -174,40 +197,25 @@
                Focusable="False">
             <Frame.Style>
                 <Style TargetType="Frame">
+                    <Setter Property="Visibility" Value="Hidden"/>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ResourceFounded}" Value="False">
+                        <DataTrigger Binding="{Binding AppStatus}" Value="ResourceNotFound">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="ConnectionFailed">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsOptionsPanelVisible}" Value="True">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
                         </DataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsConneted}" Value="True"/>
-                                <Condition Binding="{Binding IsReady}" Value="True"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding IsReady}" Value="False">
+                        <DataTrigger Binding="{Binding AppStatus}" Value="Starting">
                             <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
-                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
-                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="LoadingResource">
+                            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="Ready">
+                            <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsOptionsPanelVisible}" Value="False">
                             <DataTrigger.EnterActions>
@@ -482,11 +490,8 @@
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsReady}" Value="False"/>
-                            </MultiDataTrigger.Conditions>
-                            <MultiDataTrigger.ExitActions>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="Starting">
+                            <DataTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
@@ -494,8 +499,28 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </MultiDataTrigger.ExitActions>
-                            <MultiDataTrigger.EnterActions>
+                            </DataTrigger.ExitActions>
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AppStatus}" Value="LoadingResource">
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                            <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
@@ -503,8 +528,8 @@
                                         </ObjectAnimationUsingKeyFrames>
                                     </Storyboard>
                                 </BeginStoryboard>
-                            </MultiDataTrigger.EnterActions>
-                        </MultiDataTrigger>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
@@ -559,12 +584,9 @@
                                     </BeginStoryboard>
                                 </MultiDataTrigger.ExitActions>
                             </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsReady}" Value="False"/>
-                                </MultiDataTrigger.Conditions>
+                            <DataTrigger Binding="{Binding AppStatus}" Value="Starting">
                                 <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-                                <MultiDataTrigger.ExitActions>
+                                <DataTrigger.ExitActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
@@ -572,8 +594,29 @@
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
-                                </MultiDataTrigger.ExitActions>
-                                <MultiDataTrigger.EnterActions>
+                                </DataTrigger.ExitActions>
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Hidden}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding AppStatus}" Value="LoadingResource">
+                                <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetProperty="(Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                                <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.3" Storyboard.TargetProperty="(Visibility)">
@@ -581,8 +624,8 @@
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
-                                </MultiDataTrigger.EnterActions>
-                            </MultiDataTrigger>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Button.Style>

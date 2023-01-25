@@ -1,6 +1,6 @@
 ﻿using WeatherBar.Model.Interfaces;
 
-namespace WeatherBar.Model.Services.Interfaces
+namespace WeatherBar.Services.Interfaces
 {
     public interface IWeatherDataService
     {

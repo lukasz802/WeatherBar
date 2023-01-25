@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Controls.WinForms;
 using WeatherBar.Core;
+using WeatherBar.Core.Enums;
 using WeatherBar.Core.Events;
 using WeatherBar.ViewModel;
 
@@ -25,8 +26,15 @@ namespace WeatherBar.View
         public MainWindow()
         {
             InitializeComponent();
-            viewModel = ViewModelManager.CreateViewModel<MainWindowViewModel>(this);
+
+            viewModel = new MainWindowViewModel();
+
+            ViewModelManager.Register(viewModel, this);
+
+            this.Loaded += (s, e) => this.DataContext = viewModel;
+
             InitializeTrayIcon();
+
             viewModel.PropertyChanged += ViewModel_PropertyChanged;
         }
 
@@ -43,7 +51,7 @@ namespace WeatherBar.View
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "IsReady" && !viewModel.IsReady)
+            if (e.PropertyName == "AppStatus" && (viewModel.AppStatus == AppStatus.Starting || viewModel.AppStatus == AppStatus.LoadingResource))
             {
                 TrayNotifyIcon.Instance.Update((string)Application.Current.Resources["Updating"], "Update");
             }

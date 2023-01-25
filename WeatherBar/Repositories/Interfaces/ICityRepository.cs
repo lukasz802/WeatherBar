@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using WeatherBar.Model;
 
-namespace WeatherBar.Model.Repositories.Interfaces
+namespace WeatherBar.Repositories.Interfaces
 {
     public interface ICityRepository
     {

@@ -2,7 +2,7 @@
 
 namespace WeatherBar.Model.DataTransferObjects
 {
-    public class QueryExecutionTransferObject
+    public class QueryExecutionDto
     {
         #region Properties
 

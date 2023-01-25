@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WeatherBar.Model.Repositories;
-using WeatherBar.Model.Repositories.Interfaces;
-using WeatherBar.Model.Services.Interfaces;
+using WeatherBar.Model;
+using WeatherBar.Repositories;
+using WeatherBar.Repositories.Interfaces;
+using WeatherBar.Services.Interfaces;
 
-namespace WeatherBar.Model.Services
+namespace WeatherBar.Services
 {
     public class CityDataService : ICityDataService
     {

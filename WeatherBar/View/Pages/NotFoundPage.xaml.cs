@@ -12,7 +12,12 @@ namespace WeatherBar.View.Pages
         public NotFoundPage()
         {
             InitializeComponent();
-            ViewModelManager.CreateViewModel<NotFoundPanelViewModel>(this);
+
+            var viewModel = new NotFoundPanelViewModel();
+
+            ViewModelManager.Register(viewModel, this);
+
+            this.Loaded += (s, e) => this.DataContext = viewModel;
         }
     }
 }

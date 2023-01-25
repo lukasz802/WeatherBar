@@ -3,7 +3,7 @@ using WeatherBar.Core.Events.Enums;
 
 namespace WeatherBar.Core
 {
-    public class ViewModelMember
+    public class ReflectionProperty
     {
         #region Private fields
 
@@ -25,7 +25,7 @@ namespace WeatherBar.Core
 
         #region Constructors
 
-        public ViewModelMember(PropertyInfo property, object refObj)
+        public ReflectionProperty(PropertyInfo property, object refObj)
         {
             this.property = property;
             this.referenceObject = refObj;
@@ -33,7 +33,7 @@ namespace WeatherBar.Core
             Name = property.Name;
         }
 
-        public ViewModelMember(FieldInfo field, object refObj)
+        public ReflectionProperty(FieldInfo field, object refObj)
         {
             this.field = field;
             this.referenceObject = refObj;

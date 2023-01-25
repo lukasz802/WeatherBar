@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 using WeatherBar.Core.Commands;
+using WeatherBar.Core.Enums;
+using WeatherBar.Core.Events;
 using WeatherBar.ViewModel.Templates;
 
 namespace WeatherBar.ViewModel
@@ -8,7 +10,7 @@ namespace WeatherBar.ViewModel
     {
         #region Fields
 
-        private bool resourceFounded;
+        private AppStatus appStatus;
 
         #endregion
 
@@ -16,12 +18,12 @@ namespace WeatherBar.ViewModel
 
         public ICommand ReturnToMainPanelCommand { get; private set; }
 
-        public bool ResourceFounded
+        public AppStatus AppStatus
         {
-            get => resourceFounded;
-            private set
+            get => appStatus;
+            set
             {
-                resourceFounded = value;
+                appStatus = value;
                 Notify();
             }
         }
@@ -41,7 +43,8 @@ namespace WeatherBar.ViewModel
 
         private void ReturnToMainPanel(object obj)
         {
-            this.ResourceFounded = true;
+            this.AppStatus = AppStatus.LoadingResource;
+            EventDispatcher.RaiseEventWithDelay(() => this.AppStatus = AppStatus.Ready, 500);
         }
 
         #endregion

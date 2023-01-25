@@ -55,7 +55,7 @@ namespace WeatherBar.Utils
         {
             if (!(resourceType is Language || resourceType is Units))
             {
-                throw new ArgumentException("T must be an Language or Units enumerated type");
+                throw new ArgumentException("T must be an Language or Units enumerated type.");
             }
 
             var document = new XmlDocument();

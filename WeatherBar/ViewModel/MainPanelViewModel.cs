@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using WeatherBar.Model.DataTransferObjects;
 using WeatherBar.Model.Interfaces;
-using WeatherBar.Model.Services;
-using WeatherBar.Model.Services.Interfaces;
 using WeatherBar.ViewModel.Templates;
 using WeatherBar.Model;
 using WeatherBar.Core.Commands;
 using WeatherBar.Core.Events.Args;
+using WeatherBar.Services.Interfaces;
+using WeatherBar.Services;
+using WeatherBar.Core.Enums;
 
 namespace WeatherBar.ViewModel
 {
@@ -22,15 +23,13 @@ namespace WeatherBar.ViewModel
 
         private IHourlyData currentWeatherData;
 
-        private bool isConnected;
+        private AppStatus appStatus;
 
         private bool isForecastPanelVisible;
 
-        private bool isReady;
-
         private string searchText;
 
-        private QueryExecutionTransferObject queryResult;
+        private QueryExecutionDto queryResult;
 
         #endregion
 
@@ -46,12 +45,12 @@ namespace WeatherBar.ViewModel
 
         public ICommand ShowForecastCommand { get; private set; }
 
-        public bool IsConnected
+        public AppStatus AppStatus
         {
-            get => isConnected;
-            private set
+            get => appStatus;
+            set
             {
-                isConnected = value;
+                appStatus = value;
                 Notify();
             }
         }
@@ -62,16 +61,6 @@ namespace WeatherBar.ViewModel
             set
             {
                 isForecastPanelVisible = value;
-                Notify();
-            }
-        }
-
-        public bool IsReady
-        {
-            get => isReady;
-            private set
-            {
-                isReady = value;
                 Notify();
             }
         }
@@ -118,7 +107,7 @@ namespace WeatherBar.ViewModel
 
         public Tuple<List<IHourlyData>, List<IHourlyData>> HourlyForecast { get; private set; }
 
-        public QueryExecutionTransferObject QueryResult
+        public QueryExecutionDto QueryResult
         {
             get => queryResult;
             private set
@@ -184,34 +173,26 @@ namespace WeatherBar.ViewModel
 
         private void Search(object obj)
         {
-            Notify("UpdateWeatherData", new GetWeatherDataEventTransferObject()
-            {
-                Argument = obj.ToString(),
-                IsRefreshIndicatorVisible = true
-            });
+            Notify("UpdateWeatherData", obj.ToString());
         }
 
         private void ShowResult(object obj)
         {
-            Notify("UpdateWeatherData", new GetWeatherDataEventTransferObject()
-            {
-                Argument = ((City)obj).Id.ToString(),
-                IsRefreshIndicatorVisible = true
-            });
+            Notify("UpdateWeatherData", ((City)obj).Id.ToString());
         }
 
         private void ExecuteQuery(object obj)
         {
             searchText = obj.ToString();
 
-            Task.Run(() => new QueryExecutionTransferObject()
+            Task.Run(() => new QueryExecutionDto()
             {
                 Argument = obj.ToString(),
                 Result = cityDataService.GetCityListByName(obj.ToString())
             }).ContinueWith(t => VerifyQueryResult(t.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void VerifyQueryResult(QueryExecutionTransferObject queryExecutionTransferObject)
+        private void VerifyQueryResult(QueryExecutionDto queryExecutionTransferObject)
         {
             if (searchText == queryExecutionTransferObject.Argument)
             {

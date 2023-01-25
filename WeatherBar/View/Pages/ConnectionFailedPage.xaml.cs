@@ -12,7 +12,12 @@ namespace WeatherBar.View.Pages
         public ConnectionFailedPage()
         {
             InitializeComponent();
-            ViewModelManager.CreateViewModel<ConnectionFailedPanelViewModel>(this);
+
+            var viewModel = new ConnectionFailedPanelViewModel();
+
+            ViewModelManager.Register(viewModel, this);
+
+            this.Loaded += (s, e) => this.DataContext = viewModel;
         }
     }
 }

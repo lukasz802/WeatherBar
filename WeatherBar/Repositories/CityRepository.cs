@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
-using WeatherBar.Model.Repositories.Interfaces;
+using WeatherBar.Model;
+using WeatherBar.Repositories.Interfaces;
 
-namespace WeatherBar.Model.Repositories
+namespace WeatherBar.Repositories
 {
     public class CityRepository : ICityRepository, IDisposable
     {
