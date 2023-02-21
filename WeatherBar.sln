@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherDataProvider", "WeatherDataProvider\WeatherDataProvider.csproj", "{7E75F96B-67D8-4E76-A5C3-E7A85605E3AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.DataProviders", "WeatherBar.DataProviders\WeatherBar.DataProviders.csproj", "{7E75F96B-67D8-4E76-A5C3-E7A85605E3AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppResources", "AppResources\AppResources.csproj", "{A6306DD5-B236-4FFB-B258-596CFE1D0D0B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.AppResources", "WeatherBar.AppResources\WeatherBar.AppResources.csproj", "{A6306DD5-B236-4FFB-B258-596CFE1D0D0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar", "WeatherBar\WeatherBar.csproj", "{E847E3ED-FC51-404F-9BE9-63B888926C22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.WpfApp", "WeatherBar.WpfApp\WeatherBar.WpfApp.csproj", "{E847E3ED-FC51-404F-9BE9-63B888926C22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBarTests", "WeaterBarTests\WeatherBarTests.csproj", "{BEB84CAE-0F7A-47F3-A49E-35EDB726B825}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.Tests", "WeaterBar.Tests\WeatherBar.Tests.csproj", "{BEB84CAE-0F7A-47F3-A49E-35EDB726B825}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.Model", "WeatherBar.Model\WeatherBar.Model.csproj", "{0195E8CB-EE61-4D6D-8895-C6020A4EDB9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.Persistence", "WeatherBar.Persistence\WeatherBar.Persistence.csproj", "{C0D220E4-5448-4E2B-AA8F-91B486ADF830}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.Utils", "WeatherBar.Utils\WeatherBar.Utils.csproj", "{7CF06889-9C2E-497E-8664-63324F6EF5CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherBar.Application", "WeatherBar.Application\WeatherBar.Application.csproj", "{64F09B80-2FC1-4C88-A00E-00894DBA93E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +41,22 @@ Global
 		{BEB84CAE-0F7A-47F3-A49E-35EDB726B825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEB84CAE-0F7A-47F3-A49E-35EDB726B825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEB84CAE-0F7A-47F3-A49E-35EDB726B825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0195E8CB-EE61-4D6D-8895-C6020A4EDB9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0195E8CB-EE61-4D6D-8895-C6020A4EDB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0195E8CB-EE61-4D6D-8895-C6020A4EDB9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0195E8CB-EE61-4D6D-8895-C6020A4EDB9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0D220E4-5448-4E2B-AA8F-91B486ADF830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0D220E4-5448-4E2B-AA8F-91B486ADF830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0D220E4-5448-4E2B-AA8F-91B486ADF830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0D220E4-5448-4E2B-AA8F-91B486ADF830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CF06889-9C2E-497E-8664-63324F6EF5CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CF06889-9C2E-497E-8664-63324F6EF5CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CF06889-9C2E-497E-8664-63324F6EF5CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CF06889-9C2E-497E-8664-63324F6EF5CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64F09B80-2FC1-4C88-A00E-00894DBA93E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F09B80-2FC1-4C88-A00E-00894DBA93E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F09B80-2FC1-4C88-A00E-00894DBA93E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F09B80-2FC1-4C88-A00E-00894DBA93E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
