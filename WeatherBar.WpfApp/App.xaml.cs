@@ -37,22 +37,22 @@ namespace WeatherBar.WpfApp
 
         public static void UpdateConfiguration(Units units)
         {
-            AppSettings = new AppSettings(AppSettings.ApiKey, AppSettings.CityId, AppSettings.Interval, units, AppSettings.Language);
+            AppSettings.Update(units);
         }
 
         public static void UpdateConfiguration(Language language)
         {
-            AppSettings = new AppSettings(AppSettings.ApiKey, AppSettings.CityId, AppSettings.Interval, AppSettings.Units, language);
+            AppSettings.Update(language);
         }
 
         public static void UpdateConfiguration(RefreshTime refreshTime)
         {
-            AppSettings = new AppSettings(AppSettings.ApiKey, AppSettings.CityId, (int)refreshTime, AppSettings.Units, AppSettings.Language);
+            AppSettings.Update((int)refreshTime);
         }
 
         public static void UpdateConfiguration(string cityId)
         {
-            AppSettings = new AppSettings(AppSettings.ApiKey, cityId, AppSettings.Interval, AppSettings.Units, AppSettings.Language);
+            AppSettings.Update(cityId);
         }
 
         public static void UpdateResources(Dictionary<string, string> resourceDictionary)

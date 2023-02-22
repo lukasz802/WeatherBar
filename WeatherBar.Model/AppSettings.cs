@@ -67,6 +67,26 @@ namespace WeatherBar.Model
 
         #region Public methods
 
+        public void Update(string cityId)
+        {
+            CityId = cityId;
+        }
+
+        public void Update(Units units)
+        {
+            Units = units;
+        }
+
+        public void Update(int interval)
+        {
+            Interval = interval;
+        }
+
+        public void Update(Language language)
+        {
+            Language = language;
+        }
+
         public bool Equals(AppSettings other)
         {
             if (other == null)
