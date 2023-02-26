@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using WeatherBar.Model;
+using WeatherBar.Utils.Extensions;
 
 namespace WeatherBar.DataProviders.Converters
 {
@@ -51,18 +52,18 @@ namespace WeatherBar.DataProviders.Converters
             {
                 result.Add(new HourlyForecast(
                     description: ((JArray)item["weather"])[0]["description"].ToObject<string>(),
-                    feelTemp: item["main"]["feels_like"].ToObject<double>(),
-                    avgTemp: item["main"]["temp"].ToObject<double>(),
+                    feelTemp: item["main"]["feels_like"].ToObject<int>(),
+                    avgTemp: item["main"]["temp"].ToObject<int>(),
                     pressure: item["main"]["pressure"].ToObject<int>(),
                     humidity: item["main"]["humidity"].ToObject<int>(),
-                    rainFall: item["rain"] != null ? item["rain"].FirstOrDefault(x => x.Path.Contains("3h")).ToObject<double>() : 0,
-                    snowFall: item["snow"] != null ? item["snow"].FirstOrDefault(x => x.Path.Contains("3h")).ToObject<double>() : 0,
-                    windAngle: item["wind"]["deg"].ToObject<int>(),
-                    windSpeed: item["wind"]["speed"].ToObject<double>(),
+                    rainFall: Math.Round(item["rain"] != null ? item["rain"].FirstOrDefault(x => x.Path.Contains("3h")).ToObject<double>() : 0, 1),
+                    snowFall: Math.Round(item["snow"] != null ? item["snow"].FirstOrDefault(x => x.Path.Contains("3h")).ToObject<double>() : 0, 1),
+                    windAngle: item["wind"]["deg"].ToObject<int>() - 180,
+                    windSpeed: Convert.ToInt32(item["wind"]["speed"].ToObject<double>() * 3.6),
                     icon: ((JArray)item["weather"])[0]["icon"].ToObject<string>(),
                     descriptionId: ((JArray)item["weather"])[0]["id"].ToObject<string>(),
                     date: item["dt_txt"].ToObject<DateTime>(),
-                    dayTime: item["dt"].ToObject<long>()));
+                    dayTime: (item["dt"].ToObject<long>().ToDateTime() + DateTimeOffset.Now.Offset).ToString("HH:mm")));
             }
 
             return result;

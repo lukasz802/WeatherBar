@@ -98,9 +98,9 @@ namespace WeatherBar.Model
 
         #region Constructors
 
-        public HourlyForecast(string description, double avgTemp, double feelTemp, double snowFall, double rainFall, int pressure, int humidity, double windSpeed,
-            int windAngle, string icon, string country = null, string cityName = null, string cityId = null, long? sunsetTime = null, long? sunriseTime = null,
-            double? longitude = null, double? latitude = null, string descriptionId = null, DateTime? date = null, long? dayTime = null)
+        public HourlyForecast(string description, int avgTemp, int feelTemp, double snowFall, double rainFall, int pressure, int humidity, int windSpeed,
+            int windAngle, string icon, string country = null, string cityName = null, string cityId = null, string sunsetTime = null, string sunriseTime = null,
+            double? longitude = null, double? latitude = null, string descriptionId = null, DateTime? date = null, string dayTime = null)
         {
             PrepareDictionaries(Language.Polish, description, descriptionId, date, dayTime);
             PrepareDictionaries(Language.English, description, descriptionId, date, dayTime);
@@ -110,27 +110,30 @@ namespace WeatherBar.Model
             DescriptionId = descriptionId;
             CityName = cityName;
             CityId = cityId;
-            AvgTemp = Convert.ToInt32(avgTemp);
-            FeelTemp = Convert.ToInt32(feelTemp);
-            SnowFall = Math.Round(Convert.ToDouble(snowFall), 1);
-            RainFall = Math.Round(Convert.ToDouble(rainFall), 1);
-            WindAngle = Convert.ToInt32(windAngle - 180);
+            AvgTemp = avgTemp;
+            FeelTemp = feelTemp;
+            SnowFall = snowFall;
+            RainFall = rainFall;
+            WindAngle = windAngle;
             Icon = icon;
-            SunsetTime = sunsetTime != null ? (UnixTimeStampToDateTime(sunsetTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
-            SunriseTime = sunriseTime != null ? (UnixTimeStampToDateTime(sunriseTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm") : null;
+            SunsetTime = sunsetTime;
+            SunriseTime = sunriseTime;
             Longtitude = longitude.GetValueOrDefault();
             Latitude = latitude.GetValueOrDefault();
-            Pressure = Convert.ToInt32(pressure);
-            Humidity = Convert.ToInt32(humidity);
+            Pressure = pressure;
+            Humidity = humidity;
             Country = country;
-            WindSpeed = Convert.ToInt32(windSpeed * 3.6);
+            WindSpeed = windSpeed;
             UpdateTime = DateTime.Now;
         }
 
-        private HourlyForecast()
+        public HourlyForecast()
         {
+            Language = Language.Polish;
+            Units = Units.Metric;
             Icon = "01d";
             DescriptionId = "800";
+            UpdateTime = DateTime.Now;
         }
 
         #endregion
@@ -158,7 +161,7 @@ namespace WeatherBar.Model
 
         #region Private methods
 
-        private void PrepareDictionaries(Language language, string description, string descriptionId, DateTime? date, long? dayTime)
+        private void PrepareDictionaries(Language language, string description, string descriptionId, DateTime? date, string dayTime)
         {
             var cultureName = new CultureInfo(language == Language.English ? "en-US" : "pl-PL");
 
@@ -168,7 +171,7 @@ namespace WeatherBar.Model
             }
             else
             {
-                dayTimeDict.Add(language, (UnixTimeStampToDateTime(dayTime.Value) + DateTimeOffset.Now.Offset).ToString("HH:mm"));
+                dayTimeDict.Add(language, dayTime);
             }
 
             if (language == Language.Polish)
@@ -177,7 +180,7 @@ namespace WeatherBar.Model
             }
             else
             {
-                descriptionDict.Add(language, descriptionId != null ? GetDescriptionFromId(descriptionId) : string.Empty);
+                descriptionDict.Add(language, GetDescriptionFromId(descriptionId));
             }
 
             if (date != null)
@@ -251,11 +254,6 @@ namespace WeatherBar.Model
         {
             AvgTemp -= 273;
             FeelTemp -= 273;
-        }
-
-        private DateTime UnixTimeStampToDateTime(long unixTimeStamp)
-        {
-            return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(unixTimeStamp);
         }
 
         #endregion

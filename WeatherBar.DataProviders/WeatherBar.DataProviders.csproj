@@ -72,6 +72,10 @@
       <Project>{C0D220E4-5448-4E2B-AA8F-91B486ADF830}</Project>
       <Name>WeatherBar.Persistence</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WeatherBar.Utils\WeatherBar.Utils.csproj">
+      <Project>{7CF06889-9C2E-497E-8664-63324F6EF5CF}</Project>
+      <Name>WeatherBar.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

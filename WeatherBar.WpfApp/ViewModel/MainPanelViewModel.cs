@@ -147,10 +147,6 @@ namespace WeatherBar.WpfApp.ViewModel
             ShowResult(@event.Content);
         }
 
-        public void Handle(LanguageUpdatedEvent @event)
-        {
-        }
-
         #endregion
 
         #region Private methods

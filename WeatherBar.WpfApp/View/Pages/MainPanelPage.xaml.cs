@@ -86,7 +86,6 @@ namespace WeatherBar.WpfApp.View.Pages
             if (!string.IsNullOrEmpty(((SearchTextBox)sender).Text))
             {
                 EventDispatcher.RaiseEventWithDelay(() => ButtonPressAction(PreviousButton), 200);
-                EventDispatcher.RaiseEventWithDelay(() => viewModel.IsForecastPanelVisible = false, 200);
             }
         }
 

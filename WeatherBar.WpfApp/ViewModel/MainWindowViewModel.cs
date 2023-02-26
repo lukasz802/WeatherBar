@@ -30,7 +30,8 @@ namespace WeatherBar.WpfApp.ViewModel
         IEventHandler<ForecastPanelVisibilityChangedEvent>,
         IEventHandler<UnitsUpdatedEvent>,
         IEventHandler<RefreshTimeUpdatedEvent>,
-        IEventHandler<StartingLocationUpdatedEvent>
+        IEventHandler<StartingLocationUpdatedEvent>,
+        IEventHandler<WeatherDataRefreshedEvent>
     {
         #region Fields
 
@@ -226,6 +227,7 @@ namespace WeatherBar.WpfApp.ViewModel
             try
             {
                 ChangeStatusToLoadingResourceIfAppStarted();
+                HideForecastPanelIfVisible();
                 ChangeStatusWithDelay(AppStatus);
 
                 fourDaysWeatherData = weatherDataProvider.GetFourDaysForecast(cityData);
@@ -330,8 +332,8 @@ namespace WeatherBar.WpfApp.ViewModel
         {
             switch (appStatus)
             {
-                case AppStatus.LoadingResource:
                 case AppStatus.Ready:
+                case AppStatus.LoadingResource:
                     System.Threading.Thread.Sleep(500);
                     break;
                 case AppStatus.Starting:
@@ -341,7 +343,18 @@ namespace WeatherBar.WpfApp.ViewModel
                     break;
             }
 
-            AppStatus = appStatus;
+            if (AppStatus != appStatus)
+            {
+                AppStatus = appStatus;
+            }
+        }
+
+        private void HideForecastPanelIfVisible()
+        {
+            if (IsForecastPanelVisible)
+            {
+                IsForecastPanelVisible = false;
+            }
         }
 
         private List<HourlyForecast> GetHourlyForecastForSpecificDate(List<HourlyForecast> hourlyData, Language language, DateTime date)
