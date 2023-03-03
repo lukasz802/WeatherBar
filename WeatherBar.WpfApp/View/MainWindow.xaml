@@ -407,7 +407,6 @@
             </Button>
             <Button x:Name="RefreshButton" HorizontalAlignment="Left"
                     Command="{Binding RefreshCommand}"
-                    Click="RefreshButton_Click"
                     Width="40" Height="40" ToolTip="{DynamicResource Refresh}">
                 <Viewbox Width="16">
                     <Grid>

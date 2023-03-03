@@ -334,7 +334,7 @@ namespace WeatherBar.WpfApp.ViewModel
             {
                 case AppStatus.Ready:
                 case AppStatus.LoadingResource:
-                    System.Threading.Thread.Sleep(500);
+                    System.Threading.Thread.Sleep(750);
                     break;
                 case AppStatus.Starting:
                 case AppStatus.ResourceNotFound:

@@ -8,7 +8,9 @@ namespace WeatherBar.Application.Dispatchers
     {
         #region Fields
 
-        private readonly DispatcherTimer timer = new DispatcherTimer();
+        private static Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+
+        private DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.Background, dispatcher);
 
         #endregion
 
@@ -39,7 +41,7 @@ namespace WeatherBar.Application.Dispatchers
 
         public static void RaiseEventWithDelay(Action action, int delay = 0)
         {
-            var timer = new DispatcherTimer
+            var timer = new DispatcherTimer(DispatcherPriority.Background, dispatcher)
             {
                 Interval = TimeSpan.FromMilliseconds(delay)
             };
@@ -72,6 +74,13 @@ namespace WeatherBar.Application.Dispatchers
         public void UpdateInterval(RefreshTime interval)
         {
             timer.Interval = TimeSpan.FromMinutes((int)interval);
+        }
+
+        public void UpdateDispatcher(Dispatcher dispatcher)
+        {
+            EventDispatcher.dispatcher = dispatcher;
+
+            timer = new DispatcherTimer(DispatcherPriority.Background, EventDispatcher.dispatcher);
         }
 
         #endregion

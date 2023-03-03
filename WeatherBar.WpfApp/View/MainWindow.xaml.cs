@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WeatherBar.Application.Dispatchers;
+using WeatherBar.Model.Enums;
 using WeatherBar.WpfApp.Controls.WinForms;
 using WeatherBar.WpfApp.Managers;
 using WeatherBar.WpfApp.ViewModel;
@@ -18,6 +19,8 @@ namespace WeatherBar.WpfApp.View
 
         private readonly MainWindowViewModel viewModel;
 
+        private AppStatus prevoiusAppStatus;
+
         #endregion
 
         #region Constructors
@@ -27,10 +30,12 @@ namespace WeatherBar.WpfApp.View
             InitializeComponent();
 
             viewModel = new MainWindowViewModel();
+            prevoiusAppStatus = viewModel.AppStatus;
 
             ViewModelManager.Register(viewModel, this);
 
             this.Loaded += (s, e) => this.DataContext = viewModel;
+            this.Loaded += (s, e) => viewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             InitializeTrayIcon();
         }
@@ -96,9 +101,17 @@ namespace WeatherBar.WpfApp.View
             }
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            EventDispatcher.RaiseEventWithDelay(this.ButtonPressAction, 200);
+            if (e.PropertyName == nameof(viewModel.AppStatus))
+            {
+                if (prevoiusAppStatus != viewModel.AppStatus && viewModel.AppStatus == AppStatus.LoadingResource)
+                {
+                    EventDispatcher.RaiseEventWithDelay(this.ButtonPressAction, 350);
+                }
+
+                prevoiusAppStatus = viewModel.AppStatus;
+            }
         }
 
         private void OptionsButton_Click(object sender, RoutedEventArgs e)
