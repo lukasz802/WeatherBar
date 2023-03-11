@@ -3,6 +3,9 @@ using System.Reflection;
 using System.Drawing;
 using System.Windows.Forms;
 using WeatherBar.AppResources;
+using System.Collections.Generic;
+using System.Linq;
+using WeatherBar.Model.Enums;
 
 namespace WeatherBar.WpfApp.Controls.WinForms
 {
@@ -11,6 +14,8 @@ namespace WeatherBar.WpfApp.Controls.WinForms
         #region Fields
 
         private static TrayNotifyIcon instance;
+
+        private readonly Dictionary<string, ToolStripMenuItem> contextMenuCache = new Dictionary<string, ToolStripMenuItem>();
 
         private NotifyIcon trayNotifyIcon;
 
@@ -105,8 +110,20 @@ namespace WeatherBar.WpfApp.Controls.WinForms
 
         public void Update(string text, string iconId)
         {
-            SetNotifyIconText(text);
+            UpdateNotifyIconText(text);
+
             trayNotifyIcon.Icon = ResourceManager.GetIcon(iconId);
+        }
+
+        public void ChangeContextMenuLanguage(Dictionary<string, string> resourceDictionary)
+        {
+            foreach (string key in resourceDictionary.Keys)
+            {
+                if (contextMenuCache.Keys.Contains(key))
+                {
+                    contextMenuCache[key].Text = resourceDictionary[key];
+                }
+            }
         }
 
         #endregion
@@ -115,17 +132,17 @@ namespace WeatherBar.WpfApp.Controls.WinForms
 
         private void InitializeTrayIcon()
         {
-            if (contextMenuStrip == null)
-            {
-                contextMenuStrip = PrepareContextMenu();
-            }
-
+            contextMenuStrip = PrepareContextMenu();
             trayNotifyIcon = new NotifyIcon
             {
                 ContextMenuStrip = contextMenuStrip,
                 Visible = false,
                 Icon = ResourceManager.GetIcon("Update"),
             };
+
+            Dictionary<string, string> resourceDictionary = ResourceManager.GetLanguage(App.AppSettings.Language);
+
+            ChangeContextMenuLanguage(resourceDictionary);
         }
 
         private void UpdateOpenToolStripMenuEventHandler(MouseEventHandler newOpenToolStripMenuItemMouseEventHandler)
@@ -148,20 +165,21 @@ namespace WeatherBar.WpfApp.Controls.WinForms
 
         private ContextMenuStrip PrepareContextMenu()
         {
-            var openToolStripMenuItem = new ToolStripMenuItem("Otwórz WeatherBar")
+            var openToolStripMenuItem = new ToolStripMenuItem()
             {
+                Name = "OpenMenuItem",
                 BackColor = Color.Transparent,
                 Font = new Font("Segoe UI", 9, FontStyle.Bold),
             };
-
-            var updateToolStripMenuItem = new ToolStripMenuItem("Aktualizuj")
+            var updateToolStripMenuItem = new ToolStripMenuItem()
             {
+                Name = "UpdateMenuItem",
                 BackColor = Color.Transparent,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
             };
-
-            var closeToolStripMenuItem = new ToolStripMenuItem("Zakończ")
+            var quitToolStripMenuItem = new ToolStripMenuItem()
             {
+                Name = "QuitMenuItem",
                 BackColor = Color.Transparent,
                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
             };
@@ -170,18 +188,34 @@ namespace WeatherBar.WpfApp.Controls.WinForms
             {
                 BackColor = Color.Transparent,
             };
+
             contextMenu.Items.Add(openToolStripMenuItem);
             contextMenu.Items.Add(updateToolStripMenuItem);
             contextMenu.Items.Add(new ToolStripSeparator()
             {
                 BackColor = Color.Transparent,
             });
-            contextMenu.Items.Add(closeToolStripMenuItem);
+            contextMenu.Items.Add(quitToolStripMenuItem);
+
+            PrepareContextMenuCache(contextMenu);
 
             return contextMenu;
         }
 
-        private void SetNotifyIconText(string text)
+        private void PrepareContextMenuCache(ContextMenuStrip contextMenu)
+        {
+            foreach (ToolStripItem stripItem in contextMenu.Items)
+            {
+                var menuItem = stripItem as ToolStripMenuItem;
+
+                if (menuItem != null)
+                {
+                    contextMenuCache.Add(stripItem.Name, menuItem);
+                }
+            }
+        }
+
+        private void UpdateNotifyIconText(string text)
         {
             var type = typeof(NotifyIcon);
             var hiddenFieldFlag = BindingFlags.NonPublic | BindingFlags.Instance;

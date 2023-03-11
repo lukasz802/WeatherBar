@@ -190,6 +190,7 @@ namespace WeatherBar.WpfApp.ViewModel
             App.UpdateConfiguration(@event.Content);
             UpdateUnits();
             UpdateMainPanel(fourDaysWeatherData, currentWeatherData);
+            UpdateTrayNotifyIcon(AppStatus);
         }
 
         public void Handle(LanguageUpdatedEvent @event)
@@ -197,6 +198,7 @@ namespace WeatherBar.WpfApp.ViewModel
             App.UpdateConfiguration(@event.Content);
             UpdateLanguage();
             UpdateMainPanel(fourDaysWeatherData, currentWeatherData);
+            UpdateTrayNotifyIcon(AppStatus);
         }
 
         public void Handle(StartingLocationUpdatedEvent @event)
@@ -263,7 +265,7 @@ namespace WeatherBar.WpfApp.ViewModel
             else
             {
                 TrayNotifyIcon.Instance.Update($"{currentWeatherData.CityName}, {currentWeatherData.Country}\n{currentWeatherData.Description}\n{(string)App.Current.Resources["Temperature"]} " +
-                   $"{currentWeatherData.AvgTemp}/{currentWeatherData.FeelTemp}{(string)App.Current.Resources["TempUnit"]}\n{(string)App.Current.Resources["Update"]} {currentWeatherData.UpdateTime}",
+                   $"{currentWeatherData.AvgTemp}/{currentWeatherData.FeelTemp}{(string)App.Current.Resources["TempUnit"]}\n{(string)App.Current.Resources["Update"]} {currentWeatherData.UpdateTime:HH:mm}",
                    currentWeatherData.Icon);
             }
         }
@@ -300,11 +302,13 @@ namespace WeatherBar.WpfApp.ViewModel
         private void UpdateLanguage()
         {
             Language language = App.AppSettings.Language;
+            Dictionary<string, string> resourceDictionary = ResourceManager.GetLanguage(language);
 
-            App.UpdateResources(ResourceManager.GetLanguage(language));
+            App.UpdateResources(resourceDictionary);
 
             fourDaysWeatherData.ChangeLanguage(language);
             currentWeatherData.ChangeLanguage(language);
+            TrayNotifyIcon.Instance.ChangeContextMenuLanguage(resourceDictionary);
         }
 
         private void SaveConfiguration()

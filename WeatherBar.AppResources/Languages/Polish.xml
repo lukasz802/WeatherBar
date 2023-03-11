@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<Row>
+  <Row>
+    <Key>OpenMenuItem</Key>
+    <Value>Otwórz WeatherBar</Value>
+  </Row>
+  <Row>
+    <Key>UpdateMenuItem</Key>
+    <Value>Aktualizuj</Value>
+  </Row>
+  <Row>
+    <Key>QuitMenuItem</Key>
+    <Value>Zakończ</Value>
+  </Row>
+  <Row>
 		<Key>Close</Key>
 		<Value>Zamknij</Value>
 	</Row>
